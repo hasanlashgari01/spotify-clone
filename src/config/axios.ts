@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_BASE_URL;
+const baseURL = import.meta.env.VITE_BASE_URL || 'https://spotify-music.liara.run';
 
 export const httpService = axios.create({
   baseURL,
@@ -8,6 +8,7 @@ export const httpService = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
 
 // Request interceptor to add auth token
 httpService.interceptors.request.use(
