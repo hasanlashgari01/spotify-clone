@@ -47,7 +47,7 @@ const SongItem: React.FC<Song> = ({ id, cover, title, artist }) => {
         to={`/profile/${artist.username}`}
         className="mt-1 w-full truncate text-center text-xs text-gray-400"
       >
-        {artist.username}
+        {artist.fullName}
       </Link>
       {/* هاور کارت: افکت روشن‌تر با opacity کمتر */}
       <div className="absolute inset-0 -z-10 rounded-xl bg-black opacity-0 transition-opacity duration-300 group-hover:opacity-20"></div>{' '}
