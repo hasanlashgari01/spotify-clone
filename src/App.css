@@ -1,4 +1,31 @@
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-.animate-fadeIn { animation: fadeIn 0.6s ease forwards; }
-.animate-slideDown { animation: slideDown 0.4s ease forwards; }
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #1574f5 !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 20px !important;
+}
+
+
+.swiper-button-disabled {
+  opacity: 0 !important;
+}
+
+
+@media (max-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 16px !important;
+  }
+}

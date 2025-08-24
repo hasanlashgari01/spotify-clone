@@ -1,0 +1,9 @@
+const ErrorMessage: React.FC<Error> = (error) => {
+  return (
+    <div className="mx-[20px] mt-[842px] flex h-[300px] items-center justify-center bg-[#101720] text-red-500 sm:mx-[64px] sm:h-[333px]">
+      Error loading trending songs: {error.message}
+    </div>
+  );
+};
+
+export default ErrorMessage;

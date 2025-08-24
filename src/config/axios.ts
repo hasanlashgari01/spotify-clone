@@ -3,7 +3,7 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 export const httpService = axios.create({
-  baseURL,
+  baseURL: baseURL || 'https://spotify-music.liara.run/',
   headers: {
     'Content-Type': 'application/json',
   },
