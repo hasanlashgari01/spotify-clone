@@ -14,14 +14,14 @@ const TrendingSongs = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-[300px] sm:h-[333px] bg-[#101720] mt-[842px] mx-[20px] sm:mx-[64px]">
+      <div className="flex justify-center items-center h-[300px] sm:h-[333px] bg-[#101720] mx-[20px] sm:mx-[64px]">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
       </div>
     );
   }
   if (error) {
     return (
-      <div className="h-[300px] sm:h-[333px] bg-[#101720] mt-[842px] mx-[20px] sm:mx-[64px] text-red-500 flex items-center justify-center">
+      <div className="h-[300px] sm:h-[333px] bg-[#101720]  mx-[20px] sm:mx-[64px] text-red-500 flex items-center justify-center">
         Error loading trending songs: {error.message}
       </div>
     );
@@ -40,7 +40,7 @@ const TrendingSongs = () => {
   };
 
   return (
-    <div className="relative bg-[#101720] mt-[842px] mx-[20px] sm:mx-[64px] h-[300px] sm:h-[333px]">
+    <div className="relative bg-[#101720] mx-[20px] sm:mx-[64px] h-[300px] sm:h-[333px]">
       <div className="flex justify-between items-center px-[20px] sm:pl-[85px] sm:pr-[77px] mb-[20px] sm:mb-[40px]">
         <h2 className="text-lg sm:text-2xl font-bold text-white">
           Trending songs
