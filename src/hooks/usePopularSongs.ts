@@ -9,3 +9,11 @@ export const usePopularSongs = () => {
     staleTime: 5 * 60 * 1000,
   });
 };
+
+export const useNewSongs = () => {
+  return useQuery<Song[], Error>({
+    queryKey: ['new-songs'],
+    queryFn: songService.getNewSongs,
+    staleTime: 5 * 60 * 1000,
+  });
+};
