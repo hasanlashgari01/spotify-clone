@@ -5,9 +5,7 @@ const baseURL = import.meta.env.VITE_BASE_URL;
 export const httpService = axios.create({
   baseURL: '/api',
   // baseURL: baseURL || 'https://spotify-music.liara.run/',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+
 });
 httpService.interceptors.request.use(
   (config) => {
