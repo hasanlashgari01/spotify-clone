@@ -2,7 +2,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { useNewSongs } from '../../hooks/usePopularSongs'; // اصلاح مسیر به useSongs.ts
+import { useNewSongs } from '../../hooks/usePopularSongs'; 
 import Error from '../error/ErrorMessage';
 import Loading from '../loading/Loading';
 import SongItem from '../song-item/SongItem';
