@@ -3,13 +3,12 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 export const httpService = axios.create({
-  baseURL,
+  baseURL: '/api',
+  // baseURL: baseURL || 'https://spotify-music.liara.run/',
   headers: {
     'Content-Type': 'application/json',
   },
 });
-
-// Request interceptor to add auth token
 httpService.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
@@ -23,13 +22,11 @@ httpService.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle token expiration
 httpService.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('accessToken');
-      // Redirect to login if needed
       window.location.href = '/login';
     }
     return Promise.reject(error);
