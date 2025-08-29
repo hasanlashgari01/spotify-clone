@@ -4,9 +4,6 @@ const baseURL = import.meta.env.VITE_BASE_URL || 'https://spotify-music.liara.ru
 
 export const httpService = axios.create({
   baseURL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 // Request interceptor to add auth token
