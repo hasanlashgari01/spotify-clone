@@ -114,11 +114,11 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="flex items-center rounded-full bg-gray-800 px-3 py-1">
+          <div className="flex items-center rounded-full bg-gray-800 px-5 py-3">
             <input
               type="text"
               placeholder="Search for artists, songs, or podcasts..."
-              className="bg-transparent text-sm text-white outline-none"
+              className="bg-transparent w-100 text-sm text-white outline-none"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
