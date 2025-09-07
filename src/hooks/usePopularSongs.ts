@@ -17,3 +17,11 @@ export const useNewSongs = () => {
     staleTime: 5 * 60 * 1000,
   });
 };
+
+export const useMadeForYouSongs = () => {
+  return useQuery<Song[], Error>({
+    queryKey: ['made-for-you-songs'],
+    queryFn: songService.getMadeForYouSongs,
+    staleTime: 5 * 60 * 1000,
+  });
+};

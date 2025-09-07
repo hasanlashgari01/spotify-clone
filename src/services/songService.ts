@@ -1,4 +1,4 @@
-import { httpService } from '../config/axios';
+import { httpService, publicService } from '../config/axios';
 import { Song } from '../types/song.type';
 
 export const songService = {
@@ -16,6 +16,14 @@ export const songService = {
       return response.data;
     } catch (error: any) {
       throw new Error(error.response?.data?.message || "Failed to fetch new songs");
+    }
+  },
+ async getMadeForYouSongs(): Promise<Song[]> {
+    try {
+      const response = await publicService<Song[]>("/song/made-for-you"); // استفاده از publicService
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || "Failed to fetch made for you songs");
     }
   },
 };
