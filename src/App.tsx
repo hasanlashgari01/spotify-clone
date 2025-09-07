@@ -5,6 +5,7 @@ import ReactQueryProvider from './providers/react-query-provider';
 import Profile from './pages/Profile';
 import HomePage from './pages/HomePage';
 import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
+import PlaylistPage from './pages/PlaylistPage';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/playlist/:slug" element={<PlaylistPage/>} />
           <Route
             path="/profile"
             element={
