@@ -4,6 +4,7 @@ import { IoMenu, IoClose } from 'react-icons/io5';
 import { CgProfile } from 'react-icons/cg';
 import { useAuth } from '../hooks/useAuth';
 import HomeLogo from '../../public/home/home-logo.png';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -85,12 +86,12 @@ const Navbar = () => {
                     </button>
                   </>
                 ) : (
-                  <a
-                    href="/login"
+                  <Link
+                    to="/login"
                     className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
                   >
                     Login
-                  </a>
+                  </Link>
                 )}
               </div>
             )}
