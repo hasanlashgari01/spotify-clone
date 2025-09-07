@@ -1,4 +1,3 @@
-import React from "react";
 import HeroBg from "../../../public/home/hero-bg.png";
 
 // تصویر وسط (عکس داخل صفحه‌ی گرامافون)

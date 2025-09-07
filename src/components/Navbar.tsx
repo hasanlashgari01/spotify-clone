@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaCrown, FaBell } from 'react-icons/fa';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import { CgProfile } from 'react-icons/cg';
@@ -9,12 +9,12 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
-  const profileMenuRef = useRef(null);
+  const profileMenuRef = useRef<HTMLDivElement>(null);
 
   // Close profile menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+    const handleClickOutside = (event:MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
         setProfileMenuOpen(false);
       }
     };
