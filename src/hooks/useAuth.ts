@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { authService, User } from '../services/authService';
+import { useState, useEffect, useCallback } from "react";
+import { authService, User } from "../services/authService";
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -7,24 +7,19 @@ export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Check if user is already authenticated on mount
     const token = authService.getToken();
-
-    checkUser();
-
-    async function checkUser() {
-      if (token) {
-        const userData = await authService.getUser();
-        if (userData) {
-          setUser(userData);
-          setIsAuthenticated(true);
-        } else {
-          // If token exists but no user data, logout
-          authService.logout();
-        }
+    if (token) {
+      const userData = authService.getUser();
+      if (userData) {
+        setUser(userData);
+        setIsAuthenticated(true);
+      } else {
+        // If token exists but no user data, logout
+        authService.logout();
       }
-
-      setIsLoading(false);
     }
+    setIsLoading(false);
   }, []);
 
   const signup = useCallback(
@@ -53,7 +48,7 @@ export const useAuth = () => {
     try {
       await authService.logout();
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       setUser(null);
       setIsAuthenticated(false);

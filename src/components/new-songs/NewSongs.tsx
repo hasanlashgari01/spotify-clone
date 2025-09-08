@@ -2,7 +2,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { useNewSongs } from '../../hooks/usePopularSongs'; 
+import { useNewSongs } from '../../hooks/usePopularSongs';
 import Error from '../error/ErrorMessage';
 import Loading from '../loading/Loading';
 import SongItem from '../song-item/SongItem';
@@ -24,18 +24,18 @@ const NewSongs: React.FC = () => {
           See more
         </button>
       </div>
-      <button className="new-prev absolute top-[120px] left-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
+      <button className="custom-prev absolute top-[120px] left-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
         <LeftArrowIcon />
       </button>
-      <button className="new-next absolute top-[120px] right-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
+      <button className="custom-next absolute top-[120px] right-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
         <RightArrowIcon />
       </button>
       <div className="relative mt-[30px] mr-[20px] mb-[10px] ml-[20px] sm:mt-[40px] sm:mr-[75px] sm:mb-[21px] sm:ml-[75px]">
         <Swiper
           modules={[Navigation]}
           navigation={{
-            nextEl: '.new-next',
-            prevEl: '.new-prev',
+            nextEl: '.custom-next',
+            prevEl: '.custom-prev',
             enabled: true,
           }}
           spaceBetween={20}
