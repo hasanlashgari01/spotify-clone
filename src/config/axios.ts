@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const baseURL = import.meta.env.VITE_BASE_URL || 'https://spotify-music.liara.run';
+const baseURL =
+  import.meta.env.VITE_BASE_URL || 'https://spotify-music.liara.run';
 
 export const httpService = axios.create({
   baseURL,
@@ -27,6 +28,23 @@ httpService.interceptors.response.use(
       localStorage.removeItem('accessToken');
       window.location.href = '/login';
     }
+    return Promise.reject(error);
+  }
+);
+
+export const publicService = axios.create({
+  baseURL,
+});
+
+publicService.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
     return Promise.reject(error);
   }
 );

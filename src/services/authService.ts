@@ -1,4 +1,5 @@
 import { httpService } from '../config/axios';
+import { ApiError } from '../types/error.types';
 
 export interface LoginCredentials {
   email: string;
@@ -28,14 +29,6 @@ export interface RegisterResponse {
   accessToken: string;
   user: User;
   message?: string;
-}
-
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
 }
 
 export const authService = {
