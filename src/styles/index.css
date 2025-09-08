@@ -1,1 +1,5 @@
 @import 'tailwindcss';
+
+body {
+  @apply mb-28 bg-[#131a22];
+}
