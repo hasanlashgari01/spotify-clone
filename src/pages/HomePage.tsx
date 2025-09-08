@@ -1,10 +1,12 @@
-import React from 'react'
-import Navbar from '../components/Navbar'
-import Hero from '../components/Home/Hero'
-import TrendingSongs from '../components/trending-songs/TrendingSongs'
-import NewSongs from '../components/new-songs/NewSongs'
-import MusicPlayer from '../components/MusicPlayer/MusicPlayer'
-const Home: React.FC = () => {
+import React from 'react';
+import Navbar from '../components/Navbar';
+import Hero from '../components/Home/Hero';
+import TrendingSongs from '../components/trending-songs/TrendingSongs';
+import NewSongs from '../components/new-songs/NewSongs';
+import MadeForYou from '../components/made-for-you/MadeForYou';
+import MusicPlayer from '../components/MusicPlayer/MusicPlayer';
+
+const HomePage: React.FC = () => {
   return (
     <div>
       <header>

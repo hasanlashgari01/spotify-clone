@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import HeroBg from "../../../public/home/hero-bg.png";
 import mobileHeroBg from "../../../public/home/mobilehero-bg.png";
