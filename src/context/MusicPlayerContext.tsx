@@ -8,6 +8,7 @@ import React, {
   ReactNode,
 } from 'react';
 import { Song } from '../types/song.type';
+import { httpService } from '../config/axios';
 
 // ===== Types =====
 export interface Track {
@@ -184,7 +185,7 @@ export const MusicPlayerProvider: React.FC<MusicPlayerProviderProps> = ({
     return `${baseApiUrl.replace(/\/$/, '')}/${audioUrl.replace(/^\//, '')}`;
   };
 
-  const playSong = (song: Song, nextQueue?: Song[]) => {
+  const playSong = async (song: Song, nextQueue?: Song[]) => {
     const mapped: Track = {
       id: song.id,
       title: song.title,
@@ -231,6 +232,8 @@ export const MusicPlayerProvider: React.FC<MusicPlayerProviderProps> = ({
       URL.revokeObjectURL(lastUrl);
       audio[lastObjectUrlRefKey] = undefined;
     }
+
+    await httpService(`song/play/${song.id}`);
 
     if (token) {
       fetch(mapped.audioUrl, {
