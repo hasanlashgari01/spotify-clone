@@ -31,7 +31,7 @@ const LoginPage = () => {
       setSuccess("Login successful! Redirecting...");
       reset();
       setTimeout(() => {
-        // window.location.href = "/dashboard";
+        window.location.href = "/";
       }, 1500);
     } catch (err: unknown) {
       if (err instanceof Error) {
