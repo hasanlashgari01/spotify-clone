@@ -6,25 +6,30 @@ import Profile from './pages/Profile';
 import HomePage from './pages/HomePage';
 import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
 import PlaylistPage from './pages/PlaylistPage';
+import MusicPlayers from './components/MusicPlayer/MusicPlayer';
+import { MusicPlayerProvider } from './context/MusicPlayerContext';
 
 function App() {
   return (
     <ReactQueryProvider>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/playlist/:slug" element={<PlaylistPage/>} />
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+        <MusicPlayerProvider>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/playlist/:slug" element={<PlaylistPage />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+          <MusicPlayers />
+        </MusicPlayerProvider>
       </BrowserRouter>
     </ReactQueryProvider>
   );
