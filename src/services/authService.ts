@@ -1,5 +1,4 @@
 import { httpService } from '../config/axios';
-import { ApiError } from '../types/axios';
 
 export interface LoginCredentials {
   email: string;
@@ -31,6 +30,14 @@ export interface RegisterResponse {
   message?: string;
 }
 
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 export const authService = {
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     try {
@@ -42,7 +49,6 @@ export const authService = {
       // Store token and user data
       if (response.data.accessToken) {
         localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
 
       return response.data;
@@ -64,7 +70,6 @@ export const authService = {
       // Store token and user data
       if (response.data.accessToken) {
         localStorage.setItem('accessToken', response.data.accessToken);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
 
       return response.data;
@@ -75,24 +80,18 @@ export const authService = {
     }
   },
 
-  async logout(): Promise<void> {
-    try {
-      await httpService.post('/auth/logout');
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('user');
-    }
+  logout(): void {
+    localStorage.removeItem('accessToken');
   },
 
   getToken(): string | null {
     return localStorage.getItem('accessToken');
   },
 
-  getUser(): User | null {
-    const userData = localStorage.getItem('user');
-    return userData ? JSON.parse(userData) : null;
+  async getUser(): Promise<User | null> {
+    const user = await httpService('/user/my-profile');
+
+    return user.data;
   },
 
   isAuthenticated(): boolean {

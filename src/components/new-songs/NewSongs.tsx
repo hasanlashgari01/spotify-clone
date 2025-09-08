@@ -15,27 +15,31 @@ const NewSongs: React.FC = () => {
   if (error) return <Error {...error} />;
 
   return (
-    <div className="relative mx-[20px] mt-[1622px] h-[300px] sm:mx-[64px] sm:h-[333px]" style={{ background: 'linear-gradient(to bottom, #101720, #101720)', marginTop: '50px' }}>
+    <div
+      className="relative mx-[20px] mt-[1622px] h-[300px] sm:mx-[64px] sm:h-[333px]"
+      style={{
+        background: 'linear-gradient(to bottom, #101720, #101720)',
+        marginTop: '50px',
+      }}
+    >
       <div className="mb-[20px] flex items-center justify-between px-[20px] sm:mb-[40px] sm:pr-[77px] sm:pl-[85px]">
-        <h2 className="text-lg font-bold text-white sm:text-2xl">
-          New songs
-        </h2>
+        <h2 className="text-lg font-bold text-white sm:text-2xl">New songs</h2>
         <button className="relative flex items-center justify-center rounded-full border-2 border-[#1574f5] px-2 py-1 text-xs text-[#1574f5] transition hover:bg-[#1574f5]/10 sm:px-3 sm:py-1.5 sm:text-sm">
           See more
         </button>
       </div>
-      <button className="custom-prev absolute top-[120px] left-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
+      <button className="new-prev absolute top-[120px] left-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
         <LeftArrowIcon />
       </button>
-      <button className="custom-next absolute top-[120px] right-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
+      <button className="new-next absolute top-[120px] right-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
         <RightArrowIcon />
       </button>
       <div className="relative mt-[30px] mr-[20px] mb-[10px] ml-[20px] sm:mt-[40px] sm:mr-[75px] sm:mb-[21px] sm:ml-[75px]">
         <Swiper
           modules={[Navigation]}
           navigation={{
-            nextEl: '.custom-next',
-            prevEl: '.custom-prev',
+            nextEl: '.new-next',
+            prevEl: '.new-prev',
             enabled: true,
           }}
           spaceBetween={20}

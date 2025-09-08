@@ -8,7 +8,7 @@ export const songService = {
       const response = await httpService<Song[]>("song/popular-songs");
       return response.data;
     } catch (error: unknown) {
-            const apiError = error as ApiError;
+      const apiError = error as ApiError;
       throw new Error(apiError.response?.data?.message || "Failed to fetch popular songs");
     }
   },
@@ -17,7 +17,7 @@ export const songService = {
       const response = await httpService<Song[]>("song/new-songs");
       return response.data;
     } catch (error: unknown) {
-            const apiError = error as ApiError;
+      const apiError = error as ApiError;
       throw new Error(apiError.response?.data?.message || "Failed to fetch new songs");
     }
   },
@@ -26,7 +26,7 @@ export const songService = {
       const response = await publicService<Song[]>("/song/made-for-you"); // استفاده از publicService
       return response.data;
     } catch (error: unknown) {
-            const apiError = error as ApiError;
+      const apiError = error as ApiError;
       throw new Error(apiError.response?.data?.message || "Failed to fetch made for you songs");
     }
   },

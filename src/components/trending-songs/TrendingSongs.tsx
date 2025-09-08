@@ -24,18 +24,18 @@ const TrendingSongs: React.FC = () => {
           See more
         </button>
       </div>
-      <button className="custom-prev absolute top-[120px] left-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
+      <button className="trending-prev absolute top-[120px] left-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
         <LeftArrowIcon />
       </button>
-      <button className="custom-next absolute top-[120px] right-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
+      <button className="trending-next absolute top-[120px] right-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
         <RightArrowIcon />
       </button>
       <div className="relative mt-[30px] mr-[20px] mb-[10px] ml-[20px] sm:mt-[40px] sm:mr-[75px] sm:mb-[21px] sm:ml-[75px]">
         <Swiper
           modules={[Navigation]}
           navigation={{
-            nextEl: '.custom-next',
-            prevEl: '.custom-prev',
+            nextEl: '.trending-next',
+            prevEl: '.trending-prev',
             enabled: true,
           }}
           spaceBetween={20}

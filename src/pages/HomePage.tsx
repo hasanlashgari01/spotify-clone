@@ -12,7 +12,7 @@ const HomePage: React.FC = () => {
         <Navbar />
         <Hero />
       </header>
-      <div className="bg-[#131a22] pt-10">
+      <div className="pt-10">
         <TrendingSongs />
         <NewSongs />
         <MadeForYou />
