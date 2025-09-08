@@ -4,7 +4,7 @@ import {
   getPlaylistDetails,
   Playlistinfo,
 } from '../../services/playlistDetailsService';
-
+import EditPlaylistButton from '../Edit playlist details/EditPlaylistButton';
 const PlaylistDetails = () => {
   const { slug } = useParams<{ slug: string }>();
   const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
@@ -58,8 +58,17 @@ const PlaylistDetails = () => {
       </div>
 
       <div className="flex flex-col items-center justify-center px-5 text-center md:items-start md:text-left">
-        <span className="text-sm text-white sm:text-base">
+        <span className="flex items-center gap-5 text-sm text-white sm:text-base">
           {playlist.status} playlist
+          <EditPlaylistButton
+            playlist={playlist}
+            onUpdated={() => {
+              (async () => {
+                const fresh = await getPlaylistDetails(playlist.slug);
+                setPlaylist(fresh);
+              })();
+            }}
+          />
         </span>
 
         <span className="mt-2 text-3xl font-bold text-white sm:text-4xl md:text-6xl">
