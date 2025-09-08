@@ -213,7 +213,7 @@ const MusicPlayer: React.FC = () => {
         )}
 
         <motion.button
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             e.stopPropagation();
             handlePlayPause();
           }}
