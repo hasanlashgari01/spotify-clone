@@ -1,4 +1,5 @@
-import { httpService } from "../config/axios";
+import { httpService } from '../config/axios';
+import { ApiError } from '../types/axios';
 
 export interface LoginCredentials {
   email: string;
@@ -30,32 +31,25 @@ export interface RegisterResponse {
   message?: string;
 }
 
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-}
-
 export const authService = {
   async register(credentials: RegisterCredentials): Promise<RegisterResponse> {
     try {
       const response = await httpService.post<RegisterResponse>(
-        "/auth/register",
+        '/auth/register',
         credentials
       );
 
       // Store token and user data
       if (response.data.accessToken) {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
 
       return response.data;
     } catch (error: unknown) {
       const apiError = error as ApiError;
-      const errorMessage = apiError.response?.data?.message || "Register failed";
+      const errorMessage =
+        apiError.response?.data?.message || 'Register failed';
       throw new Error(errorMessage);
     }
   },
@@ -63,41 +57,41 @@ export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     try {
       const response = await httpService.post<LoginResponse>(
-        "/auth/login",
+        '/auth/login',
         credentials
       );
 
       // Store token and user data
       if (response.data.accessToken) {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        localStorage.setItem('accessToken', response.data.accessToken);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
       }
 
       return response.data;
     } catch (error: unknown) {
       const apiError = error as ApiError;
-      const errorMessage = apiError.response?.data?.message || "Login failed";
+      const errorMessage = apiError.response?.data?.message || 'Login failed';
       throw new Error(errorMessage);
     }
   },
 
   async logout(): Promise<void> {
     try {
-      await httpService.post("/auth/logout");
+      await httpService.post('/auth/logout');
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("user");
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('user');
     }
   },
 
   getToken(): string | null {
-    return localStorage.getItem("accessToken");
+    return localStorage.getItem('accessToken');
   },
 
   getUser(): User | null {
-    const userData = localStorage.getItem("user");
+    const userData = localStorage.getItem('user');
     return userData ? JSON.parse(userData) : null;
   },
 
