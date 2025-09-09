@@ -1,29 +1,13 @@
 import { httpService } from "../config/axios";
+import {Song} from "../types/song.type"
 
-export interface Artist {
-  id: number;
-  username: string;
-  fullName: string;
-}
 export interface Owner{
       id: 4,
     username: string;
     fullName: string;
   avatar: string|null;
 }
-export interface Song {
-  id: number;
-  title: string;
-  audioUrl: string;
-  cover: string;
-  duration: number;
-  status: string;
-  plays: number;
-  artist: Artist;
-  artistId: number;
-  createdAt: string;
-  updatedAt: string;
-}
+
 
 export interface PlaylistSong {
   id: number;

@@ -13,10 +13,8 @@ export interface RegisterCredentials extends LoginCredentials {
 
 export interface User {
   id: string;
-  name: string;
   email: string;
   username: string;
-  profileImage?: string;
   fullName : string;
   bio : string;
   avatar : string;
