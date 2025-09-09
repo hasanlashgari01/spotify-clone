@@ -1,9 +1,8 @@
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   getPlaylistDetails,
   Playlistinfo,
-  PlaylistSong,
 } from '../../services/playlistDetailsService';
 
 const PlaylistDetails = () => {
@@ -18,7 +17,6 @@ const PlaylistDetails = () => {
       try {
         const data = await getPlaylistDetails(slug);
         setPlaylist(data);
-        
       } catch (error) {
         console.error('Error fetching playlist:', error);
       } finally {
@@ -30,7 +28,11 @@ const PlaylistDetails = () => {
   }, [slug]);
 
   if (loading) {
-    return <div className=" text-white w-full flex justify-center items-center pt-30">Loading...</div>;
+    return (
+      <div className="flex w-full items-center justify-center pt-30 text-white">
+        Loading...
+      </div>
+    );
   }
 
   if (!playlist) {
@@ -65,14 +67,18 @@ const PlaylistDetails = () => {
         </span>
 
         <span className="mt-10 flex flex-wrap justify-center gap-2 text-sm sm:text-base md:justify-start">
-          <span className="font-bold text-white flex gap-1 items-center">
-            <img src={playlist.owner.avatar||'/default-avatar.webp'} alt={playlist.owner.fullName} className='rounded-full w-8 h-8' />
+          <span className="flex items-center gap-1 font-bold text-white">
+            <img
+              src={playlist.owner.avatar || '/default-avatar.webp'}
+              alt={playlist.owner.fullName}
+              className="h-8 w-8 rounded-full"
+            />
             <span>{playlist.owner.username}</span>
           </span>
-          <span className="text-[#ffffff86] flex gap-1 items-center">
+          <span className="flex items-center gap-1 text-[#ffffff86]">
             {playlist.songs.length} songs,
           </span>
-          <span className="text-[#ffffff86] flex gap-1 items-center">
+          <span className="flex items-center gap-1 text-[#ffffff86]">
             {hours > 0 && `${hours} hr `}
             {minutes > 0 && `${minutes} min `}
             {seconds > 0 && `${seconds} sec`}

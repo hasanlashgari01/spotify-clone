@@ -1,19 +1,28 @@
-import { useState } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Song } from '../../types/song.type';
 import PauseIcon from '../icons/PauseIcon';
 import PlayIcon from '../icons/PlayIcon';
+import { useMusicPlayer } from '../../context/MusicPlayerContext';
 
-const SongItem: React.FC<Song> = ({ id, cover, title, artist }) => {
-  const [currentPlayingId, setCurrentPlayingId] = useState<number | null>(null);
+const SongItem: React.FC<Song> = ({ id, cover, title, artist, ...rest }) => {
+  const { currentTrack, isPlaying, playSong, handlePlayPause } =
+    useMusicPlayer();
 
-  const handlePlayClick = (songId: number, e: React.MouseEvent) => {
+  const isActive = useMemo(
+    () => currentTrack?.id === id,
+    [currentTrack?.id, id]
+  );
+
+  const handlePlayClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (currentPlayingId === songId) {
-      setCurrentPlayingId(null);
+    if (isActive) {
+      handlePlayPause();
     } else {
-      setCurrentPlayingId(songId);
+      // Attempt to find a parent list providing the queue via DOM dataset; fallback to single
+      // You can enhance this by lifting queue into context where lists render
+      playSong({ id, cover, title, artist, ...rest } as Song);
     }
   };
 
@@ -24,7 +33,11 @@ const SongItem: React.FC<Song> = ({ id, cover, title, artist }) => {
           <img
             src={cover}
             alt={title}
-            className="h-full w-full object-cover transition-all duration-200 group-hover:brightness-90" // تغییر از 75 به 90
+            className="h-full w-full object-cover transition-all duration-200 group-hover:brightness-90"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src =
+                'https://placehold.co/300x300?text=No+Cover';
+            }}
           />
         </div>
 
@@ -32,9 +45,9 @@ const SongItem: React.FC<Song> = ({ id, cover, title, artist }) => {
         <div className="absolute right-2 bottom-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
           <div
             className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1DB954] p-2 transition-transform hover:scale-105"
-            onClick={(e) => handlePlayClick(id, e)}
+            onClick={handlePlayClick}
           >
-            {currentPlayingId === id ? <PauseIcon /> : <PlayIcon />}
+            {isActive && isPlaying ? <PauseIcon /> : <PlayIcon />}
           </div>
         </div>
       </div>

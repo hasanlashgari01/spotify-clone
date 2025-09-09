@@ -1,23 +1,18 @@
-import React from 'react';
-import firstPicture from '../../../public/playlistSongs/pishro.webp';
-import '../../styles/playlist.css';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { string } from 'yup';
 import {
   PlaylistSong,
-  
   getPlaylistDetails,
 } from '../../services/playlistDetailsService';
+import '../../styles/playlist.css';
 
 const PlaylistSongs = () => {
   const [Album, setAlbum] = useState(true);
   const [DateAdded, setDateAdded] = useState(true);
   const [HoveredRow, setHoveredRow] = useState<number | null>(null);
-  const [playingRow , setPlayingRow] = useState<number | null>(null)
   const [songs, setSongs] = useState<PlaylistSong[] | null>(null);
   const { slug } = useParams<{ slug: string }>();
-  
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 922) {
@@ -48,15 +43,13 @@ const PlaylistSongs = () => {
       try {
         const data = await getPlaylistDetails(slug);
         setSongs(data.songs);
-        
       } catch (error) {
         console.error('Error fetching playlist:', error);
-      } 
+      }
     };
 
     fetchData();
   }, [slug]);
-
 
   return (
     <div className="flex w-full justify-start pt-3 pb-3">
@@ -157,10 +150,22 @@ const PlaylistSongs = () => {
               </td>
               {Album && (
                 <td className="">
-                  <h6 className={ts.song.status === "PUBLISHED" ? "text-green-500" : "text-red-600"}>{ts.song.status}</h6>
+                  <h6
+                    className={
+                      ts.song.status === 'PUBLISHED'
+                        ? 'text-green-500'
+                        : 'text-red-600'
+                    }
+                  >
+                    {ts.song.status}
+                  </h6>
                 </td>
               )}
-              {DateAdded && <td className="text-white">{ts.song.createdAt.split("T").shift()}</td>}
+              {DateAdded && (
+                <td className="text-white">
+                  {ts.song.createdAt.split('T').shift()}
+                </td>
+              )}
               <td className="w-[30vw] pl-2 text-white">
                 {Math.floor(ts.song.duration / 60)}:
                 {String(ts.song.duration % 60).padStart(2, '0')}

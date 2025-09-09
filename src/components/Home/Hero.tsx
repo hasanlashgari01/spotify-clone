@@ -1,4 +1,3 @@
-import React from "react";
 import HeroBg from "../../../public/home/hero-bg.png";
 
 // تصویر وسط (عکس داخل صفحه‌ی گرامافون)
@@ -7,10 +6,10 @@ import CenterArtist from "../../../public/home/hero4.png"; // ← اگر فای�
 // شش آرتیست دور گرامافون (مطابق چینش تصویر)
 import Artist1 from "../../../public/home/hero1.png"; // بالا-چپ
 import Artist2 from "../../../public/home/hero2.png"; // میانه-چپ
-import Artist3 from "../../../public/home/hero7.png"; // پایین-چپ
 import Artist4 from "../../../public/home/hero3.png"; // بالا-راست
 import Artist5 from "../../../public/home/hero5.png"; // میانه-راست
 import Artist6 from "../../../public/home/hero6.png"; // پایین-راست
+import Artist3 from "../../../public/home/hero7.png"; // پایین-چپ
 
 const baseAvatar =
   "absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-xl " +
