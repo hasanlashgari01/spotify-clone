@@ -1,15 +1,15 @@
-import { httpService } from "../config/axios";
+import { httpService } from '../config/axios';
 
 export interface Artist {
   id: number;
   username: string;
   fullName: string;
 }
-export interface Owner{
-      id: 4,
-    username: string;
-    fullName: string;
-  avatar: string|null;
+export interface Owner {
+  id: Number;
+  username: string;
+  fullName: string;
+  avatar: string | null;
 }
 export interface Song {
   id: number;
@@ -40,8 +40,8 @@ export interface Playlistinfo {
   slug: string;
   description: string;
   cover: string;
-  status: "public" | "private";
-  owner:Owner;
+  status: 'public' | 'private';
+  owner: Owner;
   ownerId: number;
   songs: PlaylistSong[];
   createdAt: string;
@@ -50,8 +50,9 @@ export interface Playlistinfo {
   count: number;
 }
 
-export const getPlaylistDetails = async (slug: string): Promise<Playlistinfo> => {
+export const getPlaylistDetails = async (
+  slug: string
+): Promise<Playlistinfo> => {
   const { data } = await httpService.get(`/playlists/${slug}`);
   return data;
 };
-
