@@ -5,6 +5,7 @@ td{
 .song-tableRow:hover{
     background-color: rgba(243, 243, 243, 0.212);
     transition: .1s ease-in;
+    
 }
 .song-tableRow{
     transition: .1s ease-in;

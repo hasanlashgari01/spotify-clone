@@ -7,12 +7,10 @@ import LoginPage from './pages/LoginPage';
 import PlaylistPage from './pages/PlaylistPage';
 import Profile from './pages/Profile';
 import RegisterPage from './pages/RegisterPage';
-
 import ReactQueryProvider from './providers/react-query-provider';
 
 function App() {
   return (
-    
     <ReactQueryProvider>
       <BrowserRouter>
         <MusicPlayerProvider>

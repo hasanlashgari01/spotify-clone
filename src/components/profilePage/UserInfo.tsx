@@ -6,11 +6,12 @@ import defAvatar from '../../../public/default-avatar.webp';
 import LoadingCircle from '../loading/LoadingCircle';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../styles/userinfo.css';
+
 const UserInfo = () => {
   type Gender = 'male' | 'female' | 'other';
   const [UserData, setUserData] = useState<User | null>(null);
   const [UserImage, setUserImage] = useState<File | null>(null);
-  const [ImgURL, setImgURL] = useState<string | null>(null);
+  
   const [ModalStat, setModalStat] = useState(false);
   const [fullName, setfullName] = useState<string | null>(null);
   const [bio, setBio] = useState<string | null>(null);
@@ -18,7 +19,7 @@ const UserInfo = () => {
   const [Loading, setLoading] = useState<Boolean>(false);
   const [sizeErr, setSizeErr] = useState(false);
   const [fieldErr, setFieldErr] = useState(false);
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,7 +27,8 @@ const UserInfo = () => {
         setfullName(data ? data.fullName : null);
         setBio(data?.bio ? data.bio : null);
         setUserData(data);
-        setImgURL(`${UserData?.avatar}`);
+        
+        
       } catch (error) {
         console.log('Error occured :', error);
       }
@@ -62,7 +64,7 @@ const UserInfo = () => {
 
   return (
     <div
-      className="flex h-200 w-[100vw] flex-col items-start justify-end p-3 pb-12"
+      className="flex h-200 w-[100vw] flex-col items-start justify-end pb-20 "
       style={{ backgroundImage: `url(${infoBG})` }}
     >
       <AnimatePresence>
@@ -199,10 +201,10 @@ const UserInfo = () => {
             </svg>
           </div>
         </div>
-        <div className="text-3xl text-white">
+        <div className="text-3xl text-white pb-10">
           Welcome dear :{' '}
           <span className="text-3xl font-bold text-white">
-            {UserData?.fullName ? UserData?.fullName : 'You dont have any name'}
+            {UserData?.fullName ? UserData?.fullName : 'Choose A name'}
           </span>
         </div>
       </div>
