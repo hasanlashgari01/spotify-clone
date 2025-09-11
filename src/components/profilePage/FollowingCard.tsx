@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import {
   getFollowingCount,
   Followings,
@@ -8,33 +8,78 @@ import { authService } from '../../services/authService';
 import defAvatar from '../../../public/default-avatar.webp';
 import FollowingSection from './FollowingSection';
 import { useMediaQuery } from 'react-responsive';
+
 const FollowingCard = () => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
   const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
   const isDesktop = useMediaQuery({ minWidth: 1195 });
+
   const [followings, setFollowings] = useState<Followings[]>([]);
   const [fCount, setFCount] = useState<number>(0);
-  const [modal, setModal] = useState<Boolean | null>(null);
+  const [modal, setModal] = useState<boolean | null>(null);
+
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 10;
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
-    const fetchFollo = async () => {
+    const fetchFollowings = async () => {
+      if (page > totalPages) return;
+
+      setLoading(true);
       try {
         const data = await authService.getUser();
         if (!data?.id) return;
 
         const [res, counter] = await Promise.all([
-          getUserFollowings(String(data.id)),
+          getUserFollowings(String(data.id), page, limit),
           getFollowingCount(String(data.id), 'followings'),
         ]);
 
-        setFollowings(res?.followings ?? []);
+        setFollowings((prev) => {
+          const newFollowings = [...prev, ...(res?.followings ?? [])];
+          const uniqueFollowings = newFollowings.filter(
+            (f, index, self) =>
+              index === self.findIndex((x) => x.following.id === f.following.id)
+          );
+          return uniqueFollowings;
+        });
+
         setFCount(counter ?? 0);
+
+        if (res?.pagination.pageCount) {
+          setTotalPages(res.pagination.pageCount);
+        }
       } catch (error) {
         console.error(error);
       }
+      setLoading(false);
     };
 
-    fetchFollo();
-  }, []);
+    fetchFollowings();
+  }, [page]);
+
+  useEffect(() => {
+    if (!modal) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !loading && page < totalPages) {
+          setPage((prev) => prev + 1);
+        }
+      },
+      { threshold: 1 }
+    );
+
+    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+
+    return () => {
+      if (loadMoreRef.current) observer.unobserve(loadMoreRef.current);
+    };
+  }, [modal, loading, page, totalPages]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-20 bg-transparent p-10">
@@ -44,27 +89,27 @@ const FollowingCard = () => {
           onClick={() => setModal(false)}
         >
           <div
-            className="relative flex max-h-[80vh] w-[90%] max-w-[600px] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
+            className="relative flex max-h-[80vh] w-[90%] max-w-[600px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-center text-2xl font-bold">Followings</h2>
 
-            <div
-              className="grid grid-cols-2 gap-6 overflow-y-auto sm:grid-cols-3"
-              style={{ maxHeight: '60vh' }}
-            >
+            <div className="flex flex-col" style={{ maxHeight: '60vh', overflowY: 'auto', paddingBottom: '60px' }}>
               {followings.map((f, i) => (
-                <FollowingSection
-                  key={i}
-                  avatar={f.following.avatar}
-                  fullName={f.following.fullName}
-                />
+                <table key={i} className="w-full">
+                  <FollowingSection avatar={f.following.avatar} fullName={f.following.fullName} />
+                </table>
               ))}
+
+              <div ref={loadMoreRef} className="col-span-3 py-4 text-center">
+                {loading && <p>Loading more...</p>}
+                {!loading && page >= totalPages && <p className="text-gray-400">No more followings</p>}
+              </div>
             </div>
 
             <button
               onClick={() => setModal(false)}
-              className="mt-4 cursor-pointer self-center rounded-xl bg-red-600 px-6 py-2 font-bold hover:bg-red-700"
+              className="fixed bottom-[10%] left-1/2 -translate-x-1/2 rounded-xl bg-red-600 px-6 py-2 font-bold hover:bg-red-700 cursor-pointer"
             >
               Close
             </button>
@@ -72,7 +117,6 @@ const FollowingCard = () => {
         </div>
       )}
 
-      {/* Desktop */}
       {isDesktop && (
         <div className="bg-[] flex h-60 w-300 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
@@ -112,7 +156,6 @@ const FollowingCard = () => {
         </div>
       )}
 
-      
       {(isMobile || isTablet) && (
         <div className="w-content flex flex-col items-center gap-5">
           <div className="w-content flex flex-row items-start justify-start gap-6">
@@ -128,7 +171,9 @@ const FollowingCard = () => {
                     key={i}
                     src={f.following.avatar ? f.following.avatar : defAvatar}
                     alt="maybe"
-                    className={`-ml-3 rounded-full border-3 border-blue-900 first:ml-0 ${isMobile ? 'h-12 w-12' :'h-16 w-16'}`}
+                    className={`-ml-3 rounded-full border-3 border-blue-900 first:ml-0 ${
+                      isMobile ? 'h-12 w-12' : 'h-16 w-16'
+                    }`}
                     style={{ zIndex: followings.length + i }}
                   />
                 ))}

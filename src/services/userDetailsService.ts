@@ -35,10 +35,10 @@ export interface FollowingResponse{
   followings : Followings[];
 }
 
-export const getUserFollowers = async (id :string): Promise<FollowerResponse | null> => {
+export const getUserFollowers = async (id :string , page : number , limit : number): Promise<FollowerResponse | null> => {
   try {
-    const response = await httpService.get<FollowerResponse>(`/follow/${id}/followers`)
-    console.log(response.data)
+    const response = await httpService.get<FollowerResponse>(`/follow/${id}/followers?page=${page}&limit=${limit}`)
+    
     return response.data;
   } catch (error) {
     console.log(error)
@@ -48,9 +48,9 @@ export const getUserFollowers = async (id :string): Promise<FollowerResponse | n
 
   
 }
-export const getUserFollowings = async (id : string): Promise<FollowingResponse | null> => {
+export const getUserFollowings = async (id : string , page : number , limit : number): Promise<FollowingResponse | null> => {
   try {
-    const response = await httpService.get<FollowingResponse>(`/follow/${id}/followings`)
+    const response = await httpService.get<FollowingResponse>(`/follow/${id}/followings?page=${page}&limit=${limit}`)
     return response.data
   } catch (error) {
     console.log("Error Occured : " , error)
