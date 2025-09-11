@@ -1,8 +1,8 @@
-// components/playlist/PlaylistSongs.tsx
+
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { PlaylistSong, getPlaylistDetails } from '../../services/playlistDetailsService';
-import PlSongs from './PlSongs'; // کامپوننت جدید
+import PlSongs from './PlSongs'; 
 import '../../styles/playlist.css';
 
 const PlaylistSongs: React.FC = () => {
@@ -26,7 +26,7 @@ const PlaylistSongs: React.FC = () => {
 
   return (
     <div className="playlist-container flex flex-wrap gap-4">
-      {/* فقط PlSongs رو صدا می‌زنیم و songs رو پاس می‌کنیم */}
+      
       <PlSongs songs={songs} />
     </div>
   );

@@ -18,6 +18,7 @@ export interface PlaylistSong {
   updatedAt: string;
 }
 
+
 export interface Playlistinfo {
   id: number;
   title: string;

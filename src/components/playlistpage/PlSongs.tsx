@@ -1,9 +1,10 @@
 // components/playlist/PlSongs.tsx
-import React, { useState, useMemo } from 'react';
+import React, { useState , useEffect } from 'react';
 import { PlaylistSong } from '../../services/playlistDetailsService';
 import PauseIcon from '../icons/PauseIcon';
 import PlayIcon from '../icons/PlayIcon';
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
+
 
 interface PlSongsProps {
   songs: PlaylistSong[];
@@ -12,8 +13,8 @@ interface PlSongsProps {
 const PlSongs: React.FC<PlSongsProps> = ({ songs }) => {
   const { currentTrack, isPlaying, playSong, handlePlayPause } =
     useMusicPlayer();
-  const [Album, setAlbum] = useState(true);
-  const [DateAdded, setDateAdded] = useState(true);
+  const [Album ,setAlbum] = useState(true);
+  const [DateAdded , setDateAdded] = useState(true);
   const [HoveredRow, setHoveredRow] = useState<number | null>(null);
 
   const handlePlayClick = (ts: PlaylistSong, e: React.MouseEvent) => {
@@ -28,12 +29,28 @@ const PlSongs: React.FC<PlSongsProps> = ({ songs }) => {
       playSong(ts.song);
     }
   };
+  useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth < 780) {
+      setAlbum(false);
+      setDateAdded(false);
+    } else {
+      setAlbum(true);
+      setDateAdded(true);
+    }
+  };
+
+  window.addEventListener('resize', handleResize);
+  handleResize(); // برای بار اول
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
 
   return (
     <div className="flex w-full justify-start pt-3 pb-3">
       <table className="text-left">
         <thead className="text-white">
-          <th className="h-5 w-5">
+          <tr>
+            <th className="h-5 w-5">
             <h6 className="text-center">#</h6>
           </th>
           <th
@@ -73,6 +90,7 @@ const PlSongs: React.FC<PlSongsProps> = ({ songs }) => {
               <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
             </svg>
           </th>
+          </tr>
         </thead>
         <tbody>
           {songs.map((ts, i) => {
