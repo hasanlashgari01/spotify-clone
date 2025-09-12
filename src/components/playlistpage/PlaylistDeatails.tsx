@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   getPlaylistDetails,
   Playlistinfo,
 } from '../../services/playlistDetailsService';
 import EditPlaylistButton from '../Edit playlist details/EditPlaylistButton';
-const PlaylistDetails = () => {
+type OwnerProp = {
+  setOwner : React.Dispatch<SetStateAction<number | null>>
+}
+const PlaylistDetails = ({setOwner} : OwnerProp) => {
   const { slug } = useParams<{ slug: string }>();
   const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -16,6 +19,7 @@ const PlaylistDetails = () => {
     const fetchData = async () => {
       try {
         const data = await getPlaylistDetails(slug);
+        setOwner(data.ownerId)
         setPlaylist(data);
       } catch (error) {
         console.error('Error fetching playlist:', error);

@@ -1,32 +1,39 @@
-
-import { useEffect, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { PlaylistSong, getPlaylistDetails } from '../../services/playlistDetailsService';
-import PlSongs from './PlSongs'; 
+import PlSongs from './PlSongs';
 import '../../styles/playlist.css';
 
-const PlaylistSongs: React.FC = () => {
+type Props = {
+  refFetch?: React.MutableRefObject<() => void>;
+};
+
+const PlaylistSongs: React.FC<Props> = ({ refFetch }) => {
   const [songs, setSongs] = useState<PlaylistSong[]>([]);
   const { slug } = useParams<{ slug: string }>();
 
-  useEffect(() => {
+  const fetchData = async () => {
     if (!slug) return;
+    try {
+      const data = await getPlaylistDetails(slug);
+      setSongs(data.songs);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
-    const fetchData = async () => {
-      try {
-        const data = await getPlaylistDetails(slug);
-        setSongs(data.songs);
-      } catch (error) {
-        console.error('Error fetching playlist:', error);
-      }
-    };
-
+  
+  useEffect(() => {
     fetchData();
   }, [slug]);
 
+  
+  useEffect(() => {
+    if (refFetch) refFetch.current = fetchData;
+  }, [refFetch]);
+
   return (
     <div className="playlist-container flex flex-wrap gap-4">
-      
       <PlSongs songs={songs} />
     </div>
   );

@@ -23,6 +23,11 @@ export interface PlaylistResponse {
   playlists: Playlist[];
   pagination: Pagination;
 }
+export interface AddResponse {
+  message : string;
+  error? : string
+  statusCode? : number;
+}
 
 export const playlistService = {
   async getMyPlaylists(page = 1, limit = 10): Promise<PlaylistResponse> {
@@ -31,4 +36,14 @@ export const playlistService = {
     });
     return data;
   },
+  async Addmusic(playlistId : string ,songId : string ){
+    try {
+      const {data} = await httpService.patch<AddResponse>(`/playlists/${playlistId}/song/${songId}`)
+    return data?.message
+    } catch (error) {
+      console.error(error)
+    }
+
+  },
 };
+
