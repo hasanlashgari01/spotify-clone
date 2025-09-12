@@ -1,6 +1,8 @@
+import React from 'react';
+import '../../styles/playlist.css';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { PlaylistSong, getPlaylistDetails } from '../../services/playlistDetailsService';
+import { PlaylistSong , SongSortBy , SortOrder  , getPlaylistDetails} from '../../services/playlistDetailsService';
 import PlSongs from './PlSongs';
 import '../../styles/playlist.css';
 
@@ -11,11 +13,13 @@ type Props = {
 const PlaylistSongs: React.FC<Props> = ({ refFetch }) => {
   const [songs, setSongs] = useState<PlaylistSong[]>([]);
   const { slug } = useParams<{ slug: string }>();
-
+  const [sortBy, setSortBy] = useState<SongSortBy>('createdAt');
+  const [order, setOrder] = useState<SortOrder>('DESC');
+  
   const fetchData = async () => {
     if (!slug) return;
     try {
-      const data = await getPlaylistDetails(slug);
+      const data = await getPlaylistDetails(slug , {sortBy , order});
       setSongs(data.songs);
     } catch (err) {
       console.error(err);
@@ -25,7 +29,8 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch }) => {
   
   useEffect(() => {
     fetchData();
-  }, [slug]);
+  }, [slug , sortBy , order]);
+
 
   
   useEffect(() => {
@@ -34,7 +39,8 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch }) => {
 
   return (
     <div className="playlist-container flex flex-wrap gap-4">
-      <PlSongs songs={songs} />
+      <PlSongs songs={songs} setSortBy={setSortBy} setOrder={setOrder} sortBy={sortBy} order={order}/>
+      
     </div>
   );
 };
