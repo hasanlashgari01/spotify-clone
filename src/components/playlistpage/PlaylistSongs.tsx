@@ -189,6 +189,9 @@ const PlaylistSongs = () => {
                   {Math.floor(ts.song.duration / 60)}:
                   {String(ts.song.duration % 60).padStart(2, '0')}
                 </td>
+                <td className="pl-2 text-right text-white md:text-left">
+                  {/* این برای رفع باگ هاور هس بزار خالی بمونه*/}
+                </td>
               </tr>
             ))}
           </tbody>
