@@ -115,7 +115,7 @@ const FollowersCard = () => {
       )}
 
       {isDesktop && (
-        <div className="flex h-60 w-300 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
+        <div className="flex h-60 w-350 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
             <h2 className="text-5xl text-white">Followers</h2>
             <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>
