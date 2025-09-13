@@ -18,7 +18,8 @@ const MyPlaylist: React.FC = () => {
   if (error) return <Error {...error} />;
 
   return (
-    <div className="h-[300px]sm:h-[333px] relative rounded-xl border-2 border-[#1574f5]">
+    <div className='w-full flex justify-center items-center'>
+    <div className="h-[300px]sm:h-[333px] relative rounded-3xl border-4 border-blue-900 w-[93%]">
       <div className="mt-10 mb-[20px] flex items-center justify-between px-[20px] sm:mb-[40px] sm:pr-[77px]">
         <h2 className="text-lg font-bold text-white sm:text-2xl">
           My PlayLists
@@ -83,7 +84,7 @@ const MyPlaylist: React.FC = () => {
         />
       </Modal>
     </div>
-  
+  </div>
   );
 };
 

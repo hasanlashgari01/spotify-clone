@@ -64,7 +64,7 @@ const UserInfo = () => {
 
   return (
     <div
-      className="flex h-200 w-[100vw] flex-col items-start justify-end pb-20 "
+      className="flex h-200 flex-col items-start justify-end  bg-cover"
       style={{ backgroundImage: `url(${infoBG})` }}
     >
       <AnimatePresence>
