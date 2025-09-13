@@ -6,22 +6,12 @@ export interface Song {
   duration: number;
   status: string;
   plays: number;
+  artistId: number;
   artist: {
     id: number;
     username: string;
     fullName: string;
   };
-  artistId: number;
   createdAt: string;
   updatedAt: string;
-}
-export interface Pagination {
-  page : number;
-  limit : number;
-  pageCount : number;
-  totalCount : number;
-}
-export interface AllSongs{
-  songs : Song[];
-  pagination : Pagination;
 }

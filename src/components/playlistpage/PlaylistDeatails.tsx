@@ -1,17 +1,18 @@
-import { SetStateAction, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   getPlaylistDetails,
   Playlistinfo,
 } from '../../services/playlistDetailsService';
 import EditPlaylistButton from '../Edit playlist details/EditPlaylistButton';
-type OwnerProp = {
-  setOwner : React.Dispatch<SetStateAction<number | null>>
-}
-const PlaylistDetails = ({setOwner} : OwnerProp) => {
+import DeletePlaylistButton from '../MyPlayLists/DeletePlaylistButton';
+import { useAuth } from '../../hooks/useAuth';
+const PlaylistDetails = () => {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!slug) return;
@@ -19,7 +20,6 @@ const PlaylistDetails = ({setOwner} : OwnerProp) => {
     const fetchData = async () => {
       try {
         const data = await getPlaylistDetails(slug);
-        setOwner(data.ownerId)
         setPlaylist(data);
       } catch (error) {
         console.error('Error fetching playlist:', error);
@@ -51,6 +51,14 @@ const PlaylistDetails = ({setOwner} : OwnerProp) => {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
 
+  // Check if current user is the playlist owner
+  const isOwner = user && Number(user.id) === playlist.ownerId;
+
+  const handlePlaylistDeleted = () => {
+    // Navigate back to home page after successful deletion
+    navigate('/');
+  };
+
   return (
     <div className="flex w-full flex-col md:flex-row">
       <div className="flex justify-center p-5 md:justify-start">
@@ -64,15 +72,24 @@ const PlaylistDetails = ({setOwner} : OwnerProp) => {
       <div className="flex flex-col items-center justify-center px-5 text-center md:items-start md:text-left">
         <span className="flex items-center gap-5 text-sm text-white sm:text-base">
           {playlist.status} playlist
-          <EditPlaylistButton
-            playlist={playlist}
-            onUpdated={() => {
-              (async () => {
-                const fresh = await getPlaylistDetails(playlist.slug);
-                setPlaylist(fresh);
-              })();
-            }}
-          />
+          {isOwner && (
+            <>
+              <EditPlaylistButton
+                playlist={playlist}
+                onUpdated={() => {
+                  (async () => {
+                    const fresh = await getPlaylistDetails(playlist.slug);
+                    setPlaylist(fresh);
+                  })();
+                }}
+              />
+              <DeletePlaylistButton
+                playlistId={playlist.id}
+                playlistTitle={playlist.title}
+                onDeleted={handlePlaylistDeleted}
+              />
+            </>
+          )}
         </span>
 
         <span className="mt-2 text-3xl font-bold text-white sm:text-4xl md:text-6xl">

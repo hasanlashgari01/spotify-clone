@@ -5,7 +5,6 @@ td{
 .song-tableRow:hover{
     background-color: rgba(243, 243, 243, 0.212);
     transition: .1s ease-in;
-    
 }
 .song-tableRow{
     transition: .1s ease-in;
@@ -14,8 +13,7 @@ td{
 .playBTN{
     cursor: pointer;
     transition: .1s ease-in;
-    width: 22px;
-    height: 22px;
+
 }
 .playBTN:hover{
     transform: scale(1.2);
