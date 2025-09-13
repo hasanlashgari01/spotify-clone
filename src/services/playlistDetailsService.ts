@@ -6,7 +6,7 @@ export interface Artist {
   fullName: string;
 }
 export interface Owner {
-  id: Number;
+  id: number;
   username: string;
   fullName: string;
   avatar: string | null;

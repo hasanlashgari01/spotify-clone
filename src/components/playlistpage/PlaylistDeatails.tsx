@@ -52,7 +52,7 @@ const PlaylistDetails = () => {
   const seconds = totalSeconds % 60;
 
   // Check if current user is the playlist owner
-  const isOwner = user && Number(user.id) === playlist.ownerId;
+  const isOwner = user && Number(user.id) === playlist.owner.id;
 
   const handlePlaylistDeleted = () => {
     // Navigate back to home page after successful deletion
@@ -82,6 +82,7 @@ const PlaylistDetails = () => {
                     setPlaylist(fresh);
                   })();
                 }}
+                onDeleted={handlePlaylistDeleted}
               />
               <DeletePlaylistButton
                 playlistId={playlist.id}

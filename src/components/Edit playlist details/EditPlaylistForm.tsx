@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { httpService } from '../../config/axios';
 import { Playlistinfo } from '../../services/playlistDetailsService';
+import { useDeletePlaylist } from '../../hooks/useDeletePlaylist';
+import ConfirmDialog from '../MyPlayLists/ConfirmDialog';
 
 interface Props {
   playlist: Playlistinfo;
   onCancel: () => void;
   onSuccess: () => void;
+  onDeleted?: () => void;
 }
 
 const EditPlaylistForm: React.FC<Props> = ({
   playlist,
   onCancel,
   onSuccess,
+  onDeleted,
 }) => {
   const [title, setTitle] = useState<string>(playlist.title);
   const [description, setDescription] = useState<string>(
@@ -20,6 +24,8 @@ const EditPlaylistForm: React.FC<Props> = ({
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const { mutate: deletePlaylist, isPending: isDeleting } = useDeletePlaylist();
 
   const hasTitleChanged = title.trim() !== (playlist.title ?? '').trim();
   const hasDescriptionChanged =
@@ -59,6 +65,15 @@ const EditPlaylistForm: React.FC<Props> = ({
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDelete = () => {
+    deletePlaylist(playlist.id, {
+      onSuccess: () => {
+        setDeleteOpen(false);
+        if (onDeleted) onDeleted();
+      },
+    });
   };
 
   return (
@@ -103,22 +118,43 @@ const EditPlaylistForm: React.FC<Props> = ({
 
       {error && <div className="text-sm text-rose-400">{error}</div>}
 
-      <div className="flex justify-end gap-2">
+      <div className="flex justify-between">
         <button
           type="button"
-          onClick={onCancel}
-          className="rounded-md bg-white/10 px-4 py-2 hover:bg-white/20"
+          onClick={() => setDeleteOpen(true)}
+          className="rounded-md bg-red-600/20 px-4 py-2 text-red-400 hover:bg-red-600/30"
         >
-          Cancel
+          Delete Playlist
         </button>
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-md bg-[#1574f5] px-4 py-2 text-white disabled:opacity-60"
-        >
-          {loading ? 'Updating...' : 'Update'}
-        </button>
+        
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md bg-white/10 px-4 py-2 hover:bg-white/20"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="rounded-md bg-[#1574f5] px-4 py-2 text-white disabled:opacity-60"
+          >
+            {loading ? 'Updating...' : 'Update'}
+          </button>
+        </div>
       </div>
+
+      <ConfirmDialog
+        open={deleteOpen}
+        onCancel={() => setDeleteOpen(false)}
+        onConfirm={handleDelete}
+        isLoading={isDeleting}
+        title="Delete this playlist?"
+        description={`"${playlist.title}" will be permanently deleted.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
     </form>
   );
 };

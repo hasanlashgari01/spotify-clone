@@ -27,7 +27,7 @@ const DeletePlaylistButton: React.FC<DeletePlaylistButtonProps> = ({
   };
 
   return (
-    <>
+    <div className="hidden">
       <button
         aria-label="حذف پلی لیست"
         onClick={() => setOpen(true)}
@@ -47,7 +47,7 @@ const DeletePlaylistButton: React.FC<DeletePlaylistButtonProps> = ({
         confirmText="حذف"
         cancelText="انصراف"
       />
-    </>
+    </div>
   );
 };
 
