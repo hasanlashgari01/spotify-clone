@@ -84,7 +84,8 @@ const PlSongs: React.FC<PlSongsProps> = ({ songs, setSortBy, setOrder , sortBy ,
             {DateAdded && (
               <th className="w-[20vw] pl-3 text-start">Date added</th>
             )}
-            <th className="w-[20vw] pl-2">
+            {DateAdded && (
+              <th className="w-[20vw] pl-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -98,7 +99,8 @@ const PlSongs: React.FC<PlSongsProps> = ({ songs, setSortBy, setOrder , sortBy ,
                 <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
               </svg>
             </th>
-            <th className="w-[1%] pr-2 pl-2 text-right whitespace-nowrap sm:pr-4">
+            )}
+            <th className="w-[1%] pr-2 pl-2 text-right whitespace-nowrap sm:pr-4 ">
               <SortMenu
                 sortBy={sortBy}
                 order={order}
@@ -179,9 +181,14 @@ const PlSongs: React.FC<PlSongsProps> = ({ songs, setSortBy, setOrder , sortBy ,
                     {ts.song.createdAt.split('T')[0]}
                   </td>
                 )}
-                <td className="w-[30vw] pl-2 text-white">
+                {DateAdded && (
+                  <td className="w-[30vw] pl-2 text-white">
                   {Math.floor(ts.song.duration / 60)}:
                   {String(ts.song.duration % 60).padStart(2, '0')}
+                </td>
+                )}
+                <td>
+                  
                 </td>
               </tr>
             );

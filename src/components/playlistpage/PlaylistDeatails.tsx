@@ -97,6 +97,7 @@ const PlaylistDetails = ({setOwner} : OwnerProp) => {
             {seconds > 0 && `${seconds} sec`}
           </span>
         </span>
+        
       </div>
     </div>
   );
