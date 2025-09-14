@@ -61,7 +61,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
   return (
     <div className="w-full">
       <div className="w-full overflow-x-auto">
-        <table className="min-w-full text-left">
+        <table className="min-w-full text-left overflow-hidden">
           <thead className="text-white">
             <tr>
               <th className="h-5 w-6 sm:w-8">
@@ -109,7 +109,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
                 </svg>
               </th>
 
-              <th className="w-[1%] pr-2 pl-2 text-right whitespace-nowrap sm:pr-4">
+              <th className="w-[1%] pr-2 pl-2 text-right whitespace-nowrap sm:pr-4 hidden sm:table-cell">
                 <SortMenu
                   sortBy={sortBy}
                   order={order}
@@ -203,11 +203,11 @@ const PlSongs: React.FC<PlSongsProps> = ({
                     </td>
                   )}
 
-                  <td className="pl-2 text-right text-white md:text-left">
+                  <td className="pl-2 text-right text-white md:text-left hidden sm:table-cell">
                     {Math.floor(ts.song.duration / 60)}:
                     {String(ts.song.duration % 60).padStart(2, '0')}
                   </td>
-                  <td className="pl-2 text-right text-white md:text-left"></td>
+                  <td className="pl-2 text-right text-white md:text-left hidden md:table-cell"></td>
                 </tr>
               );
             })}

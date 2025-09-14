@@ -89,7 +89,7 @@ const FollowingCard = () => {
           onClick={() => setModal(false)}
         >
           <div
-            className="relative flex max-h-[80vh] w-[90%] max-w-[600px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
+            className="relative flex max-h-[80vh] w-[90%] max-w-[500px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-center text-2xl font-bold">Followings</h2>
@@ -118,7 +118,7 @@ const FollowingCard = () => {
       )}
 
       {isDesktop && (
-        <div className="bg-[] flex h-60 w-350 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
+      <div className="bg-[] flex ml-90 h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
             <h2 className="text-5xl text-white">Following</h2>
             <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>
