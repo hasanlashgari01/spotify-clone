@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Playlist } from '../../services/playlistService';
-import PlaylistActions from './PlaylistActions';
+// import PlaylistActions from './PlaylistActions';
 import DeletePlaylistButton from './DeletePlaylistButton';
 import { useState } from 'react';
 import { useAuth } from '../../hooks/useAuth';
@@ -25,7 +25,7 @@ const PlayListItem: React.FC<Playlist> = ({ id, cover, title, slug, ownerId }) =
       </div>{' '}
       {canDelete && (
         <div className="absolute right-1 top-1 hidden sm:block">
-          <PlaylistActions onDelete={() => setConfirm(true)} ownerId={ownerId} />
+          {/* <PlaylistActions onDelete={() => setConfirm(true)} ownerId={ownerId} /> */}
         </div>
       )}
       <Link

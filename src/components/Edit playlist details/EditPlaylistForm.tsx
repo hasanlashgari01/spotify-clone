@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { httpService } from '../../config/axios';
 import { Playlistinfo } from '../../services/playlistDetailsService';
 import { useDeletePlaylist } from '../../hooks/useDeletePlaylist';
 import ConfirmDialog from '../MyPlayLists/ConfirmDialog';
+import { MdDelete } from 'react-icons/md';
 
 interface Props {
   playlist: Playlistinfo;
@@ -25,7 +27,9 @@ const EditPlaylistForm: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const { mutate: deletePlaylist, isPending: isDeleting } = useDeletePlaylist();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { mutate: deletePlaylist, isPending: isDeletingMutation } = useDeletePlaylist();
+  const navigate = useNavigate();
 
   const hasTitleChanged = title.trim() !== (playlist.title ?? '').trim();
   const hasDescriptionChanged =
@@ -68,10 +72,17 @@ const EditPlaylistForm: React.FC<Props> = ({
   };
 
   const handleDelete = () => {
+    setIsDeleting(true);
     deletePlaylist(playlist.id, {
       onSuccess: () => {
         setDeleteOpen(false);
+        setIsDeleting(false);
         if (onDeleted) onDeleted();
+        // Redirect to profile page after successful deletion
+        navigate('/profile');
+      },
+      onError: () => {
+        setIsDeleting(false);
       },
     });
   };
@@ -118,29 +129,38 @@ const EditPlaylistForm: React.FC<Props> = ({
 
       {error && <div className="text-sm text-rose-400">{error}</div>}
 
-      <div className="flex justify-between">
+      <div className="flex justify-between" >
         <button
           type="button"
           onClick={() => setDeleteOpen(true)}
-          className="rounded-md bg-red-600/20 px-4 py-2 text-red-400 hover:bg-red-600/30"
+          className="group relative flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-400 transition-all duration-300 hover:border-red-500/60 hover:bg-red-500/20 hover:text-red-300 hover:shadow-lg hover:shadow-red-500/20"
         >
-          Delete Playlist
+          <MdDelete  className="h-4 w-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
+          <span className="font-medium">حذف پلی‌لیست</span>
+          <div className="absolute inset-0 rounded-lg bg-gradient-to-r from-red-500/0 via-red-500/10 to-red-500/0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
         </button>
         
-        <div className="flex gap-2">
+        <div className="flex  gap-3">
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-md bg-white/10 px-4 py-2 hover:bg-white/20"
+            className="rounded-lg border border-white/20 bg-white/5 px-4 py-3 text-white transition-all duration-200 hover:bg-white/10 hover:border-white/30"
           >
-            Cancel
+            انصراف
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="rounded-md bg-[#1574f5] px-4 py-2 text-white disabled:opacity-60"
+            className="rounded-lg bg-gradient-to-r from-[#1574f5] to-[#0ea5e9] px-4 py-3 text-white font-medium transition-all duration-200 hover:from-[#0ea5e9] hover:to-[#1574f5] hover:shadow-lg hover:shadow-blue-500/25 disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {loading ? 'Updating...' : 'Update'}
+            {loading ? (
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></div>
+                در حال به‌روزرسانی...
+              </div>
+            ) : (
+              'به‌روزرسانی'
+            )}
           </button>
         </div>
       </div>
@@ -149,11 +169,11 @@ const EditPlaylistForm: React.FC<Props> = ({
         open={deleteOpen}
         onCancel={() => setDeleteOpen(false)}
         onConfirm={handleDelete}
-        isLoading={isDeleting}
-        title="Delete this playlist?"
-        description={`"${playlist.title}" will be permanently deleted.`}
-        confirmText="Delete"
-        cancelText="Cancel"
+        isLoading={isDeleting || isDeletingMutation}
+        title="حذف این پلی‌لیست؟"
+        description={`"${playlist.title}" به طور کامل حذف خواهد شد. این عمل قابل بازگشت نیست.`}
+        confirmText={isDeleting || isDeletingMutation ? "در حال حذف..." : "حذف"}
+        cancelText="انصراف"
       />
     </form>
   );

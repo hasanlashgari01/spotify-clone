@@ -66,13 +66,6 @@ const EditPlaylistButton: React.FC<Props> = ({ playlist, onUpdated, onDeleted })
           <FaPen />
         </div>
         
-        <div
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl bg-[#0000009a] text-red-400 hover:text-red-300"
-          onClick={() => setDeleteOpen(true)}
-          title="Delete playlist"
-        >
-          <MdDelete />
-        </div>
       </div>
 
       <Modal open={open} onClose={() => setOpen(false)}>
