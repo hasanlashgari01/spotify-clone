@@ -89,8 +89,12 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch, isOwner }) => {
   return (
     <div className="playlist-container flex flex-wrap gap-4 ">
       
-      <div className='w-[100vw] flex  justify-center md:justify-end'>
-        <div className="text-s mt-7 mr-3 flex w-120 items-center  gap-2 rounded-xl bg-gray-600 p-3 md:w-[120] md:text-lg">
+      <div className='w-[100vw] flex  items-center md:items-start flex-col'>
+        <h2 className="ml-3 pb-4 text-2xl font-bold text-white">
+          Let's find something for your playlist
+        </h2>
+        <div className="text-s ml-2 flex w-180 items-center  gap-2 rounded-xl bg-gray-600 p-3 md:w-[120] md:text-lg">
+          
         <input
           type="search"
           placeholder="Search songs..."
