@@ -45,5 +45,13 @@ export const playlistService = {
     }
 
   },
+  async Deletemusic(playlistId : string , songId : string){
+  try {
+        const {data} = await httpService.delete<AddResponse>(`/playlists/${playlistId}/song/${songId}`);
+    return data
+  } catch (error) {
+      console.error(error)
+  }    
+  }
 };
 

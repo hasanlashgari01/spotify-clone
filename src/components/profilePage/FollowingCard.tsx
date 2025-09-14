@@ -8,12 +8,16 @@ import { authService } from '../../services/authService';
 import defAvatar from '../../../public/default-avatar.webp';
 import FollowingSection from './FollowingSection';
 import { useMediaQuery } from 'react-responsive';
+import LoadingCircle from "../loading/LoadingCircle"
+import Loading from '../loading/Loading';
+
+
 
 const FollowingCard = () => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
   const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
   const isDesktop = useMediaQuery({ minWidth: 1195 });
-
+  
   const [followings, setFollowings] = useState<Followings[]>([]);
   const [fCount, setFCount] = useState<number>(0);
   const [modal, setModal] = useState<boolean | null>(null);
@@ -31,6 +35,7 @@ const FollowingCard = () => {
 
       setLoading(true);
       try {
+
         const data = await authService.getUser();
         if (!data?.id) return;
 
@@ -89,7 +94,7 @@ const FollowingCard = () => {
           onClick={() => setModal(false)}
         >
           <div
-            className="relative flex max-h-[80vh] w-[90%] max-w-[600px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
+            className="relative flex max-h-[80vh] w-[90%] max-w-[500px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-center text-2xl font-bold">Followings</h2>
@@ -118,10 +123,10 @@ const FollowingCard = () => {
       )}
 
       {isDesktop && (
-        <div className="bg-[] flex h-60 w-350 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
+      <div className="bg-[] flex ml-90 h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
             <h2 className="text-5xl text-white">Following</h2>
-            <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>
+            {loading ? <LoadingCircle/> : <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>}
           </div>
 
           {followings.length > 0 && (
@@ -160,7 +165,7 @@ const FollowingCard = () => {
         <div className="w-content flex flex-col items-center gap-5">
           <div className="w-content flex flex-row items-start justify-start gap-6">
             <h2 className="text-3xl text-white">Following</h2>
-            <h2 className="text-3xl font-bold text-blue-600">{fCount}+</h2>
+            {loading ? <LoadingCircle/>:<h2 className="text-3xl font-bold text-blue-600">{fCount}+</h2>}
           </div>
 
           {followings.length > 0 && (

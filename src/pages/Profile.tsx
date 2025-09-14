@@ -13,7 +13,11 @@ const Profile = () => {
         <UserInfo />
         {isDesktop && (
           <>
-            <FollowingCard /> <FollowersCard />
+            <div className="flex justify-center flex-col p-8 max-w-[70%]">
+
+                <FollowingCard /> <FollowersCard />
+          
+            </div>
           </>
         )}
         {isTablet && (

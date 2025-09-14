@@ -14,7 +14,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName }) => {
         <tr
           className="song-tableRow border-b border-gray-700 transition hover:bg-gray-800/40"
         >
-          {/* Avatar */}
+          
           <td className="w-16">
             <img
               src={avatar || defAvatar}
@@ -23,7 +23,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName }) => {
             />
           </td>
 
-          {/* Full name */}
+          
           <td>
             <div className="flex flex-col items-start justify-center">
               <Link to={`/profile/${fullName}`}><h3 className="text-base font-semibold text-white">

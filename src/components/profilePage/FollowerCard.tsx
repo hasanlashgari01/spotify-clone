@@ -8,7 +8,7 @@ import { authService } from '../../services/authService';
 import defAvatar from '../../../public/default-avatar.webp';
 import FollowerSection from './FollowerSection';
 import { useMediaQuery } from 'react-responsive';
-
+import LoadingCircle from '../loading/LoadingCircle';
 const FollowersCard = () => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
   const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
@@ -115,10 +115,10 @@ const FollowersCard = () => {
       )}
 
       {isDesktop && (
-        <div className="flex h-60 w-350 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
+        <div className="flex ml-90 h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
             <h2 className="text-5xl text-white">Followers</h2>
-            <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>
+            {loading ? <LoadingCircle/> : <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>}
           </div>
 
           {followers.length > 0 && (
@@ -157,7 +157,7 @@ const FollowersCard = () => {
         <div className="w-content flex flex-col items-center gap-5">
           <div className="w-content flex flex-row items-start justify-start gap-6">
             <h2 className="text-3xl text-white">Followers</h2>
-            <h2 className="text-3xl font-bold text-blue-600">{fCount}</h2>
+            {loading ? <LoadingCircle/> : <h2 className="text-3xl font-bold text-blue-600">{fCount}+</h2>}
           </div>
 
           {followers.length > 0 && (

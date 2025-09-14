@@ -7,7 +7,7 @@ import { playlistService } from '../../services/playlistService';
 import LoadingCircle from '../loading/LoadingCircle';
 import PlayIcon from '../icons/PlayIcon';
 import PauseIcon from '../icons/PauseIcon';
-
+import { useMediaQuery } from 'react-responsive';
 interface Props {
   songs: Song[];
   refFetch?: React.MutableRefObject<() => void>;
@@ -21,6 +21,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
   const [songsInPlaylist, setSongsInPlaylist] = useState<Song[]>([]);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [playlistId, setPlaylistId] = useState<number>();
+  const isTablet = useMediaQuery({ maxWidth: 1280 });
   const [loadingSongId, setLoadingSongId] = useState<number | null>(null);
 
   const handlePlayClick = (song: Song, e: React.MouseEvent) => {
@@ -81,7 +82,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
                   <div
                     onClick={e => handlePlayClick(song, e)}
                     className={`playBTN absolute top-1/2 left-1/2 ml-1 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full  bg-green-600 p-1 ${
-                      hoveredRow === i ? 'z-10 opacity-100' : '-z-10 opacity-0'
+                      (hoveredRow === i || isTablet) ? 'z-10 opacity-100' : '-z-10 opacity-0'
                     }`}
                   >
                     {isActive && isPlaying ? <PauseIcon/> : <PlayIcon/>}

@@ -6,6 +6,7 @@ import { getMe } from '../services/meService';
 
 const PlaylistPage = () => {
   const [owner, setOwner] = useState<number | null>(null);
+  const [isOwner , setIsOwner] = useState<boolean | null>(null);
   const [search, setSearch] = useState<boolean | null>(null);
 
   const playlistSongsRef = useRef<() => void>(() => {});
@@ -14,8 +15,8 @@ const PlaylistPage = () => {
     if (!owner) return;
     const fetchData = async () => {
       const data = await getMe();
-      if (owner === data.sub) setSearch(true);
-      else setSearch(false);
+      if (owner === data.sub) {setSearch(true); setIsOwner(true)}
+      else {setSearch(false); setIsOwner(false)}
     };
     fetchData();
   }, [owner]);
@@ -26,7 +27,7 @@ const PlaylistPage = () => {
 
       
 
-      <PlaylistSongs refFetch={playlistSongsRef} />
+      <PlaylistSongs refFetch={playlistSongsRef} isOwner={isOwner} />
       {search && <PlaylistSearch refFetch={playlistSongsRef} />}
     </div>
   );
