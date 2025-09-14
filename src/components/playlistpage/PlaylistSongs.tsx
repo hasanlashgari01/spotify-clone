@@ -91,7 +91,7 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch, isOwner }) => {
       
       <div className='w-[100vw] flex  items-center md:items-start flex-col'>
         <h2 className="ml-3 pb-4 text-md md:text-xl font-bold text-white">
-          Let's find something for your playlist
+          Discover Your Playlist
         </h2>
         <div className="text-s ml-2 flex w-[90vw] items-center  gap-2 rounded-xl bg-gray-600 p-3 md:w-180 md:text-lg">
           

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SearchcedSongs from './SearchedSongs';
 import { Song, AllSongs } from '../../types/song.type';
 import { songService } from '../../services/songService';
@@ -15,10 +15,21 @@ const PlaylistSearch: React.FC<Props> = ({ refFetch }) => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
+  const [cachedPages, setCachedPages] = useState<{ [page: number]: Song[] }>({});
+
   const resultsPerPage = 8;
   const showMoreCount = 10;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => setFull(e.target.value);
+
+  // Debounce effect برای live search
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      handleSearch();
+    }, 500); // صبر 500ms بعد از آخرین تایپ
+
+    return () => clearTimeout(handler);
+  }, [Full]);
 
   const handleSearch = async () => {
     if (!Full.trim()) {
@@ -37,13 +48,25 @@ const PlaylistSearch: React.FC<Props> = ({ refFetch }) => {
     const limit = 40;
     let lastPage = false;
     let foundSongs: Song[] = [];
+    let allFetchedSongs: Song[] = [];
 
     try {
       while (!lastPage) {
-        const data: AllSongs = await songService.getAllSongs(page, limit);
-        lastPage = page >= data.pagination.pageCount;
+        // چک کردن cache
+        let songsPage: Song[] = [];
+        if (cachedPages[page]) {
+          songsPage = cachedPages[page];
+        } else {
+          const data: AllSongs = await songService.getAllSongs(page, limit);
+          songsPage = data.songs;
+          setCachedPages(prev => ({ ...prev, [page]: songsPage }));
+          lastPage = page >= data.pagination.pageCount;
+        }
 
-        const fuse = new Fuse(data.songs, {
+        allFetchedSongs = [...allFetchedSongs, ...songsPage];
+
+        // Fuse search روی تمام آهنگ‌های کش شده
+        const fuse = new Fuse(allFetchedSongs, {
           keys: ['title', 'artist.fullName'],
           threshold: 0.4,
         });
@@ -51,10 +74,11 @@ const PlaylistSearch: React.FC<Props> = ({ refFetch }) => {
         const results = fuse.search(Full);
         if (results.length > 0) {
           foundSongs = results.map(r => r.item);
-          break;
+          break; // وقتی پیدا شد دیگه نیازی به گرفتن page بعدی نیست
         }
 
         page++;
+        if (!cachedPages[page] && lastPage) break;
       }
 
       if (foundSongs.length > 0) {
@@ -87,25 +111,27 @@ const PlaylistSearch: React.FC<Props> = ({ refFetch }) => {
           <input
             type="search"
             value={Full}
-            onChange={handleChange}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
+            onChange={handleChange} // فقط onchange کافی
             placeholder="Search for songs or episodes"
             className="h-full w-full border-none text-white outline-none"
           />
-
-          <svg onClick={handleSearch} xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="h-5 w-5 text-white cursor-pointer" viewBox="0 0 16 16">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-          </svg>
         </div>
       </div>
 
       <div className="playlist-container flex flex-wrap gap-4 mt-4 flex-col items-center md:items-start">
         {loading && <p className="text-white">Loading...</p>}
-        {visibleResults.length > 0 && <SearchcedSongs songs={visibleResults} refFetch={refFetch} />}
-        {message && <p className="text-white">{message}</p>}
+
+        {Full.trim() && visibleResults.length > 0 && (
+          <SearchcedSongs songs={visibleResults} refFetch={refFetch} />
+        )}
+
+        {Full.trim() && message && <p className="text-white">{message}</p>}
 
         {visibleResults.length < allResults.length && !loading && (
-          <button onClick={handleShowMore} className="mt-4 p-2 border-2 border-white text-white rounded-xl cursor-pointer w-30">
+          <button
+            onClick={handleShowMore}
+            className="mt-4 p-2 border-2 border-white text-white rounded-xl cursor-pointer w-30"
+          >
             Show more
           </button>
         )}
