@@ -1,13 +1,12 @@
-import { httpService } from "../config/axios";
-import {Song} from "../types/song.type"
+import { httpService } from '../config/axios';
+import { Song } from '../types/song.type';
 
-export interface Owner{
-      id: 4,
-    username: string;
-    fullName: string;
-  avatar: string|null;
+export interface Owner {
+  id: 4;
+  username: string;
+  fullName: string;
+  avatar: string | null;
 }
-
 
 export interface PlaylistSong {
   id: number;
@@ -18,15 +17,14 @@ export interface PlaylistSong {
   updatedAt: string;
 }
 
-
 export interface Playlistinfo {
   id: number;
   title: string;
   slug: string;
   description: string;
   cover: string;
-  status: "public" | "private";
-  owner:Owner;
+  status: 'public' | 'private';
+  owner: Owner;
   ownerId: number;
   songs: PlaylistSong[];
   createdAt: string;
@@ -49,3 +47,8 @@ export const getPlaylistDetails = async (
   return data;
 };
 
+export type PlaylistStatus = 'public' | 'private';
+
+export const updatePlaylistStatus = async (id: number): Promise<void> => {
+  await httpService.put(`/playlists/${id}`);
+};

@@ -49,7 +49,6 @@ const EditPlaylistButton: React.FC<Props> = ({ playlist, onUpdated }) => {
       >
         <FaPen />
       </div>
-
       <Modal open={open} onClose={() => setOpen(false)}>
         <EditPlaylistForm
           playlist={playlist}

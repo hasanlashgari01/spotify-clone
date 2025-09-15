@@ -5,10 +5,17 @@ import {
   Playlistinfo,
 } from '../../services/playlistDetailsService';
 import EditPlaylistButton from '../Edit playlist details/EditPlaylistButton';
+import LoadingCircle from '../loading/LoadingCircle';
+import PlaylistStatusControl from './PlaylistStatusControl';
+import {
+  updatePlaylistStatus,
+  PlaylistStatus,
+} from '../../services/playlistDetailsService';
+
 type OwnerProp = {
-  setOwner : React.Dispatch<SetStateAction<number | null>>
-}
-const PlaylistDetails = ({setOwner} : OwnerProp) => {
+  setOwner: React.Dispatch<SetStateAction<number | null>>;
+};
+const PlaylistDetails = ({ setOwner }: OwnerProp) => {
   const { slug } = useParams<{ slug: string }>();
   const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +26,7 @@ const PlaylistDetails = ({setOwner} : OwnerProp) => {
     const fetchData = async () => {
       try {
         const data = await getPlaylistDetails(slug);
-        setOwner(data.ownerId)
+        setOwner(data.ownerId);
         setPlaylist(data);
       } catch (error) {
         console.error('Error fetching playlist:', error);
@@ -34,7 +41,7 @@ const PlaylistDetails = ({setOwner} : OwnerProp) => {
   if (loading) {
     return (
       <div className="flex w-full items-center justify-center pt-30 text-white">
-        Loading...
+        <LoadingCircle />
       </div>
     );
   }
@@ -63,7 +70,16 @@ const PlaylistDetails = ({setOwner} : OwnerProp) => {
 
       <div className="flex flex-col items-center justify-center px-5 text-center md:items-start md:text-left">
         <span className="flex items-center gap-5 text-sm text-white sm:text-base">
-          {playlist.status} playlist
+          <PlaylistStatusControl
+            value={(playlist.status as PlaylistStatus) ?? 'public'}
+            ownerId={playlist.ownerId}
+            onSelect={async () => {
+              await updatePlaylistStatus(playlist.id);
+              const fresh = await getPlaylistDetails(playlist.slug);
+              setPlaylist(fresh);
+              setOwner(fresh.ownerId);
+            }}
+          />
           <EditPlaylistButton
             playlist={playlist}
             onUpdated={() => {
@@ -97,7 +113,6 @@ const PlaylistDetails = ({setOwner} : OwnerProp) => {
             {seconds > 0 && `${seconds} sec`}
           </span>
         </span>
-        
       </div>
     </div>
   );
