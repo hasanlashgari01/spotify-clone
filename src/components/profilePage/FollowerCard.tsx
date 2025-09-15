@@ -10,12 +10,13 @@ import FollowerSection from './FollowerSection';
 import { useMediaQuery } from 'react-responsive';
 import LoadingCircle from '../loading/LoadingCircle';
 import { XIcon } from 'lucide-react';
+import { useFollow } from '../../context/UserFansContext';
 const FollowersCard = () => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
   const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
   const isDesktop = useMediaQuery({ minWidth: 1195 });
 
-  const [followers, setFollowers] = useState<Followers[]>([]);
+  const {followers , setFollowers} = useFollow()
   const [fCount, setFCount] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 10;
@@ -116,6 +117,11 @@ const FollowersCard = () => {
                   <FollowerSection
                     avatar={f.follower.avatar}
                     fullName={f.follower.fullName}
+                    userId={f.follower.id}
+                    
+                      
+                      
+                    
                   />
                 </table>
               ))}
