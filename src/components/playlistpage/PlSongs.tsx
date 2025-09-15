@@ -1,12 +1,12 @@
 import React, { useState, useEffect, SetStateAction } from 'react';
 import { PlaylistSong, SongSortBy, SortOrder } from '../../services/playlistDetailsService';
-import PauseIcon from '../icons/PauseIcon';
-import PlayIcon from '../icons/PlayIcon';
+
+
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
 import SortMenu from './SortMenu';
 import { useMediaQuery } from 'react-responsive';
 import LoadingCircle from '../loading/LoadingCircle';
-
+import { PlayIcon , PauseIcon} from 'lucide-react'
 interface PlSongsProps {
   songs: PlaylistSong[];
   setSortBy: React.Dispatch<SetStateAction<SongSortBy>>;
@@ -116,7 +116,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
                     </span>
                     <div
                       onClick={(e) => handlePlayClick(ts, e)}
-                      className={`playBTN absolute top-1/2 left-1/2 flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-green-600 p-1 sm:h-5 sm:w-5 ${
+                      className={`playBTN absolute top-1/2 left-1/2 flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full text-white bg-green-600 p-1 sm:h-5 sm:w-5 ${
                         HoveredRow === i || isTablet ? 'z-10 opacity-100' : '-z-10 opacity-0'
                       }`}
                     >

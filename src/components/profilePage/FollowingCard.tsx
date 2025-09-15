@@ -9,8 +9,8 @@ import defAvatar from '../../../public/default-avatar.webp';
 import FollowingSection from './FollowingSection';
 import { useMediaQuery } from 'react-responsive';
 import LoadingCircle from "../loading/LoadingCircle"
-import Loading from '../loading/Loading';
 
+import { XIcon } from 'lucide-react';
 
 
 const FollowingCard = () => {
@@ -97,7 +97,11 @@ const FollowingCard = () => {
             className="relative flex max-h-[80vh] w-[90%] max-w-[500px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-center text-2xl font-bold">Followings</h2>
+            <div className='flex flex-row items-center justify-start'>
+              
+            <h2 className="text-center text-2xl font-bold  ">Followings</h2>
+            <div onClick={()=>{setModal(false)}} className='bg-red-600 hover:bg-red-700 cursor-pointer p-1 ml-auto transition-all  rounded-2xl'><XIcon color='white'/></div>
+            </div>
 
             <div className="flex flex-col" style={{ maxHeight: '60vh', overflowY: 'auto', paddingBottom: '60px' }}>
               {followings.map((f, i) => (
@@ -112,12 +116,7 @@ const FollowingCard = () => {
               </div>
             </div>
 
-            <button
-              onClick={() => setModal(false)}
-              className="fixed bottom-[10%] left-1/2 -translate-x-1/2 rounded-xl bg-red-600 px-6 py-2 font-bold hover:bg-red-700 cursor-pointer"
-            >
-              Close
-            </button>
+            
           </div>
         </div>
       )}
@@ -125,7 +124,7 @@ const FollowingCard = () => {
       {isDesktop && (
       <div className="bg-[] flex ml-90 h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
-            <h2 className="text-5xl text-white">Following</h2>
+            <h2 className="text-5xl text-white">Followings</h2>
             {loading ? <LoadingCircle/> : <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>}
           </div>
 

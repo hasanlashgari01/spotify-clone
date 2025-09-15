@@ -5,8 +5,7 @@ import { useParams } from 'react-router-dom';
 import { PlaylistSong, getPlaylistDetails } from '../../services/playlistDetailsService';
 import { playlistService } from '../../services/playlistService';
 import LoadingCircle from '../loading/LoadingCircle';
-import PlayIcon from '../icons/PlayIcon';
-import PauseIcon from '../icons/PauseIcon';
+import { PlayIcon , PauseIcon } from 'lucide-react';
 import { useMediaQuery } from 'react-responsive';
 interface Props {
   songs: Song[];
@@ -81,7 +80,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
                   </span>
                   <div
                     onClick={e => handlePlayClick(song, e)}
-                    className={`playBTN absolute top-1/2 left-1/2 ml-1 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full  bg-green-600 p-1 ${
+                    className={`playBTN absolute top-1/2 left-1/2 ml-1 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform items-center text-white justify-center rounded-full  bg-green-600 p-1 ${
                       (hoveredRow === i || isTablet) ? 'z-10 opacity-100' : '-z-10 opacity-0'
                     }`}
                   >
