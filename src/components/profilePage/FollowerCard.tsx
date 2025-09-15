@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import {
   getFollowingCount,
-  Followers,
+ 
   getUserFollowers,
 } from '../../services/userDetailsService';
 import { authService } from '../../services/authService';

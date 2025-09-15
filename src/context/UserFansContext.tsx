@@ -1,11 +1,7 @@
 
 import React, { createContext, useContext, useState } from "react";
 import { Followings , Followers } from "../services/userDetailsService";
-interface User {
-  id: number;
-  fullName: string;
-  avatar?: string;
-}
+
 
 interface FollowContextType {
   followings: Followings[];

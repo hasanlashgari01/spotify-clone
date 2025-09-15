@@ -20,7 +20,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const { followings, setFollowings } = useFollow();
 
-  // چک کن ببین این یوزر توی followings هست یا نه
+  
   const isFollowing = followings.some(f => f.following?.id === userId);
 
   const fnunf = async (id: number): Promise<void> => {
@@ -30,7 +30,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
 
       await UserService.FollowUnFollow(id);
 
-      // آپدیت دوباره از سرور
+     
       const res = await getMe();
       const data = await getUserFollowings(`${res.sub}`, 1, 1000000);
       setFollowings(data?.followings ? data.followings : []);

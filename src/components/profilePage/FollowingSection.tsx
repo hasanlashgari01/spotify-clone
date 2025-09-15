@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import defAvatar from '../../../public/default-avatar.webp';
 import { Link } from 'react-router-dom';
-import { UserService } from '../../services/userDetailsService';
+
 import LoadingCircle from '../loading/LoadingCircle';
 
 interface FollowerProps {
@@ -17,7 +17,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, o
     if (!id) return;
     try {
       setLoading(true)
-      const stat = await UserService.FollowUnFollow(id);
+      
 
       
       if (onUnfollow) {

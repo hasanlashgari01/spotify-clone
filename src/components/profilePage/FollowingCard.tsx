@@ -15,14 +15,14 @@ import { XIcon } from 'lucide-react';
 
 const FollowingCard: React.FC = () => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
-  const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
+  
   const isDesktop = useMediaQuery({ minWidth: 1195 });
 
   const { followings, setFollowings } = useFollow();
 
-  // local UI states
+  
   const [fCount, setFCount] = useState<number>(0);
-  const [modal, setModal] = useState<boolean>(false); // <- boolean, نه null
+  const [modal, setModal] = useState<boolean>(false); 
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 10;
@@ -30,7 +30,7 @@ const FollowingCard: React.FC = () => {
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  // fetch page (dedupe by following.id)
+ 
   const fetchFollowings = useCallback(async (p: number) => {
     if (p > totalPages) return;
     setLoading(true);
@@ -43,10 +43,10 @@ const FollowingCard: React.FC = () => {
         getFollowingCount(String(data.id), 'followings'),
       ]);
 
-      // res.followings is expected to be Followings[]
+      
       setFollowings(prev => {
         const combined = [...prev, ...(res?.followings ?? [])];
-        // dedupe by following.id (keep last occurrence)
+        
         const map = new Map<number, Followings>();
         combined.forEach(item => {
           const key = item.following?.id ?? item.followingId ?? item.following?.id;
@@ -55,10 +55,10 @@ const FollowingCard: React.FC = () => {
         return Array.from(map.values());
       });
 
-      // set total pages if provided
+      
       if (res?.pagination?.pageCount) setTotalPages(res.pagination.pageCount);
 
-      // set fCount from server count first (will be overridden by followings length below)
+     
       setFCount(counter ?? 0);
     } catch (err) {
       console.error('fetchFollowings error', err);
@@ -69,15 +69,15 @@ const FollowingCard: React.FC = () => {
 
   useEffect(() => {
     fetchFollowings(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+ 
   }, [page]);
 
-  // update fCount live when followings change (keeps UI in sync after local updates)
+  
   useEffect(() => {
     setFCount(followings.length);
   }, [followings]);
 
-  // infinite-scroll observer only while modal is open
+
   useEffect(() => {
     if (!modal) return;
     const observer = new IntersectionObserver(
@@ -95,15 +95,15 @@ const FollowingCard: React.FC = () => {
     };
   }, [modal, loading, page, totalPages]);
 
-  // unified unfollow handler (uses structure followings: Followings where .following.id exists)
+  
   const handleUnfollow = useCallback((id: number) => {
     setFollowings(prev => prev.filter(item => item.following?.id !== id));
-    // fCount will update via effect above
+    
   }, [setFollowings]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-20 bg-transparent p-10">
-      {/* modal */}
+     
       {(modal === true) && (
         <div
           className="fixed inset-0 z-10000 flex items-center justify-center bg-black/50"
@@ -144,7 +144,7 @@ const FollowingCard: React.FC = () => {
         </div>
       )}
 
-      {/* desktop / mobile UI */}
+      
       {isDesktop ? (
         <div className="ml-90 flex h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
@@ -183,7 +183,7 @@ const FollowingCard: React.FC = () => {
           )}
         </div>
       ) : (
-        /* mobile/tablet simplified */
+        
         <div className="w-content flex flex-col items-center gap-5">
           <div className="w-content flex flex-row items-start justify-start gap-6">
             <h2 className="text-3xl text-white">Following</h2>
