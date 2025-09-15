@@ -86,10 +86,11 @@ const FollowersCard = () => {
           className="fixed inset-0 z-10000 flex items-center justify-center bg-black/50"
           onClick={() => setModal(false)}
         >
-          <div
-            className="relative flex max-h-[80vh] min-h-[70vh] w-[90%] max-w-[600px] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
-            onClick={(e) => e.stopPropagation()}
-          >
+<div
+  className="relative flex max-h-[80vh] min-h-[70vh] w-[90%] max-w-[600px] flex-col gap-6 overflow-y-auto rounded-2xl bg-[#101721] p-6 text-white thin-scrollbar"
+  onClick={(e) => e.stopPropagation()}
+>
+
             <div className="flex flex-row items-center justify-start">
               <h2 className="text-center text-2xl font-bold">Followers</h2>
               <div

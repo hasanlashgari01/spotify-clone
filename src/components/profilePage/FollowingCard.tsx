@@ -94,7 +94,7 @@ const FollowingCard = () => {
           onClick={() => setModal(false)}
         >
           <div
-            className="relative flex max-h-[80vh] w-[90%] max-w-[500px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
+            className="relative flex max-h-[80vh] w-[90%] max-w-[500px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-[#101721] p-6 text-white"
             onClick={(e) => e.stopPropagation()}
           >
             <div className='flex flex-row items-center justify-start'>
