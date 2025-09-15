@@ -12,6 +12,7 @@ import PlSongs from './PlSongs';
 import LoadingCircle from '../loading/LoadingCircle';
 import { playlistService } from '../../services/playlistService';
 
+
 type Props = {
   refFetch?: React.MutableRefObject<() => void>;
   isOwner: boolean | null;
@@ -50,10 +51,12 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch, isOwner }) => {
     setDeletingId(songId);
     try {
       const res = await playlistService.Deletemusic(`${playlist.id}`, `${songId}`);
-      if (res?.statusCode !== 200) return;
+      if (res?.stat === "error") return;
 
-      setSongs((prev) => prev.filter((ts) => ts.song.id !== songId));
+      if (res?.stat === "success") {
+        setSongs((prev) => prev.filter((ts) => ts.song.id !== songId));
       setFilteredSongs((prev) => prev.filter((ts) => ts.song.id !== songId));
+      }
     } catch (err) {
       console.error(err);
     } finally {

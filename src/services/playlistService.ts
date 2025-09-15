@@ -28,6 +28,12 @@ export interface AddResponse {
   error? : string
   statusCode? : number;
 }
+export interface DeleteResponse {
+  message : string;
+  error? : string
+  statusCode? : number;
+  stat : string;
+}
 
 export const playlistService = {
   async getMyPlaylists(page = 1, limit = 10): Promise<PlaylistResponse> {
@@ -47,7 +53,9 @@ export const playlistService = {
   },
   async Deletemusic(playlistId : string , songId : string){
   try {
-        const {data} = await httpService.delete<AddResponse>(`/playlists/${playlistId}/song/${songId}`);
+        const {data} = await httpService.delete<DeleteResponse>(`/playlists/${playlistId}/song/${songId}`);
+        if (data.statusCode) data.stat = "error";
+        if (!data.statusCode) data.stat = "success";
     return data
   } catch (error) {
       console.error(error)

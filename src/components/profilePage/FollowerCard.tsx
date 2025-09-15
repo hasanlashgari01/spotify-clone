@@ -9,6 +9,7 @@ import defAvatar from '../../../public/default-avatar.webp';
 import FollowerSection from './FollowerSection';
 import { useMediaQuery } from 'react-responsive';
 import LoadingCircle from '../loading/LoadingCircle';
+import { XIcon } from 'lucide-react';
 const FollowersCard = () => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
   const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
@@ -85,40 +86,60 @@ const FollowersCard = () => {
           className="fixed inset-0 z-10000 flex items-center justify-center bg-black/50"
           onClick={() => setModal(false)}
         >
-          <div
-            className="relative flex max-h-[80vh] min-h-[70vh] w-[90%] max-w-[600px] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h2 className="text-center text-2xl font-bold">Followers</h2>
+<div
+  className="relative flex max-h-[80vh] min-h-[70vh] w-[90%] max-w-[600px] flex-col gap-6 overflow-y-auto rounded-2xl bg-[#101721] p-6 text-white thin-scrollbar"
+  onClick={(e) => e.stopPropagation()}
+>
 
-            <div className="flex flex-col" style={{ maxHeight: '60vh', overflowY: 'auto', paddingBottom: '60px' }}>
-              {followers.map((f, i) => (
-                <table key={i} className="w-full">
-                  <FollowerSection avatar={f.follower.avatar} fullName={f.follower.fullName} />
-                </table>
-              ))}
-
-              <div ref={loadMoreRef} className="col-span-3 text-center py-4">
-                {loading && <p>Loading more...</p>}
-                {!loading && page >= totalPages && <p className="text-gray-400">No more followers</p>}
+            <div className="flex flex-row items-center justify-start">
+              <h2 className="text-center text-2xl font-bold">Followers</h2>
+              <div
+                onClick={() => {
+                  setModal(false);
+                }}
+                className="ml-auto cursor-pointer rounded-2xl bg-red-600 p-1 transition-all hover:bg-red-700"
+              >
+                <XIcon color="white" />
               </div>
             </div>
 
-            <button
-              onClick={() => setModal(false)}
-              className="fixed bottom-[10%] left-1/2 -translate-x-1/2 rounded-xl bg-red-600 px-6 py-2 font-bold hover:bg-red-700 cursor-pointer"
+            <div
+              className="flex flex-col"
+              style={{
+                maxHeight: '60vh',
+                overflowY: 'auto',
+                paddingBottom: '60px',
+              }}
             >
-              Close
-            </button>
+              {followers.map((f, i) => (
+                <table key={i} className="w-full">
+                  <FollowerSection
+                    avatar={f.follower.avatar}
+                    fullName={f.follower.fullName}
+                  />
+                </table>
+              ))}
+
+              <div ref={loadMoreRef} className="col-span-3 py-4 text-center">
+                {loading && <p>Loading more...</p>}
+                {!loading && page >= totalPages && (
+                  <p className="text-gray-400">No more followers</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
 
       {isDesktop && (
-        <div className="flex ml-90 h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
+        <div className="ml-90 flex h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
             <h2 className="text-5xl text-white">Followers</h2>
-            {loading ? <LoadingCircle/> : <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>}
+            {loading ? (
+              <LoadingCircle />
+            ) : (
+              <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>
+            )}
           </div>
 
           {followers.length > 0 && (
@@ -157,7 +178,11 @@ const FollowersCard = () => {
         <div className="w-content flex flex-col items-center gap-5">
           <div className="w-content flex flex-row items-start justify-start gap-6">
             <h2 className="text-3xl text-white">Followers</h2>
-            {loading ? <LoadingCircle/> : <h2 className="text-3xl font-bold text-blue-600">{fCount}+</h2>}
+            {loading ? (
+              <LoadingCircle />
+            ) : (
+              <h2 className="text-3xl font-bold text-blue-600">{fCount}+</h2>
+            )}
           </div>
 
           {followers.length > 0 && (
