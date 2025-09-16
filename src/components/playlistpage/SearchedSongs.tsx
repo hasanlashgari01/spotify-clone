@@ -74,8 +74,8 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
                 onMouseEnter={() => setHoveredRow(i)}
                 onMouseLeave={() => setHoveredRow(null)}
               >
-                <td className="relative w-5 text-center">
-                  <span className={hoveredRow === i ? '-z-10 opacity-0' : 'z-10 opacity-100'} style={{ color: 'white' }}>
+                <td className="relative w-6 py-2 flex justify-center items-center sm:w-8 sm:py-3">
+                  <span className={hoveredRow === i ? '-z-10 opacity-0 text-center' : 'z-10 opacity-100 text-center '} style={{ color: 'white' }}>
                     {i + 1}
                   </span>
                   <div
