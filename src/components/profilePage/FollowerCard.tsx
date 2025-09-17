@@ -138,7 +138,7 @@ const FollowersCard = () => {
       )}
 
       {isDesktop && (
-        <div className="ml-90 flex h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
+        <div className=" flex h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
           <div className="flex w-[30%] flex-col gap-5">
             <h2 className="text-5xl text-white">Followers</h2>
             {loading ? (
@@ -156,7 +156,7 @@ const FollowersCard = () => {
                     key={i}
                     src={f.follower.avatar ?? defAvatar}
                     alt="maybe"
-                    className={`-ml-5 h-35 w-35 rounded-[25px] border-3 border-blue-900 first:ml-0`}
+                    className={`-ml-8 h-40 w-40 rounded-full border-3 border-blue-900 first:ml-0`}
                     style={{ zIndex: followers.length + i }}
                   />
                 ))}

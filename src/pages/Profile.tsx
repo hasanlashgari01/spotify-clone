@@ -15,7 +15,7 @@ const Profile = () => {
         <FollowProvider>
           {isDesktop && (
           <>
-            <div className="flex justify-center flex-col p-8 max-w-[70%]">
+            <div className="flex justify-center flex-col p-8 max-w-[100vw]">
 
                 <FollowingCard /> <FollowersCard />
           
