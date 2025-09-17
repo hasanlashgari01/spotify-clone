@@ -10,7 +10,7 @@ const Profile = () => {
   const isDesktop = useMediaQuery({ minWidth: 1195 });
   return (
     <>
-      <div className="min-h-[100vh] w-full bg-[#101721]">
+      <div className="min-h-[100vh] w-full ">
         <UserInfo />
         <FollowProvider>
           {isDesktop && (

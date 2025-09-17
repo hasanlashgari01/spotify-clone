@@ -2,18 +2,18 @@
 
 /* برای همه مرورگرها */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 2px;
+  height: 2px;
 }
 
 ::-webkit-scrollbar-track {
   background: #101721;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #4a4a4a;
-  border-radius: 8px;
+  border-radius: 2px;
   border: 2px solid #101721;
 }
 
@@ -23,6 +23,6 @@
 
 /* برای فایرفاکس */
 * {
-  scrollbar-width: thin;
+ 
   scrollbar-color: #4a4a4a #101721;
 }

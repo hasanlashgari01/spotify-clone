@@ -99,7 +99,7 @@ const UserInfo = () => {
 
   return (
     <div className="relative z-1000 flex h-[200px] flex-col items-start justify-end overflow-hidden rounded-b bg-cover bg-center sm:h-[290px] md:h-[320px] lg:h-[370px]">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#0b2e5a_0%,#0c2d4e_20%,#101d38_50%,#101721_100%)]" />
 
       <AnimatePresence>
         {modalStat && (
