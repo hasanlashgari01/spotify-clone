@@ -18,7 +18,7 @@ type OwnerProp = {
 };
 const PlaylistDetails = ({ setOwner }: OwnerProp) => {
   const isMobile = useMediaQuery({ maxWidth: 767 });
-  const isTablet = useMediaQuery({ minWidth: 767, maxWidth: 1500 });
+  const isTablet = useMediaQuery({ minWidth: 767 });
 
   const { slug } = useParams<{ slug: string }>();
   const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
