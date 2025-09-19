@@ -1,16 +1,14 @@
-import { SetStateAction, useEffect, useState } from 'react';
+import { SetStateAction, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   getPlaylistDetails,
   Playlistinfo,
+  updatePlaylistStatus,
+  PlaylistStatus,
 } from '../../services/playlistDetailsService';
 import EditPlaylistButton from '../Edit playlist details/EditPlaylistButton';
 import LoadingCircle from '../loading/LoadingCircle';
 import PlaylistStatusControl from './PlaylistStatusControl';
-import {
-  updatePlaylistStatus,
-  PlaylistStatus,
-} from '../../services/playlistDetailsService';
 
 type OwnerProp = {
   setOwner: React.Dispatch<SetStateAction<number | null>>;
@@ -19,6 +17,7 @@ const PlaylistDetails = ({ setOwner }: OwnerProp) => {
   const { slug } = useParams<{ slug: string }>();
   const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const areaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!slug) return;
@@ -36,7 +35,7 @@ const PlaylistDetails = ({ setOwner }: OwnerProp) => {
     };
 
     fetchData();
-  }, [slug]);
+  }, [slug, setOwner]);
 
   if (loading) {
     return (
@@ -51,7 +50,7 @@ const PlaylistDetails = ({ setOwner }: OwnerProp) => {
   }
 
   const totalSeconds = playlist.songs.reduce(
-    (acc, s) => acc + s.song.duration,
+    (acc, s) => acc + (s.song?.duration || 0),
     0
   );
   const hours = Math.floor(totalSeconds / 3600);
@@ -59,12 +58,21 @@ const PlaylistDetails = ({ setOwner }: OwnerProp) => {
   const seconds = totalSeconds % 60;
 
   return (
-    <div className="flex w-full flex-col md:flex-row">
-      <div className="flex justify-center p-5 md:justify-start">
+    <div
+      className="flex w-full flex-col md:flex-row relative"
+      ref={areaRef}
+      style={{ minHeight: 340 }}
+    >
+      <div className="relative flex justify-center p-5 md:justify-start" style={{minWidth: 240, minHeight: 240}}>
         <img
           src={playlist.cover || '/default.webp'}
           alt={playlist.title}
           className="h-60 w-60 rounded-2xl object-cover sm:h-72 sm:w-72 md:h-80 md:w-80"
+          style={{
+            position: 'relative',
+            zIndex: 3,
+            boxShadow: '0 0 32px 0 #0008',
+          }}
         />
       </div>
 
@@ -82,11 +90,9 @@ const PlaylistDetails = ({ setOwner }: OwnerProp) => {
           />
           <EditPlaylistButton
             playlist={playlist}
-            onUpdated={() => {
-              (async () => {
-                const fresh = await getPlaylistDetails(playlist.slug);
-                setPlaylist(fresh);
-              })();
+            onUpdated={async () => {
+              const fresh = await getPlaylistDetails(playlist.slug);
+              setPlaylist(fresh);
             }}
           />
         </span>

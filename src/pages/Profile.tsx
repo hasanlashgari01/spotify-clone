@@ -16,7 +16,7 @@ const Profile = () => {
           {isDesktop && (
           <>
             <div className="flex justify-center p-8">
-            <div className="flex h-70 w-[80vw] justify-around items-center rounded-4xl border-2 border-blue-700">
+            <div className="flex h-70 w-[80vw] justify-around  rounded-4xl border-2 border-blue-700">
               <FollowingCard></FollowingCard>
               <FollowersCard></FollowersCard>
             </div>
