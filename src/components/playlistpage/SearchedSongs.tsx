@@ -3,7 +3,7 @@ import { Song } from '../../types/song.type';
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
 import { useParams } from 'react-router-dom';
 import {
-  PlaylistSong,
+  
   getPlaylistDetails,
 } from '../../services/playlistDetailsService';
 import { playlistService } from '../../services/playlistService';
@@ -20,7 +20,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
   const { currentTrack, isPlaying, playSong, handlePlayPause } =
     useMusicPlayer();
 
-  const [playSongs, setPlaysongs] = useState<PlaylistSong[]>([]);
+  // حذف playSongs و setPlaysongs چون استفاده نمی‌شوند
   const [songsInPlaylist, setSongsInPlaylist] = useState<Song[]>([]);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [playlistId, setPlaylistId] = useState<number>();
@@ -40,7 +40,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
       try {
         const data = await getPlaylistDetails(slug);
         setPlaylistId(data.id);
-        setPlaysongs(data.songs);
+        // فقط songsInPlaylist را مقداردهی می‌کنیم
         setSongsInPlaylist(data.songs.map((ps) => ps.song));
       } catch (err) {
         console.error(err);
@@ -138,7 +138,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
                   ) : (
                     <svg
                       onClick={(e) => {
-                        e.stopPropagation();
+                        e.stopPropagation()
                         handleAddToPlaylist(song);
                       }}
                       xmlns="http://www.w3.org/2000/svg"

@@ -15,11 +15,12 @@ const Profile = () => {
         <FollowProvider>
           {isDesktop && (
           <>
-            <div className="flex justify-center flex-col p-8 max-w-[100vw]">
-
-                <FollowingCard /> <FollowersCard />
-          
+            <div className="flex justify-center p-8">
+            <div className="flex h-70 w-[80vw] justify-around items-center rounded-4xl border-2 border-blue-700">
+              <FollowingCard></FollowingCard>
+              <FollowersCard></FollowersCard>
             </div>
+          </div>
           </>
         )}
         {isTablet && (

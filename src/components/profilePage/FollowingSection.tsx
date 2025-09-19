@@ -25,9 +25,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, o
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      
-    }
+    } 
   };
 
   return (

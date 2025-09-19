@@ -59,7 +59,7 @@ const FollowersCard = () => {
     };
 
     fetchFollowers();
-  }, [page]);
+  }, [page, setFollowers, totalPages]);
 
   useEffect(() => {
     if (!modal) return;
@@ -76,6 +76,7 @@ const FollowersCard = () => {
     if (loadMoreRef.current) observer.observe(loadMoreRef.current);
 
     return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (loadMoreRef.current) observer.unobserve(loadMoreRef.current);
     };
   }, [modal, loading, page, totalPages]);
@@ -138,46 +139,48 @@ const FollowersCard = () => {
       )}
 
       {isDesktop && (
-        <div className=" flex h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
-          <div className="flex w-[30%] flex-col gap-5">
-            <h2 className="text-5xl text-white">Followers</h2>
-            {loading ? (
-              <LoadingCircle />
-            ) : (
-              <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>
-            )}
-          </div>
-
-          {followers.length > 0 && (
-            <>
-              <div className="flex w-[50%] flex-row">
-                {followers.slice(0, 5).map((f, i) => (
-                  <img
-                    key={i}
-                    src={f.follower.avatar ?? defAvatar}
-                    alt="maybe"
-                    className={`-ml-8 h-40 w-40 rounded-full border-3 border-blue-900 first:ml-0`}
-                    style={{ zIndex: followers.length + i }}
-                  />
-                ))}
-              </div>
-
-              <div className="flex w-[20%] justify-end">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="h-10 w-20 cursor-pointer text-white"
-                  viewBox="0 0 16 16"
-                  onClick={() => setModal(true)}
-                >
-                  <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
-                </svg>
-              </div>
-            </>
+        <div className="w-content flex flex-col items-center gap-5">
+        <div className="w-content flex flex-row items-start justify-start gap-6">
+          <h2 className="text-[40px] text-white">Followers</h2>
+          {loading ? (
+            <LoadingCircle />
+          ) : (
+            <h2 className="text-[40px] font-bold text-blue-600">{fCount}+</h2>
           )}
         </div>
+
+        {followers.length > 0 && (
+          <>
+            <div className="flex flex-row">
+              {followers.slice(0, 5).map((f, i) => (
+                <img
+                  key={i}
+                  src={f.follower.avatar ?? defAvatar}
+                  alt="maybe"
+                  className={`-ml-3 rounded-full border-3 border-blue-900 first:ml-0 ${
+                    isMobile ? 'h-12 w-12' : 'h-20 w-20'
+                  }`}
+                  style={{ zIndex: followers.length + i }}
+                />
+              ))}
+            </div>
+
+            <div className="flex w-[20%] justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="h-8 w-10 rotate-90 transform cursor-pointer text-white"
+                viewBox="0 0 16 16"
+                onClick={() => setModal(true)}
+              >
+                <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+              </svg>
+            </div>
+          </>
+        )}
+      </div>
       )}
 
       {(isMobile || isTablet) && (

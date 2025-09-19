@@ -4,7 +4,7 @@ import {
   getFollowingCount,
   Followings,
   getUserFollowings,
-} from '../../services/userDetailsService';
+} from '../../services/userDetailsService'; 
 import { authService } from '../../services/authService';
 import defAvatar from '../../../public/default-avatar.webp';
 import FollowingSection from './FollowingSection';
@@ -71,7 +71,7 @@ const FollowingCard: React.FC = () => {
   useEffect(() => {
     fetchFollowings(page);
  
-  }, [page]);
+  }, [fetchFollowings, page]);
 
   
   useEffect(() => {
@@ -154,42 +154,42 @@ const FollowingCard: React.FC = () => {
 
       
       {isDesktop ? (
-        <div className=" flex h-60 w-290 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
-          <div className="flex w-[30%] flex-col gap-5">
-            <h2 className="text-5xl text-white">Followings</h2>
-            {loading ? <LoadingCircle /> : <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>}
-          </div>
-
-          {followings.length > 0 && (
-            <>
-              <div className="flex w-[50%] flex-row">
-                {followings.slice(0, 5).map((f) => (
-                  <img
-                    key={f.following.id}
-                    src={f.following.avatar ?? defAvatar}
-                    alt={f.following.fullName}
-                    className={`-ml-8 h-40 w-40 rounded-full border-3 border-blue-900 first:ml-0`}
-                    style={{ zIndex: followings.length }}
-                  />
-                ))}
-              </div>
-
-              <div className="flex w-[20%] justify-end">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="h-10 w-20 cursor-pointer text-white"
-                  viewBox="0 0 16 16"
-                  onClick={() => setModal(true)}
-                >
-                  <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
-                </svg>
-              </div>
-            </>
-          )}
+        <div className="w-content flex flex-col items-center gap-5">
+        <div className="w-content flex flex-row items-start justify-start gap-6">
+          <h2 className="text-[40px] text-white">Following</h2>
+          {loading ? <LoadingCircle /> : <h2 className="text-[40px] font-bold text-blue-600">{fCount}+</h2>}
         </div>
+
+        {followings.length > 0 && (
+          <>
+            <div className="flex flex-row">
+              {followings.slice(0, 5).map((f) => (
+                <img
+                  key={f.following.id}
+                  src={f.following.avatar ?? defAvatar}
+                  alt={f.following.fullName}
+                  className={`-ml-3 rounded-full border-3 border-blue-900 first:ml-0 ${isMobile ? 'h-12 w-12' : 'h-20 w-20'}`}
+                  style={{ zIndex: followings.length }}
+                />
+              ))}
+            </div>
+
+            <div className="flex w-[20%] justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="h-8 w-10 rotate-90 transform cursor-pointer text-white"
+                viewBox="0 0 16 16"
+                onClick={() => setModal(true)}
+              >
+                <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
+              </svg>
+            </div>
+          </>
+        )}
+      </div>
       ) : (
         
         <div className="w-content flex flex-col items-center gap-5">
@@ -218,7 +218,7 @@ const FollowingCard: React.FC = () => {
                   width="16"
                   height="16"
                   fill="currentColor"
-                  className="h-7 w-10 rotate-90 transform cursor-pointer text-white"
+                  className="h-8 w-10 rotate-90 transform cursor-pointer text-white"
                   viewBox="0 0 16 16"
                   onClick={() => setModal(true)}
                 >
