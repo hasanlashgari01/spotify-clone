@@ -15,8 +15,8 @@ const TrendingSongs: React.FC = () => {
   if (error) return <Error {...error} />;
 
   return (
-    <div className="relative mx-[20px] h-[300px] bg-[#101720] sm:mx-[64px] sm:h-[333px]">
-      <div className="mb-[20px] flex items-center justify-between px-[20px] sm:mb-[40px] sm:pr-[77px] sm:pl-[85px]">
+    <div className="relative mx-[20px] h-[340px] bg-[#101720] sm:mx-[64px] sm:h-[373px]">
+      <div className="mb-[20px] flex items-center justify-between px-[20px] pt-6 sm:mb-[40px] sm:pr-[77px] sm:pl-[85px]">
         <h2 className="text-lg font-bold text-white sm:text-2xl">
           Trending songs
         </h2>
@@ -24,13 +24,13 @@ const TrendingSongs: React.FC = () => {
           See more
         </button>
       </div>
-      <button className="trending-prev absolute top-[120px] left-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
+      <button className="trending-prev absolute top-[150px] left-2 sm:left-4 md:left-6 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[180px] sm:h-[48px] sm:w-[48px] sm:p-2 hidden md:block">
         <LeftArrowIcon />
       </button>
-      <button className="trending-next absolute top-[120px] right-0 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[150px] sm:h-[48px] sm:w-[48px] sm:p-2">
+      <button className="trending-next absolute top-[150px] right-2 sm:right-4 md:right-6 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[180px] sm:h-[48px] sm:w-[48px] sm:p-2 hidden md:block">
         <RightArrowIcon />
       </button>
-      <div className="relative mt-[30px] mr-[20px] mb-[10px] ml-[20px] sm:mt-[40px] sm:mr-[75px] sm:mb-[21px] sm:ml-[75px]">
+      <div className="relative mt-[40px] mr-[20px] mb-[10px] ml-[20px] sm:mt-[50px] sm:mr-[75px] sm:mb-[21px] sm:ml-[75px]">
         <Swiper
           modules={[Navigation]}
           navigation={{
@@ -40,10 +40,12 @@ const TrendingSongs: React.FC = () => {
           }}
           spaceBetween={20}
           breakpoints={{
-            320: { slidesPerView: 1.5, spaceBetween: 10 },
-            480: { slidesPerView: 2, spaceBetween: 15 },
-            640: { slidesPerView: 3, spaceBetween: 20 },
-            1024: { slidesPerView: 5, spaceBetween: 20 },
+            0: { slidesPerView: 1.5, spaceBetween: 10 },
+            400: { slidesPerView: 2.5, spaceBetween: 12 },
+            600: { slidesPerView: 2.3, spaceBetween: 15 },
+            800: { slidesPerView: 3, spaceBetween: 20 },
+            1024: { slidesPerView: 4, spaceBetween: 20 },
+            1280: { slidesPerView: 5, spaceBetween: 20 },
             1440: { slidesPerView: 6, spaceBetween: 20 },
             1600: { slidesPerView: 7, spaceBetween: 20 },
           }}
@@ -55,7 +57,7 @@ const TrendingSongs: React.FC = () => {
             data?.map((song) => (
               <SwiperSlide
                 key={song.id}
-                style={{ width: '150px', height: '240px' }}
+                style={{ width: '150px', height: '240px', minWidth: '120px' }}
               >
                 <SongItem {...song} />
               </SwiperSlide>
