@@ -12,7 +12,6 @@ import PlSongs from './PlSongs';
 import LoadingCircle from '../loading/LoadingCircle';
 import { playlistService } from '../../services/playlistService';
 
-
 type Props = {
   refFetch?: React.MutableRefObject<() => void>;
   isOwner: boolean | null;
@@ -50,12 +49,15 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch, isOwner }) => {
     if (!playlist?.id) return;
     setDeletingId(songId);
     try {
-      const res = await playlistService.Deletemusic(`${playlist.id}`, `${songId}`);
-      if (res?.stat === "error") return;
+      const res = await playlistService.Deletemusic(
+        `${playlist.id}`,
+        `${songId}`
+      );
+      if (res?.stat === 'error') return;
 
-      if (res?.stat === "success") {
+      if (res?.stat === 'success') {
         setSongs((prev) => prev.filter((ts) => ts.song.id !== songId));
-      setFilteredSongs((prev) => prev.filter((ts) => ts.song.id !== songId));
+        setFilteredSongs((prev) => prev.filter((ts) => ts.song.id !== songId));
       }
     } catch (err) {
       console.error(err);
@@ -84,38 +86,34 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch, isOwner }) => {
     fetchData();
   }, [slug, sortBy, order]);
 
- 
   useEffect(() => {
     if (refFetch) refFetch.current = fetchData;
   }, [refFetch]);
 
   return (
-    <div className="playlist-container flex flex-wrap gap-4 ">
-      
-      <div className='w-[100vw] flex  items-center md:items-start flex-col mt-10'>
-          <div className="text-s ml-2 flex w-[90vw] items-center  gap-2 rounded-xl bg-gray-600 p-3 md:w-180 md:text-lg">
-          
-        <input
-          type="search"
-          placeholder="Search songs..."
-          className="h-full w-full border-none text-white outline-none"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          fill="currentColor"
-          className="h-5 w-5 cursor-pointer text-white"
-          viewBox="0 0 16 16"
-        >
-          <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-        </svg>
-      </div>
+    <div className="playlist-container flex flex-wrap gap-4 md:-mt-10">
+      <div className="mt-10 flex w-[100vw] flex-col items-center md:items-start">
+        <div className="text-s ml-2 flex w-[90vw] items-center gap-2 rounded-xl bg-gray-600 p-3 md:w-180 md:text-lg">
+          <input
+            type="search"
+            placeholder="Search songs..."
+            className="h-full w-full border-none text-white outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="h-5 w-5 cursor-pointer text-white"
+            viewBox="0 0 16 16"
+          >
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+          </svg>
+        </div>
       </div>
 
-      
       {loading ? (
         <LoadingCircle />
       ) : (

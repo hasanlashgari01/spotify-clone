@@ -187,7 +187,7 @@ const MusicPlayer: React.FC = () => {
 
       {/* 🟢 Mobile Mini Player */}
       <motion.div
-        className="fixed right-0 bottom-0 left-0 z-40 flex cursor-pointer items-center justify-between rounded-t-2xl bg-gray-900/90 p-3 text-white shadow-xl backdrop-blur-md md:hidden"
+        className="fixed right-0 bottom-0 left-0 z-3 flex cursor-pointer items-center justify-between rounded-t-2xl bg-gray-900/90 p-3 text-white shadow-xl backdrop-blur-md md:hidden"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         onClick={() => setExpanded(true)}
