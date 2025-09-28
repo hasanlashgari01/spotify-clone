@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import defAvatar from '../../../public/default-avatar.webp';
 import { Link } from 'react-router-dom';
-
+import '../../styles/scroll.css';
 import LoadingCircle from '../loading/LoadingCircle';
 
 interface FollowerProps {
@@ -25,9 +25,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, o
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
   return (

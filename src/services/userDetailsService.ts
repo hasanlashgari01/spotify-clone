@@ -80,7 +80,8 @@ export const UserService = {
     if (!id) return;
     try {
       const response = await httpService.get(`/follow/${id}`);
-      return response.data.message;
+      
+      return response.status;
     } catch (error) {
       console.error(error);
     }
