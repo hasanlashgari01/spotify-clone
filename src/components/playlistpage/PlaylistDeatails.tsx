@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useParams } from 'react-router-dom';
 import { IoMdShare } from 'react-icons/io';
-import { FaRegHeart } from 'react-icons/fa';
+import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { X, Search } from 'lucide-react';
 import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 // Custom gradient loader (blue luxury tones)
@@ -18,6 +18,8 @@ import {
 } from '../../services/playlistDetailsService';
 import PlaylistMenu from './Playlistmenu';
 import { getMe, MeResponse } from '../../services/meService';
+import LoadingCircle from '../loading/LoadingCircle';
+import { playlistService } from '../../services/playlistService';
 // Elegant gradient loader component
 const LuxeLoader = () => (
   <svg
@@ -50,6 +52,7 @@ type OwnerProp = {
   search: string;
   setSearch: Dispatch<SetStateAction<string>>;
   setReady?: Dispatch<SetStateAction<boolean>>;
+  onHeartAction?: () => Promise<any> | void;
 };
 const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -61,6 +64,28 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [me, setMe] = useState<MeResponse | null>(null);
   const [isOwner, setIsOwner] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
+
+  const handleHeartClick = async () => {
+    try {
+      if (!playlist?.id || isLiking) return;
+      setIsLiking(true);
+      const res = await playlistService.LikeorUnlike(`${playlist?.id}`)
+      
+      
+      if (res && res.statusCode) {
+        console.log('Error Occurred:', res);
+        return;
+      }
+      setIsLiked((prev) => !prev)
+    } 
+    catch (err) {
+      console.error(err)
+    } finally {
+      setIsLiking(false);
+    }
+  };
   useEffect(() => {
     if (!slug) {
       if (setReady) setReady(false);
@@ -76,6 +101,8 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
 
         setOwner(playlistData.ownerId);
         setPlaylist(playlistData);
+        setIsLiked(playlistData.isLiked);
+        
         setMe(userData);
         setIsOwner(userData.sub === playlistData.ownerId);
       } catch (error) {
@@ -168,8 +195,19 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
                     <button className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60">
                       <IoMdShare className="text-lg text-white" />
                     </button>
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60">
-                      <FaRegHeart className="text-lg text-white" />
+                    <button
+                      onClick={handleHeartClick}
+                      disabled={isLiking}
+                      aria-disabled={isLiking}
+                      className={`group flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60 ${isLiking ? 'opacity-60 cursor-not-allowed' : ''}`}
+                    >
+                      {isLiking ? (
+                        <div className="flex h-5 w-5 items-center justify-center"><LoadingCircle /></div>
+                      ) : isLiked ? (
+                        <FaHeart className="text-lg text-red-500 transition-colors" />
+                      ) : (
+                        <FaRegHeart className="text-lg text-white transition-colors group-hover:text-red-400" />
+                      )}
                     </button>
                     <button
                       className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60"
@@ -227,8 +265,19 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
                 <button className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14">
                   <IoMdShare className="text-2xl text-white transition-colors sm:text-3xl" />
                 </button>
-                <button className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14">
-                  <FaRegHeart className="text-2xl text-white transition-colors group-hover:text-red-400 sm:text-3xl" />
+                <button
+                  onClick={handleHeartClick}
+                  disabled={isLiking}
+                  aria-disabled={isLiking}
+                  className={`group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14 ${isLiking ? 'opacity-60 cursor-not-allowed' : ''}`}
+                >
+                  {isLiking ? (
+                    <div className="flex h-6 w-6 items-center justify-center"><LoadingCircle /></div>
+                  ) : isLiked ? (
+                    <FaHeart className="text-2xl text-red-500 transition-colors sm:text-3xl" />
+                  ) : (
+                    <FaRegHeart className="text-2xl text-white transition-colors group-hover:text-red-400 sm:text-3xl" />
+                  )}
                 </button>
                 <button
                   className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14"

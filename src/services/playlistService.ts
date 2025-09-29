@@ -60,6 +60,15 @@ export const playlistService = {
   } catch (error) {
       console.error(error)
   }    
+  },
+  async LikeorUnlike(playlistId : string){
+    try {
+      const {data} = await httpService.get<AddResponse>(`/playlists/${playlistId}/toggle-like`)
+    return data
+    } catch (error) {
+      console.error(error)
+    }
   }
+  
 };
 

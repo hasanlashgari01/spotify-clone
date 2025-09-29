@@ -1,4 +1,5 @@
 import { httpService } from '../config/axios';
+import { User } from './authService';
 
 export interface Pagination {
   page: number;
@@ -66,6 +67,12 @@ export const getUserFollowings = async (
     return null;
   }
 };
+export const getOthersDetails = async (
+  username : string
+) : Promise<User> => {
+  const response = await httpService.get<User>(`/user/profile/${username}`)
+  return response.data
+}
 export const getFollowingCount = async (
   id: string,
   action: string
