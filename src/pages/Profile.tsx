@@ -11,40 +11,11 @@ const Profile = () => {
   return (
     <>
       <div className="min-h-[100vh] w-full ">
-        <UserInfo />
+        
         <FollowProvider>
-          {isDesktop && (
-          <>
-            <div className="flex justify-center p-8">
-            <div className="flex h-70 w-[80vw] justify-around  rounded-4xl border-2 border-blue-700">
-              <FollowingCard></FollowingCard>
-              <FollowersCard></FollowersCard>
-            </div>
-          </div>
-          </>
-        )}
-        {isTablet && (
-          <div className="flex justify-center p-8">
-            <div className="flex h-55 w-[80vw] justify-between rounded-4xl border-2 border-blue-700">
-              <FollowingCard></FollowingCard>
-              <FollowersCard></FollowersCard>
-            </div>
-          </div>
-        )}
-        {isMobile && (
-          <>
-            <div className="flex justify-center p-8">
-              <div className="flex h-55 w-[80vw] justify-center rounded-4xl border-2 border-blue-700">
-                <FollowingCard></FollowingCard>
-              </div>
-            </div>
-            <div className="flex justify-center p-8">
-              <div className="flex h-55 w-[80vw] justify-center rounded-4xl border-2 border-blue-700">
-                <FollowersCard></FollowersCard>
-              </div>
-            </div>
-          </>
-        )}
+        <div className='pb-15'>
+        <UserInfo />
+        </div>
         </FollowProvider>
 
         <MyPlaylists />

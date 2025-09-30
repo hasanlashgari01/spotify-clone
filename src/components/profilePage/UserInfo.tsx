@@ -4,6 +4,9 @@ import defAvatar from '../../../public/default-avatar.webp';
 import LoadingCircle from '../loading/LoadingCircle';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../../styles/userinfo.css';
+import { useFollow } from '../../context/UserFansContext';
+import FollowersCard from './FollowerCard';
+import FollowingCard from './FollowingCard';
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024;
 
@@ -19,7 +22,7 @@ const UserInfo = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const [userImage, setUserImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-
+  const {count} = useFollow();
   const [modalOpen, setModalOpen] = useState(false);
   const [fullName, setFullName] = useState<string>('');
   const [bio, setBio] = useState<string>('');
@@ -28,6 +31,8 @@ const UserInfo = () => {
   const [sizeErr, setSizeErr] = useState(false);
   const [fieldErr, setFieldErr] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string>('');
+  const [followersOpen, setFollowersOpen] = useState(false);
+  const [followingsOpen, setFollowingsOpen] = useState(false);
 
   const loadingRef = useRef(loading);
   loadingRef.current = loading;
@@ -155,10 +160,12 @@ const UserInfo = () => {
   }, [modalOpen]);
 
   return (
-    <div className="relative z-1000 flex h-[220px] flex-col items-start justify-end overflow-hidden rounded-b bg-cover bg-center sm:h-[300px] md:h-[340px] lg:h-[390px]">
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,#0b2e5a_0%,#0c2d4e_20%,#101d38_50%,#101721_100%)]" />
+    <div className="relative border-b-1 border-gray-300 z-1000 flex h-[220px] flex-col items-start justify-end overflow-hidden rounded-b bg-cover bg-center sm:h-[300px] md:h-[340px] lg:h-[390px]">
+      <div className="pointer-events-none  absolute inset-0 bg-[linear-gradient(180deg,#0b2e5a_0%,#0c2d4e_20%,#101d38_50%,#101721_100%)] flex flex-row" />
 
-      <AnimatePresence>
+      <div className='flex w-[100vw] items-between justify-between '>
+      <div className=''>
+        <AnimatePresence>
         {modalOpen && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
@@ -313,7 +320,7 @@ const UserInfo = () => {
         )}
       </AnimatePresence>
 
-      <div className="relative z-10 flex min-w-full flex-col items-start border-b-1 border-gray-300 px-4 pt-26 pb-6 backdrop-blur-[2px] sm:px-6 sm:pt-24 md:px-8 md:pt-28 lg:px-10 lg:pt-32">
+      <div className="relative z-10 flex min-w-full flex-col items-start  px-4 pt-26 pb-6 backdrop-blur-[2px] sm:px-6 sm:pt-24 md:px-8 md:pt-28 lg:px-10 lg:pt-32">
         <div className="flex w-full flex-col items-center pb-4 sm:items-start sm:pb-5">
           <div className="flex flex-col items-center pb-3 sm:items-start sm:pb-5">
             <div className="relative group">
@@ -349,11 +356,40 @@ const UserInfo = () => {
         </div>
 
         <div className="w-full pb-3 flex flex-row items-center justify-center sm:justify-start text-2xl text-white sm:pb-6 sm:text-3xl md:text-4xl gap-2">
-          <span className="font-light text-white/70">Welcome dear,</span>
-          <span className="font-extrabold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]">
+          
+          <span className="font-extrabold ml-3 sm:ml-7 md:ml-8 lg:ml-10 text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]">
             {userData?.fullName ? userData.fullName : 'Am1r'}
           </span>
         </div>
+      </div>
+        
+      
+      </div>
+      <div className='relative z-10 h-fit top-[42%] text-white  flex gap-8 md:gap-20 transition-all  items-center justify-center mr-10 lg:mr-20'>
+        <button
+          type='button'
+          onClick={() => setFollowersOpen(true)}
+          className='group flex flex-col text-center cursor-pointer select-none focus:outline-none'
+          aria-label='Open followers list'
+        >
+          <h2 className='text-white transition-all group-hover:text-gray-300 text-[22px] sm:text-[30px] md:text-[35px] lg:text-[40px] z-1000'>{count.followers}+</h2>
+          <h3 className='text-sm transition-all group-hover:text-gray-300  sm:text-xl md:text-2xl lg:text-3xl'>Followers</h3>
+        </button>
+        <button
+          type='button'
+          onClick={() => setFollowingsOpen(true)}
+          className='group flex flex-col text-center cursor-pointer select-none focus:outline-none'
+          aria-label='Open followings list'
+        >
+          <h2 className='text-white transition-all group-hover:text-gray-300 text-[22px] sm:text-[30px] md:text-[35px] lg:text-[40px] z-1000'>{count.followings}+</h2>
+          <h3 className='text-sm transition-all group-hover:text-gray-300  sm:text-xl md:text-2xl lg:text-3xl'>Following</h3>
+        </button>
+      </div>
+      
+      </div>
+      <div className='fixed'>
+      <FollowersCard open={followersOpen} onClose={() => setFollowersOpen(false)} />
+      <FollowingCard open={followingsOpen} onClose={() => setFollowingsOpen(false)} />
       </div>
     </div>
   );

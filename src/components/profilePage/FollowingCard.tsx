@@ -14,16 +14,23 @@ import { useFollow } from '../../context/UserFansContext';
 import { XIcon } from 'lucide-react';
 import { UserService } from '../../services/userDetailsService';
 
-const FollowingCard: React.FC = () => {
+interface FollowingCardProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
   
   const isDesktop = useMediaQuery({ minWidth: 1195 });
 
-  const { followings, setFollowings } = useFollow();
+  const { followings, setFollowings , setCount } = useFollow();
 
   
   const [fCount, setFCount] = useState<number>(0);
-  const [modal, setModal] = useState<boolean>(false); 
+  const [modal, setModal] = useState<boolean>(false);
+  const isControlled = typeof open === 'boolean';
+  const isOpen = isControlled ? !!open : modal;
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 10;
@@ -80,7 +87,7 @@ const FollowingCard: React.FC = () => {
 
 
   useEffect(() => {
-    if (!modal) return;
+    if (!isOpen) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loading && page < totalPages) {
@@ -94,28 +101,36 @@ const FollowingCard: React.FC = () => {
     return () => {
       if (el) observer.unobserve(el);
     };
-  }, [modal, loading, page, totalPages]);
-
+  }, [isOpen, loading, page, totalPages]);
   
-  const handleUnfollow =  useCallback(async (id: number) => {
+  
+  const handleUnfollow = useCallback(async (id: number) => {
     const res = await UserService.FollowUnFollow(id);
     if (res === 200) {
-        setFollowings(prev => prev.filter(item => item.following?.id !== id));
-    }
-    else {
+      setFollowings(prev => prev.filter(item => item.following?.id !== id));
+      setCount(prev => ({
+        ...prev,
+        followings: Math.max(0, prev.followings - 1),
+      }));
+    } else {
       return;
     }
-    
-    
-  }, [setFollowings]);
+  }, [setFollowings, setCount]);
+
+  // In controlled mode, avoid occupying any layout space when closed
+  if (isControlled && !isOpen) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center gap-20 bg-transparent p-10">
      
-      {(modal === true) && (
+      {isOpen && (
         <div
           className="fixed inset-0 z-10000 flex items-center justify-center bg-black/50"
-          onClick={() => setModal(false)}
+          onClick={() => {
+            if (isControlled) onClose?.(); else setModal(false)
+          }}
         >
           <div
             className="relative flex max-h-[80vh] min-h-[80vh] w-[90%] max-w-[500px] flex-col gap-6 overflow-y-auto rounded-2xl bg-[#101721] p-6 text-white"
@@ -124,7 +139,7 @@ const FollowingCard: React.FC = () => {
             <div className="flex flex-row items-center justify-start">
               <h2 className="text-center text-2xl font-bold">Followings</h2>
               <div
-                onClick={() => setModal(false)}
+                onClick={() => { if (isControlled) onClose?.(); else setModal(false) }}
                 className="ml-auto cursor-pointer rounded-2xl bg-red-600 p-1 transition-all hover:bg-red-700"
               >
                 <XIcon color="white" />
@@ -153,82 +168,7 @@ const FollowingCard: React.FC = () => {
       )}
 
       
-      {isDesktop ? (
-        <div className="w-content flex flex-col items-center gap-5">
-        <div className="w-content flex flex-row items-start justify-start gap-6">
-          <h2 className="text-[40px] text-white">Following</h2>
-          {loading ? <LoadingCircle /> : <h2 className="text-[40px] font-bold text-blue-600">{fCount}+</h2>}
-        </div>
-
-        {followings.length > 0 && (
-          <>
-            <div className="flex flex-row">
-              {followings.slice(0, 5).map((f) => (
-                <img
-                  key={f.following.id}
-                  src={f.following.avatar ?? defAvatar}
-                  alt={f.following.fullName}
-                  className={`-ml-3 rounded-full border-3 border-blue-900 first:ml-0 ${isMobile ? 'h-12 w-12' : 'h-20 w-20'}`}
-                  style={{ zIndex: followings.length }}
-                />
-              ))}
-            </div>
-
-            <div className="flex w-[20%] justify-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                className="h-8 w-10 rotate-90 transform cursor-pointer text-white"
-                viewBox="0 0 16 16"
-                onClick={() => setModal(true)}
-              >
-                <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
-              </svg>
-            </div>
-          </>
-        )}
-      </div>
-      ) : (
-        
-        <div className="w-content flex flex-col items-center gap-5">
-          <div className="w-content flex flex-row items-start justify-start gap-6">
-            <h2 className="text-3xl text-white">Following</h2>
-            {loading ? <LoadingCircle /> : <h2 className="text-3xl font-bold text-blue-600">{fCount}+</h2>}
-          </div>
-
-          {followings.length > 0 && (
-            <>
-              <div className="flex flex-row">
-                {followings.slice(0, 5).map((f) => (
-                  <img
-                    key={f.following.id}
-                    src={f.following.avatar ?? defAvatar}
-                    alt={f.following.fullName}
-                    className={`-ml-3 rounded-full border-3 border-blue-900 first:ml-0 ${isMobile ? 'h-12 w-12' : 'h-16 w-16'}`}
-                    style={{ zIndex: followings.length }}
-                  />
-                ))}
-              </div>
-
-              <div className="flex w-[20%] justify-end">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="h-8 w-10 rotate-90 transform cursor-pointer text-white"
-                  viewBox="0 0 16 16"
-                  onClick={() => setModal(true)}
-                >
-                  <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
-                </svg>
-              </div>
-            </>
-          )}
-        </div>
-      )}
+      
     </div>
   );
 };
