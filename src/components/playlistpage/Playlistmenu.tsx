@@ -5,15 +5,16 @@ import { TbMusicHeart } from 'react-icons/tb';
 import { IoMdShare, IoMdCopy, IoMdTrash } from 'react-icons/io';
 import Modal from '../MyPlayLists/Modal';
 import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
-
+import { PiMusicNotesPlusFill } from 'react-icons/pi';
+import SearchModal from './SearchModal';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   isOwner?: boolean;
   isPublic?: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   playlist?: any;
   onPlaylistUpdated?: () => void;
+
 }
 
 const PlaylistMenu = ({
@@ -25,7 +26,7 @@ const PlaylistMenu = ({
 }: Props) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
-
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const menuItems = [
     {
       icon: IoMdShare,
@@ -48,10 +49,17 @@ const PlaylistMenu = ({
     ...(isOwner
       ? [
           {
+            icon: PiMusicNotesPlusFill,
+            label: 'Add music',
+            action: () => {
+              (setSearchModalOpen(true), onClose());
+            },
+            color: 'text-white hover:text-blue-400',
+          },
+          {
             icon: FiEdit,
             label: 'Edit Details',
             action: () => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               (setEditModalOpen(true), onClose());
             },
             color: 'text-white hover:text-blue-400',
@@ -101,7 +109,7 @@ const PlaylistMenu = ({
 
             <motion.div
               ref={menuRef}
-              className="fixed inset-x-0 bottom-20 z-70 mx-2 mb-2 sm:mx-4 sm:mb-4 md:right-4 md:bottom-4 md:left-auto md:mx-0 md:w-80"
+              className="fixed inset-x-0 bottom-20 z-70 mx-2 mb-2 sm:mx-4 sm:mb-4 md:left-4 md:bottom-4 md:right-auto md:mx-0 md:w-80"
               initial={{ y: '100%', opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '100%', opacity: 0 }}
@@ -222,6 +230,10 @@ const PlaylistMenu = ({
           }}
         />
       </Modal>
+   <SearchModal
+  open={searchModalOpen}
+  onClose={() => setSearchModalOpen(false)}
+/>
     </>
   );
 };

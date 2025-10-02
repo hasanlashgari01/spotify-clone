@@ -5,12 +5,10 @@ import { IoMdShare } from 'react-icons/io';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { X, Search } from 'lucide-react';
 import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
-// Custom gradient loader (blue luxury tones)
 import {
   getPlaylistDetails,
   Playlistinfo,
 } from '../../services/playlistDetailsService';
-// Removed old inline loader in favor of a full-page spinner
 import PlaylistStatusControl from './PlaylistStatusControl';
 import {
   updatePlaylistStatus,
@@ -20,8 +18,7 @@ import PlaylistMenu from './Playlistmenu';
 import { getMe, MeResponse } from '../../services/meService';
 import LoadingCircle from '../loading/LoadingCircle';
 import { playlistService } from '../../services/playlistService';
-
-// Elegant gradient loader component
+import FloatingMusicIcons from './FloatingMusicIcons';
 const LuxeLoader = () => (
   <svg
     className="h-20 w-20 animate-[spin_1.8s_ease-in-out_infinite] drop-shadow-[0_0_12px_rgba(59,130,246,0.35)]"
@@ -141,7 +138,11 @@ const PlaylistDetails = ({
   const seconds = totalSeconds % 60;
 
   return (
-    <div className="flex w-full flex-col md:flex-row">
+    <div className="relative flex w-full flex-col md:flex-row">
+      <div className="pointer-events-none absolute inset-0 hidden overflow-hidden md:block">
+        <FloatingMusicIcons />
+      </div>
+
       <div className="block md:hidden">
         <div
           className="relative h-[50vh] w-full bg-cover bg-center"
@@ -153,14 +154,14 @@ const PlaylistDetails = ({
 
           <div className="relative z-10 flex h-full flex-col items-center justify-evenly p-8">
             <div className="group relative mt-4">
-              <div className="absolute -inset-1 rounded-xl bg-purple-600 opacity-60 blur transition duration-500 group-hover:opacity-80"></div>
+              <div className="absolute -inset-1 rounded-xl bg-[#1574f5] opacity-60 blur transition duration-500 group-hover:opacity-80"></div>
               <img
                 src={playlist.cover || '/default.webp'}
                 alt={playlist.title}
                 className="relative h-32 w-32 rounded-xl object-cover shadow-xl ring-1 ring-white/20"
               />
             </div>
-            <div className="w-full text-center text-white mb-10">
+            <div className="mb-10 w-full text-center text-white">
               <h1 className="mt-3 text-2xl font-bold drop-shadow-lg">
                 {playlist.title}
               </h1>
@@ -251,7 +252,7 @@ const PlaylistDetails = ({
       </div>
       <div className="hidden md:flex md:flex-col md:items-center md:justify-center md:md:justify-start md:p-5">
         <div className="group relative">
-          <div className="absolute -inset-1 rounded-2xl bg-purple-600 opacity-75 blur transition duration-1000 group-hover:opacity-100"></div>
+          <div className="absolute -inset-1 rounded-2xl bg-[#1574f5] opacity-75 blur transition duration-1000 group-hover:opacity-100"></div>
           <img
             src={playlist.cover || '/default.webp'}
             alt={playlist.title}
@@ -377,16 +378,6 @@ const PlaylistDetails = ({
           }
         }}
       />
-      {/* ---------------------------- */}
-
-
-
-      {/* <SearchModal open={showSearch} onClose={() => setShowSearch(false)} /> */}
-      {/* SearchModal's Props ^^^^^*/}
-
-
-
-      {/* ---------------------------- */}
     </div>
   );
 };
