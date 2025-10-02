@@ -1,5 +1,6 @@
 import { httpService } from '../config/axios';
 import { User } from './authService';
+import { getMe } from './meService';
 
 export interface Pagination {
   page: number;
@@ -85,12 +86,16 @@ export const getFollowingCount = async (
 export const UserService = {
   async FollowUnFollow(id: number) {
     if (!id) return;
+    const me = await getMe();
+    if (!me) return;
+    if (me.sub === id) return;
     try {
       const response = await httpService.get(`/follow/${id}`);
-      
-      return response.status;
+    return response.status;
     } catch (error) {
-      console.error(error);
+      console.log('Error occurred:', error);
+      return;
     }
   },
+  
 };

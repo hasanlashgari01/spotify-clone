@@ -42,6 +42,7 @@ const PlaylistStatusControl = ({
         if (!mounted) return;
         setMe(u);
       } catch (e) {
+        console.log("Error occured : " , e)
       } finally {
         if (mounted) setLoadingMe(false);
       }

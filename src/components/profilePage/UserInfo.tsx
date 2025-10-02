@@ -7,6 +7,7 @@ import '../../styles/userinfo.css';
 import { useFollow } from '../../context/UserFansContext';
 import FollowersCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
+import { playlistService } from '../../services/playlistService';
 
 const MAX_FILE_SIZE = 1 * 1024 * 1024;
 
@@ -33,13 +34,16 @@ const UserInfo = () => {
   const [successMsg, setSuccessMsg] = useState<string>('');
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followingsOpen, setFollowingsOpen] = useState(false);
-
+  const [PlaylCount , setPlaylCount] = useState<number>(0)
   const loadingRef = useRef(loading);
   loadingRef.current = loading;
 
   const fetchUserData = useCallback(async () => {
     try {
       const data = await authService.getUser();
+      const res = await playlistService.getMyPlaylists();
+      setPlaylCount(res.playlists.length)
+      
       setFullName(data?.fullName || '');
       setBio(data?.bio || '');
       setUserData(data);
@@ -163,7 +167,7 @@ const UserInfo = () => {
     <div className="relative border-b-1 border-gray-300 z-1000 flex h-[220px] flex-col items-start justify-end overflow-hidden rounded-b bg-cover bg-center sm:h-[300px] md:h-[340px] lg:h-[390px]">
       <div className="pointer-events-none  absolute inset-0 bg-[linear-gradient(180deg,#0b2e5a_0%,#0c2d4e_20%,#101d38_50%,#101721_100%)] flex flex-row" />
 
-      <div className='flex w-[100vw] items-between justify-between '>
+      <div className='flex w-[100vw] items-start justify-between '>
       <div className=''>
         <AnimatePresence>
         {modalOpen && (
@@ -365,14 +369,14 @@ const UserInfo = () => {
         
       
       </div>
-      <div className='relative z-10 h-fit top-[42%] text-white  flex gap-8 md:gap-20 transition-all  items-center justify-center mr-10 lg:mr-20'>
+      <div className='relative p-3 sm:p-5 md:p-10 lg:p-13 rounded-2xl sm:rounded-3xl  h-fit top-[42%] sm:top-[30%] border-1 border-gray-400 text-white  flex gap-8 md:gap-20 transition-all  items-center justify-center mr-5 sm:mr-5 md:mr-5 lg:mr-15'>
         <button
           type='button'
           onClick={() => setFollowersOpen(true)}
           className='group flex flex-col text-center cursor-pointer select-none focus:outline-none'
           aria-label='Open followers list'
         >
-          <h2 className='text-white transition-all group-hover:text-gray-300 text-[22px] sm:text-[30px] md:text-[35px] lg:text-[40px] z-1000'>{count.followers}+</h2>
+          <h2 className='text-white transition-all group-hover:text-gray-300 text-[15px] sm:text-[30px] md:text-[35px] lg:text-[40px] '>{count.followers}+</h2>
           <h3 className='text-sm transition-all group-hover:text-gray-300  sm:text-xl md:text-2xl lg:text-3xl'>Followers</h3>
         </button>
         <button
@@ -381,9 +385,13 @@ const UserInfo = () => {
           className='group flex flex-col text-center cursor-pointer select-none focus:outline-none'
           aria-label='Open followings list'
         >
-          <h2 className='text-white transition-all group-hover:text-gray-300 text-[22px] sm:text-[30px] md:text-[35px] lg:text-[40px] z-1000'>{count.followings}+</h2>
+          <h2 className='text-white transition-all group-hover:text-gray-300 text-[15px] sm:text-[30px] md:text-[35px] lg:text-[40px] '>{count.followings}+</h2>
           <h3 className='text-sm transition-all group-hover:text-gray-300  sm:text-xl md:text-2xl lg:text-3xl'>Following</h3>
         </button>
+        <div className='group  flex-col text-center  select-none focus:outline-none hidden sm:flex md:flex'>
+          <h2 className='text-white transition-all  text-[15px] sm:text-[30px] md:text-[35px] lg:text-[40px] '>{PlaylCount}+</h2>
+          <h3 className='text-sm transition-all sm:text-xl md:text-2xl lg:text-3xl'>Playlists</h3>
+        </div>
       </div>
       
       </div>

@@ -11,6 +11,7 @@ interface Props {
   onClose: () => void;
   isOwner?: boolean;
   isPublic?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   playlist?: any;
   onPlaylistUpdated?: () => void;
 }
@@ -50,6 +51,7 @@ const PlaylistMenu = ({
             icon: FiEdit,
             label: 'Edit Details',
             action: () => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               (setEditModalOpen(true), onClose());
             },
             color: 'text-white hover:text-blue-400',

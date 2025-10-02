@@ -20,6 +20,7 @@ import PlaylistMenu from './Playlistmenu';
 import { getMe, MeResponse } from '../../services/meService';
 import LoadingCircle from '../loading/LoadingCircle';
 import { playlistService } from '../../services/playlistService';
+
 // Elegant gradient loader component
 const LuxeLoader = () => (
   <svg
@@ -52,9 +53,14 @@ type OwnerProp = {
   search: string;
   setSearch: Dispatch<SetStateAction<string>>;
   setReady?: Dispatch<SetStateAction<boolean>>;
-  onHeartAction?: () => Promise<any> | void;
+  onHeartAction?: () => Promise<unknown> | void;
 };
-const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) => {
+const PlaylistDetails = ({
+  setOwner,
+  search,
+  setSearch,
+  setReady,
+}: OwnerProp) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const isTablet = useMediaQuery({ minWidth: 767 });
 
@@ -62,7 +68,7 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
   const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSearch, setShowSearch] = useState<boolean>(false);
-  const [me, setMe] = useState<MeResponse | null>(null);
+  const [, setMe] = useState<MeResponse | null>(null);
   const [isOwner, setIsOwner] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
@@ -71,17 +77,15 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
     try {
       if (!playlist?.id || isLiking) return;
       setIsLiking(true);
-      const res = await playlistService.LikeorUnlike(`${playlist?.id}`)
-      
-      
+      const res = await playlistService.LikeorUnlike(`${playlist?.id}`);
+
       if (res && res.statusCode) {
         console.log('Error Occurred:', res);
         return;
       }
-      setIsLiked((prev) => !prev)
-    } 
-    catch (err) {
-      console.error(err)
+      setIsLiked((prev) => !prev);
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsLiking(false);
     }
@@ -102,7 +106,7 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
         setOwner(playlistData.ownerId);
         setPlaylist(playlistData);
         setIsLiked(playlistData.isLiked);
-        
+
         setMe(userData);
         setIsOwner(userData.sub === playlistData.ownerId);
       } catch (error) {
@@ -114,7 +118,7 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
     };
 
     fetchData();
-  }, [slug, setOwner]);
+  }, [slug, setOwner, setReady]);
 
   if (loading) {
     return (
@@ -183,7 +187,7 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
                 <span>{playlist.songs.length} songs</span>
               </div>
 
-              <div className="mt-4 flex w-full items-center justify-between gap-4">
+              <div className="mt-7 flex w-full items-center justify-center gap-4">
                 {!showSearch ? (
                   <div className="flex items-center gap-4">
                     <button
@@ -199,10 +203,12 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
                       onClick={handleHeartClick}
                       disabled={isLiking}
                       aria-disabled={isLiking}
-                      className={`group flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60 ${isLiking ? 'opacity-60 cursor-not-allowed' : ''}`}
+                      className={`group flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
                     >
                       {isLiking ? (
-                        <div className="flex h-5 w-5 items-center justify-center"><LoadingCircle /></div>
+                        <div className="flex h-5 w-5 items-center justify-center">
+                          <LoadingCircle />
+                        </div>
                       ) : isLiked ? (
                         <FaHeart className="text-lg text-red-500 transition-colors" />
                       ) : (
@@ -228,7 +234,10 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
                     />
                     <button
                       aria-label="Close search"
-                      onClick={() => { setShowSearch(false); setSearch(''); }}
+                      onClick={() => {
+                        setShowSearch(false);
+                        setSearch('');
+                      }}
                       className="group flex h-9 w-11 cursor-pointer items-center justify-center rounded-full bg-red-500/20 ring-1 ring-red-400/30 transition-all duration-200 hover:scale-105 hover:bg-red-500/50 hover:ring-red-400/60"
                     >
                       <X className="h-4 w-4 text-white transition-colors duration-200" />
@@ -269,10 +278,12 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
                   onClick={handleHeartClick}
                   disabled={isLiking}
                   aria-disabled={isLiking}
-                  className={`group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14 ${isLiking ? 'opacity-60 cursor-not-allowed' : ''}`}
+                  className={`group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
                 >
                   {isLiking ? (
-                    <div className="flex h-6 w-6 items-center justify-center"><LoadingCircle /></div>
+                    <div className="flex h-6 w-6 items-center justify-center">
+                      <LoadingCircle />
+                    </div>
                   ) : isLiked ? (
                     <FaHeart className="text-2xl text-red-500 transition-colors sm:text-3xl" />
                   ) : (
@@ -297,7 +308,10 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
                 />
                 <button
                   aria-label="Close search"
-                  onClick={() => { setShowSearch(false); setSearch(''); }}
+                  onClick={() => {
+                    setShowSearch(false);
+                    setSearch('');
+                  }}
                   className="group flex h-9 w-11 cursor-pointer items-center justify-center rounded-full bg-red-500/20 ring-1 ring-red-400/30 transition-all duration-200 hover:scale-105 hover:bg-red-500/50 hover:ring-red-400/60"
                 >
                   <X className="h-4 w-4 text-white transition-colors duration-200" />
@@ -363,6 +377,16 @@ const PlaylistDetails = ({ setOwner, search, setSearch, setReady }: OwnerProp) =
           }
         }}
       />
+      {/* ---------------------------- */}
+
+
+
+      {/* <SearchModal open={showSearch} onClose={() => setShowSearch(false)} /> */}
+      {/* SearchModal's Props ^^^^^*/}
+
+
+
+      {/* ---------------------------- */}
     </div>
   );
 };

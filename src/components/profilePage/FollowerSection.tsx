@@ -46,7 +46,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
   };
 
   return (
-    <tbody>
+    <tbody className='z-1000'>
       <tr className="song-tableRow border-b border-gray-700 transition hover:bg-gray-800/40">
         <td className="w-16">
           <img

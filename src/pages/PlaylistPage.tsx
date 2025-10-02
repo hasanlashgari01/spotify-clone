@@ -1,13 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import PlaylistDeatails from '../components/playlistpage/PlaylistDeatails';
-import PlaylistSearch from '../components/playlistpage/PlaylistSearch';
+
 import PlaylistSongs from '../components/playlistpage/PlaylistSongs';
 import { getMe } from '../services/meService';
+
 
 const PlaylistPage = () => {
   const [owner, setOwner] = useState<number | null>(null);
   const [isOwner , setIsOwner] = useState<boolean | null>(null);
-  const [canSearch, setCanSearch] = useState<boolean | null>(null);
+  const [, setCanSearch] = useState<boolean | null>(null);
   const [searchText, setSearchText] = useState<string>('');
   const [ready, setReady] = useState<boolean>(false);
 
@@ -32,7 +33,7 @@ const PlaylistPage = () => {
       {ready && (
         <>
           <PlaylistSongs refFetch={playlistSongsRef} isOwner={isOwner} search={searchText} />
-          {canSearch && <PlaylistSearch refFetch={playlistSongsRef} />}
+          
         </>
       )}
     </div>

@@ -10,6 +10,7 @@ import SortMenu from './SortMenu';
 import { useMediaQuery } from 'react-responsive';
 import LoadingCircle from '../loading/LoadingCircle';
 import { PlayIcon, PauseIcon } from 'lucide-react';
+import '../../styles/scrollbar-hide.css';
 interface PlSongsProps {
   songs: PlaylistSong[];
   setSortBy: React.Dispatch<SetStateAction<SongSortBy>>;
@@ -70,9 +71,11 @@ const PlSongs: React.FC<PlSongsProps> = ({
 
   return (
     <div className="w-full border-b-1 border-white">
-      <div className={`w-full overflow-x-auto ${songs.length > 8 ? 'relative max-h-[55vh] md:max-h-[65vh] lg:max-h-[70vh] overflow-y-auto' : ''}`}>
+      <div
+        className={`w-full overflow-x-auto ${songs.length > 8 ? 'scrollbar-hide relative max-h-[55vh] overflow-y-auto md:max-h-[65vh] lg:max-h-[70vh]' : ''}`}
+      >
         <table className="min-w-full text-left">
-          <thead className="sticky top-0 z-10 bg-[rgba(16,23,33,0.85)] backdrop-blur-sm text-white">
+          <thead className="sticky top-0 z-10 text-white backdrop-blur-sm">
             <tr>
               <th className="h-5 w-6 sm:w-8">
                 <h6 className="text-center">#</h6>
@@ -236,11 +239,10 @@ const PlSongs: React.FC<PlSongsProps> = ({
                 </tr>
               );
             })}
-            </tbody>
-          </table>
-        </div>
+          </tbody>
+        </table>
       </div>
-    
+    </div>
   );
 };
 

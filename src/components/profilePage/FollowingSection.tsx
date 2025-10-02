@@ -30,7 +30,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, o
   };
 
   return (
-    <tbody>
+    <tbody className='z-100'>
       <tr className="song-tableRow border-b border-gray-700 transition hover:bg-gray-800/40">
         <td className="w-16">
           <img

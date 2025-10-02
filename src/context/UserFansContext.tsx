@@ -1,7 +1,8 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Followings , Followers, getFollowingCount } from "../services/userDetailsService";
+import { Followings , Followers, getFollowingCount, getUserFollowings } from "../services/userDetailsService";
 import { getMe } from "../services/meService";
+
 
 
 interface Count {
@@ -16,6 +17,8 @@ interface FollowContextType {
   setFollowers: React.Dispatch<React.SetStateAction<Followers[]>>;
   count: Count;
   setCount : React.Dispatch<React.SetStateAction<Count>>
+  meId: number;
+  setMeId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const FollowContext = createContext<FollowContextType | undefined>(undefined);
@@ -23,6 +26,7 @@ const FollowContext = createContext<FollowContextType | undefined>(undefined);
 export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [followings, setFollowings] = useState<Followings[]>([]);
   const [followers, setFollowers] = useState<Followers[]>([]);
+  const [meId, setMeId] = useState<number>(0);
   const [count , setCount] = useState<Count>({
     followers: 0,
     followings: 0,
@@ -30,14 +34,18 @@ export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const fetchData = async () => {
     try {
       const me = await getMe();
+      if (!me) return;
+      setMeId(me.sub);
       const followersCount = await getFollowingCount(`${me.sub}`, `followers`);
       const followingsCount = await getFollowingCount(`${me.sub}`, `followings`);
+      const followings = await getUserFollowings(`${me.sub}`, 1, 1000000);
       setCount({
         followers: Number(followersCount) || 0,
         followings: Number(followingsCount) || 0,
       });
+      setFollowings(followings?.followings ?? [])
     } catch (e) {
-      // keep defaults on error
+      console.log('Error occurred:', e);
       setCount({ followers: 0, followings: 0 });
     }
   }
@@ -46,11 +54,12 @@ export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   }, [])
   
   return (
-    <FollowContext.Provider value={{ followings, setFollowings, followers, setFollowers , count , setCount}}>
+    <FollowContext.Provider value={{ followings, setFollowings, followers, setFollowers , count , setCount, meId, setMeId}}>
       {children}
     </FollowContext.Provider>
   );
 };
+
 
 export const useFollow = () => {
   const context = useContext(FollowContext);
