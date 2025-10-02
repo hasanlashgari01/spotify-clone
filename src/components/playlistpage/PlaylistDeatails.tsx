@@ -151,7 +151,7 @@ const PlaylistDetails = ({
         >
           <div className="absolute inset-0 backdrop-blur-[2px]" />
 
-          <div className="relative z-10 flex h-full flex-col items-center justify-between p-8">
+          <div className="relative z-10 flex h-full flex-col items-center justify-evenly p-8">
             <div className="group relative mt-4">
               <div className="absolute -inset-1 rounded-xl bg-purple-600 opacity-60 blur transition duration-500 group-hover:opacity-80"></div>
               <img
@@ -160,7 +160,7 @@ const PlaylistDetails = ({
                 className="relative h-32 w-32 rounded-xl object-cover shadow-xl ring-1 ring-white/20"
               />
             </div>
-            <div className="w-full text-center text-white">
+            <div className="w-full text-center text-white mb-10">
               <h1 className="mt-3 text-2xl font-bold drop-shadow-lg">
                 {playlist.title}
               </h1>
@@ -187,7 +187,7 @@ const PlaylistDetails = ({
                 <span>{playlist.songs.length} songs</span>
               </div>
 
-              <div className="mt-7 flex w-full items-center justify-center gap-4">
+              <div className="mt-2 flex w-full items-center justify-center gap-4">
                 {!showSearch ? (
                   <div className="flex items-center gap-4">
                     <button

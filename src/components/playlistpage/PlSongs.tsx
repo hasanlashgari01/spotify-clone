@@ -70,7 +70,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
   }, []);
 
   return (
-    <div className="w-full border-b-1 border-white">
+    <div className="w-full border-b-1 ">
       <div
         className={`w-full overflow-x-auto ${songs.length > 8 ? 'scrollbar-hide relative max-h-[55vh] overflow-y-auto md:max-h-[65vh] lg:max-h-[70vh]' : ''}`}
       >
