@@ -1,4 +1,3 @@
-import React from 'react'
 import OthersProfile from '../components/othersProfile/OthersProfile'
 import { FollowProvider } from '../context/UserFansContext';
 
