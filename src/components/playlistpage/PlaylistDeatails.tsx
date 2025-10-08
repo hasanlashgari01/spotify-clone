@@ -281,11 +281,7 @@ const PlaylistDetails = ({
                   aria-disabled={isLiking}
                   className={`group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
                 >
-                  {isLiking ? (
-                    <div className="flex h-6 w-6 items-center justify-center">
-                      <LoadingCircle />
-                    </div>
-                  ) : isLiked ? (
+                  { isLiked ? (
                     <FaHeart className="text-2xl text-red-500 transition-colors sm:text-3xl" />
                   ) : (
                     <FaRegHeart className="text-2xl text-white transition-colors group-hover:text-red-400 sm:text-3xl" />
