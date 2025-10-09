@@ -6,10 +6,9 @@ import {
   getUserFollowings,
 } from '../../services/userDetailsService'; 
 import { authService } from '../../services/authService';
-import defAvatar from '../../../public/default-avatar.webp';
+
 import FollowingSection from './FollowingSection';
-import { useMediaQuery } from 'react-responsive';
-import LoadingCircle from '../loading/LoadingCircle';
+
 import { useFollow } from '../../context/UserFansContext';
 import { XIcon } from 'lucide-react';
 import { UserService } from '../../services/userDetailsService';
@@ -20,14 +19,12 @@ interface FollowingCardProps {
 }
 
 const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
-  const isMobile = useMediaQuery({ maxWidth: 779 });
-  
-  const isDesktop = useMediaQuery({ minWidth: 1195 });
+
 
   const { followings, setFollowings , setCount } = useFollow();
 
   
-  const [fCount, setFCount] = useState<number>(0);
+  const [, setFCount] = useState<number>(0);
   const [modal, setModal] = useState<boolean>(false);
   const isControlled = typeof open === 'boolean';
   const isOpen = isControlled ? !!open : modal;
