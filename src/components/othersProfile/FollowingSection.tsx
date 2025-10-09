@@ -68,7 +68,7 @@ const FollowingSection: React.FC<FollowerProps> = ({
         <td>
           <div className="flex flex-col items-start justify-center w-20 sm:w-60">
             <Link to={`/profile/${userId}`}>
-              <h3 className="text-base font-semibold text-white">{fullName}</h3>
+              <h3 className="text-sm sm:text-lg font-semibold text-white">{fullName}</h3>
             </Link>
           </div>
         </td>
@@ -77,7 +77,7 @@ const FollowingSection: React.FC<FollowerProps> = ({
           {meId !== userId && (<button
             onClick={() => handleFollowToggle(userId)}
             disabled={loading}
-            className={`cursor-pointer bg-black border border-blue-950 p-2 text-md rounded-xl transition-all hover:bg-gray-900 min-w-20 w-content disabled:opacity-60 disabled:cursor-not-allowed`}
+            className={`cursor-pointer bg-black border border-blue-950 p-2 text-md rounded-xl transition-all hover:bg-gray-900 w-content disabled:opacity-60 disabled:cursor-not-allowed`}
           >
             {loading ? (
               <LoadingCircle />

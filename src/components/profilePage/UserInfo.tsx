@@ -62,11 +62,11 @@ const UserInfo = () => {
 
   useEffect(() => {
     fetchUserData();
-  }, []);
+  }, );
 
   useEffect(() => {
     if (!loading) fetchUserData();
-  }, [loading]);
+  }, [fetchUserData, loading]);
 
   useEffect(() => {
     return () => {
@@ -151,7 +151,7 @@ const UserInfo = () => {
         setTimeout(() => setSuccessMsg(''), 2500);
       }
     },
-    [userData, fullName, bio, userImage, gender]
+    [userData, bio, userImage, gender]
   );
 
   useEffect(() => {

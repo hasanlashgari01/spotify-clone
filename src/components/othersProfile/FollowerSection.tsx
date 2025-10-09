@@ -10,6 +10,7 @@ import { useFollow } from '../../context/UserFansContext';
 interface FollowerProps {
   avatar?: string;
   fullName: string;
+
   userId: number;
   isFollowing?: boolean;
   onFollow?: (id: number) => void;
@@ -19,6 +20,7 @@ interface FollowerProps {
 const FollowerSection: React.FC<FollowerProps> = ({
   avatar,
   fullName,
+
   userId,
   isFollowing: isFollowingProp,
   onFollow,
@@ -69,7 +71,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
         <td>
           <div className="flex flex-col items-start justify-center">
             <Link to={`/profile/${fullName}`}>
-              <h3 className="text-base font-semibold text-white">{fullName}</h3>
+              <h3 className="text-sm sm:text-lg font-semibold text-white ">{fullName}</h3>
             </Link>
           </div>
         </td>
@@ -78,7 +80,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
             <button
               onClick={() => handleFollowToggle(userId)}
               disabled={loading}
-              className="text-md w-content min-w-20 cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="text-md w-content  text-sm sm:text-lg cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <LoadingCircle />

@@ -1,125 +1,249 @@
 import { User } from '../../services/authService';
-import { useEffect, useCallback, useState } from 'react';
 import defAvatar from '../../../public/default-avatar.webp';
-
+import { motion } from 'framer-motion';
 import '../../styles/userinfo.css';
-
 import FollowersCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
+import LoadingCircle from '../loading/LoadingCircle.tsx';
+
 import {
   getFollowingCount,
   getOthersDetails,
+  UserService,
 } from '../../services/userDetailsService';
+import { useFollow } from '../../context/UserFansContext.tsx';
 import { useParams } from 'react-router-dom';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState, useEffect } from 'react';
+
 interface Count {
   followings: number;
   followers: number;
 }
+
 const OthersProfile = () => {
-  const [userData, setUserData] = useState<User | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const { username } = useParams();
-  const [count, setCount] = useState<Count>({ followers: 0, followings: 0 });
+  const { username } = useParams<{ username: string }>();
+  const { followings } = useFollow();
+  const queryClient = useQueryClient();
+
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followingsOpen, setFollowingsOpen] = useState(false);
 
-  const fetchUserData = useCallback(async () => {
-    try {
-      const data = await getOthersDetails(`${username}`);
-      setUserData(data);
+  // وضعیت follow محلی برای تغییر فوری UI
+  const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined);
 
-      // گرفتن تعداد follower و following برای کاربر مورد نظر
+  // --- Query: دریافت اطلاعات کاربر ---
+  const { data: userData, isLoading: isUserLoading } = useQuery<User | null>({
+    queryKey: ['user', username],
+    queryFn: async () => {
+      if (!username) return null;
+      return await getOthersDetails(username);
+    },
+    staleTime: 60 * 1000,
+  });
+
+  // --- Query: دریافت تعداد فالوورها و فالووینگ‌ها ---
+  const { data: countData } = useQuery<Count>({
+    queryKey: ['userCounts', userData?.id],
+    queryFn: async () => {
+      if (!userData?.id) return { followers: 0, followings: 0 };
       const [followingsCount, followersCount] = await Promise.all([
-        getFollowingCount(`${data.id}`, 'followings'),
-        getFollowingCount(`${data.id}`, 'followers'),
+        getFollowingCount(`${userData.id}`, 'followings'),
+        getFollowingCount(`${userData.id}`, 'followers'),
       ]);
-
-      setCount({
+      return {
         followings: Number(followingsCount) || 0,
         followers: Number(followersCount) || 0,
-      });
+      };
+    },
+    enabled: !!userData?.id,
+  });
 
-      setPreviewImage(data?.avatar || null);
-    } catch {
-      // error handled silently
-    }
-  }, [username]);
-
+  // --- تنظیم state محلی follow با استفاده از context ---
   useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
+    if (!userData) return;
+    const followedState = followings.some(f => f.following.id === Number(userData.id));
+    setIsFollowed(followedState);
+  }, [userData, followings]);
 
-  useEffect(() => {
-    return () => {
-      if (previewImage && previewImage.startsWith('blob:')) {
-        URL.revokeObjectURL(previewImage);
+  // --- Mutation: Follow / Unfollow با optimistic update ---
+  const followMutation = useMutation({
+    mutationFn: async () => {
+      if (!userData?.id) throw new Error('User ID missing');
+      const res = await UserService.FollowUnFollow(Number(userData.id));
+      if (res !== 200) throw new Error('Request failed');
+      return res;
+    },
+    onMutate: async () => {
+      // فوراً UI رو آپدیت کن
+      setIsFollowed(prev => (prev !== undefined ? !prev : undefined));
+
+      if (userData?.id) {
+        queryClient.setQueryData<Count>(['userCounts', userData.id], old => {
+          if (!old) return { followers: 0, followings: 0 };
+          return {
+            ...old,
+            followers: isFollowed ? Math.max(0, old.followers - 1) : old.followers + 1,
+          };
+        });
       }
-    };
-  }, [previewImage]);
+    },
+    onError: (err) => {
+      console.error('Follow/Unfollow failed', err);
+      // rollback
+      setIsFollowed(prev => (prev !== undefined ? !prev : undefined));
+    },
+    onSettled: async () => {
+      if (!userData?.id) return;
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['userCounts', userData.id] }),
+        queryClient.invalidateQueries({ queryKey: ['user', username] }),
+        queryClient.invalidateQueries({ queryKey: ['followers', userData.id] }),
+        queryClient.invalidateQueries({ queryKey: ['followings', userData.id] }),
+      ]);
+    },
+  });
+
+  const previewImage: string = userData?.avatar ?? defAvatar;
+
+  // --- Loading state ---
+  if (isUserLoading)
+    return (
+      <div className="flex items-center justify-center h-[300px] text-white">
+        <LoadingCircle />
+      </div>
+    );
 
   return (
-    <div className="relative z-1000 flex h-[220px] flex-col items-start justify-end overflow-hidden rounded-b border-b-1 border-gray-300 bg-cover bg-center sm:h-[300px] md:h-[340px] lg:h-[390px]">
-      <div className="pointer-events-none absolute inset-0 flex flex-row bg-[linear-gradient(180deg,#0b2e5a_0%,#0c2d4e_20%,#101d38_50%,#101721_100%)]" />
+    <div className="relative z-50 flex h-[290px] flex-col items-start justify-end overflow-hidden rounded-b-2xl bg-cover bg-center sm:h-[300px] md:h-[340px] lg:h-[390px]">
+      <div className="pointer-events-none absolute inset-0 flex flex-row bg-[linear-gradient(135deg,#1a2c5b_0%,#0f1f3d_30%,#0a1628_60%,#050b14_100%)]" />
 
       <div className="flex w-[100vw] items-start justify-between">
-        <div className="">
-          <div className="relative z-10 flex min-w-full flex-col items-start px-4 pt-26 pb-6 backdrop-blur-[2px] sm:px-6 sm:pt-24 md:px-8 md:pt-28 lg:px-10 lg:pt-32">
+        {/* --- User info --- */}
+        <div>
+          <div className="relative flex min-w-full flex-col items-start px-4 pt-26 pb-6 backdrop-blur-[2px] sm:px-6 sm:pt-24 md:px-8 md:pt-28 lg:px-10 lg:pt-32">
             <div className="flex w-full flex-col items-center pb-4 sm:items-start sm:pb-5">
               <div className="flex flex-col items-center pb-3 sm:items-start sm:pb-5">
                 <div className="group relative">
                   <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-emerald-500/40 via-cyan-400/30 to-indigo-500/30 blur-lg" />
                   <img
                     className="relative h-28 w-28 rounded-full object-cover ring-2 ring-white/10 transition sm:h-32 sm:w-32 md:h-40 md:w-40 lg:h-44 lg:w-44"
-                    src={userData?.avatar || defAvatar}
+                    src={previewImage}
                     alt="User avatar"
                   />
                 </div>
-                <div className="mt-5 flex w-full flex-row items-center justify-center gap-2 pb-3 text-center text-2xl text-white sm:justify-start sm:pb-6 sm:text-3xl md:text-4xl">
-                  <span className="ml-13 text-center text-2xl font-extrabold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]">
-                    {userData?.fullName ? userData.fullName : 'Loading...'}
+                <div className="mt-5 flex w-full flex-col items-center justify-center pb-3 text-2xl text-white sm:mt-7 sm:flex-row sm:justify-center sm:pb-6 sm:text-3xl md:mt-8 md:text-4xl">
+                  <span className="font-extrabold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]">
+                    {userData?.fullName ?? 'Name'}
                   </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="relative top-[42%] mr-5 flex h-fit items-center justify-center gap-8 rounded-2xl border-1 border-gray-400 p-3 text-white transition-all sm:top-[30%] sm:mr-5 sm:rounded-3xl sm:p-5 md:mr-5 md:gap-20 md:p-10 lg:mr-15 lg:p-13">
-          <button
-            type="button"
-            onClick={() => setFollowersOpen(true)}
-            className="group flex cursor-pointer flex-col text-center select-none focus:outline-none"
-            aria-label="Open followers list"
+
+        {/* --- Stats and Buttons --- */}
+        <div className="relative flex-col top-[30%] mr-5 flex h-fit items-start justify-center gap-2 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-5 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-5  md:p-10 lg:mr-15 lg:p-13">
+          <motion.div
+            className="relative flex gap-4 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent p-6 shadow-xl backdrop-blur-xl sm:gap-6 sm:p-6 md:gap-10 md:p-8 lg:gap-12 lg:p-15"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            <h2 className="text-[15px] text-white transition-all group-hover:text-gray-300 sm:text-[30px] md:text-[35px] lg:text-[40px]">
-              {count.followers}+
-            </h2>
-            <h3 className="text-sm transition-all group-hover:text-gray-300 sm:text-xl md:text-2xl lg:text-3xl">
-              Followers
-            </h3>
-          </button>
-          <button
-            type="button"
-            onClick={() => setFollowingsOpen(true)}
-            className="group flex cursor-pointer flex-col text-center select-none focus:outline-none"
-            aria-label="Open followings list"
-          >
-            <h2 className="text-[15px] text-white transition-all group-hover:text-gray-300 sm:text-[30px] md:text-[35px] lg:text-[40px]">
-              {count.followings}+
-            </h2>
-            <h3 className="text-sm transition-all group-hover:text-gray-300 sm:text-xl md:text-2xl lg:text-3xl">
-              Following
-            </h3>
-          </button>
-          <div className="group hidden flex-col text-center select-none focus:outline-none sm:flex md:flex">
-            <h2 className="text-[15px] text-white transition-all sm:text-[30px] md:text-[35px] lg:text-[40px]">
-              25+
-            </h2>
-            <h3 className="text-sm transition-all sm:text-xl md:text-2xl lg:text-3xl">
-              Playlists
-            </h3>
+            <motion.button
+              type="button"
+              onClick={() => {
+                setFollowersOpen(true);
+                if (userData?.id) queryClient.invalidateQueries({ queryKey: ['followers', userData.id] });
+              }}
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative flex cursor-pointer flex-col items-center text-center"
+            >
+              <motion.h2
+                className="bg-gradient-to-br from-blue-400 to-cyan-300 bg-clip-text text-2xl leading-none font-black text-transparent sm:text-3xl md:text-5xl lg:text-6xl"
+                animate={{
+                  textShadow: [
+                    '0 0 15px rgba(59,130,246,0.4)',
+                    '0 0 25px rgba(59,130,246,0.7)',
+                    '0 0 15px rgba(59,130,246,0.4)',
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {countData?.followers ?? 0}+
+              </motion.h2>
+              <h3 className="mt-1 text-xs font-medium text-gray-300 group-hover:text-white sm:text-sm md:text-lg lg:text-xl">
+                Followers
+              </h3>
+            </motion.button>
+
+            <motion.button
+              type="button"
+              onClick={() => {
+                setFollowingsOpen(true);
+                if (userData?.id) queryClient.invalidateQueries({ queryKey: ['followings', userData.id] });
+              }}
+              whileHover={{ scale: 1.05, y: -3 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative flex cursor-pointer flex-col items-center text-center"
+            >
+              <motion.h2
+                className="bg-gradient-to-br from-blue-400 to-cyan-300 bg-clip-text text-2xl leading-none font-black text-transparent sm:text-3xl md:text-5xl lg:text-6xl"
+                animate={{
+                  textShadow: [
+                    '0 0 15px rgba(59,130,246,0.4)',
+                    '0 0 25px rgba(59,130,246,0.7)',
+                    '0 0 15px rgba(59,130,246,0.4)',
+                  ],
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {countData?.followings ?? 0}+
+              </motion.h2>
+              <h3 className="mt-1 text-xs font-medium text-gray-300 group-hover:text-white sm:text-sm md:text-lg lg:text-xl">
+                Following
+              </h3>
+            </motion.button>
+          </motion.div>
+
+          <div className="flex items-center justify-center gap-4">
+            <motion.button
+              whileHover={!followMutation.isPending ? { scale: 1.05, y: -2 } : {}}
+              whileTap={!followMutation.isPending ? { scale: 0.95 } : {}}
+              onClick={() => followMutation.mutate()}
+              disabled={isFollowed === undefined || followMutation.isPending}
+              className={`cursor-pointer flex items-center gap-2 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent px-5 py-3 text-sm font-medium shadow-lg backdrop-blur-xl transition-all duration-200
+              ${
+                followMutation.isPending
+                  ? 'text-gray-400 cursor-not-allowed opacity-70'
+                  : 'text-white hover:scale-[1.02]'
+              }`}
+            >
+              {followMutation.isPending && (
+                <span className="scale-90">
+                  <LoadingCircle />
+                </span>
+              )}
+              <span>
+                {isFollowed === undefined
+                  ? '...'
+                  : followMutation.isPending
+                    ? 'Wait...'
+                    : isFollowed
+                      ? 'Unfollow'
+                      : 'Follow'}
+              </span>
+            </motion.button>
+
+            <span className="cursor-pointer text-center text-[7px] text-white transition-all hover:text-gray-200/90">
+              ● ● ●
+            </span>
           </div>
         </div>
       </div>
+
+      {/* --- Modals --- */}
       <div className="fixed">
         <FollowersCard
           open={followersOpen}
