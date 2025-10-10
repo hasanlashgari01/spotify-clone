@@ -52,6 +52,7 @@ const PlaylistMenu = ({
             icon: PiMusicNotesPlusFill,
             label: 'Add music',
             action: () => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               (setSearchModalOpen(true), onClose());
             },
             color: 'text-white hover:text-blue-400',
@@ -60,6 +61,7 @@ const PlaylistMenu = ({
             icon: FiEdit,
             label: 'Edit Details',
             action: () => {
+              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               (setEditModalOpen(true), onClose());
             },
             color: 'text-white hover:text-blue-400',

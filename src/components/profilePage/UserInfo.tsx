@@ -9,7 +9,7 @@ import FollowersCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
 import { playlistService } from '../../services/playlistService';
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024;
+const MAX_FILE_SIZE = 1024 * 1024;
 
 const GENDER_OPTIONS = [
   { value: 'male', label: 'Male' },
@@ -45,7 +45,7 @@ const UserInfo = () => {
       setPlaylCount(res.playlists.length);
 
       setFullName(data?.fullName || '');
-      setBio(data?.bio || '');
+      setBio(data?.bio || "bio must be placed here")
       setUserData(data);
       setGender(
         data?.gender === 'male' ||
@@ -60,13 +60,11 @@ const UserInfo = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchUserData();
-  }, );
+
 
   useEffect(() => {
-    if (!loading) fetchUserData();
-  }, [fetchUserData, loading]);
+    fetchUserData();
+  }, [fetchUserData]);
 
   useEffect(() => {
     return () => {
@@ -103,7 +101,7 @@ const UserInfo = () => {
     userValue: string | undefined,
     fallback: string = ''
   ) => {
-    if (typeof inputValue === 'string' && inputValue.trim() !== '') {
+    if (inputValue.trim() !== '') {T
       return inputValue;
     }
     if (typeof userValue === 'string' && userValue.trim() !== '') {

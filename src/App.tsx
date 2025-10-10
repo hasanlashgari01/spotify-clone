@@ -9,7 +9,7 @@ import Profile from './pages/Profile';
 import RegisterPage from './pages/RegisterPage';
 import ReactQueryProvider from './providers/react-query-provider';
 import UsersProfile from './pages/UsersProfile';
-
+import {Toaster} from 'react-hot-toast';
 
 function App() {
   return (
@@ -31,11 +31,21 @@ function App() {
               }
             />
           </Routes>
-          
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#101720',
+                color: '#fff',
+                borderRadius: '10px',
+              },
+            }}
+          />
           <MusicPlayers />
         </MusicPlayerProvider>
       </BrowserRouter>
     </ReactQueryProvider>
+
   );
 }
 

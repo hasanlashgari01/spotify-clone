@@ -5,7 +5,7 @@ import '../../styles/userinfo.css';
 import FollowersCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
 import LoadingCircle from '../loading/LoadingCircle.tsx';
-
+import TripleDotMenu from './modal/TripleDotMenu.tsx';
 import {
   getFollowingCount,
   getOthersDetails,
@@ -25,6 +25,7 @@ const OthersProfile = () => {
   const { username } = useParams<{ username: string }>();
   const { followings } = useFollow();
   const queryClient = useQueryClient();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followingsOpen, setFollowingsOpen] = useState(false);
@@ -62,7 +63,9 @@ const OthersProfile = () => {
   // --- تنظیم state محلی follow با استفاده از context ---
   useEffect(() => {
     if (!userData) return;
-    const followedState = followings.some(f => f.following.id === Number(userData.id));
+    const followedState = followings.some(
+      (f) => f.following.id === Number(userData.id)
+    );
     setIsFollowed(followedState);
   }, [userData, followings]);
 
@@ -76,14 +79,16 @@ const OthersProfile = () => {
     },
     onMutate: async () => {
       // فوراً UI رو آپدیت کن
-      setIsFollowed(prev => (prev !== undefined ? !prev : undefined));
+      setIsFollowed((prev) => (prev !== undefined ? !prev : undefined));
 
       if (userData?.id) {
-        queryClient.setQueryData<Count>(['userCounts', userData.id], old => {
+        queryClient.setQueryData<Count>(['userCounts', userData.id], (old) => {
           if (!old) return { followers: 0, followings: 0 };
           return {
             ...old,
-            followers: isFollowed ? Math.max(0, old.followers - 1) : old.followers + 1,
+            followers: isFollowed
+              ? Math.max(0, old.followers - 1)
+              : old.followers + 1,
           };
         });
       }
@@ -91,15 +96,19 @@ const OthersProfile = () => {
     onError: (err) => {
       console.error('Follow/Unfollow failed', err);
       // rollback
-      setIsFollowed(prev => (prev !== undefined ? !prev : undefined));
+      setIsFollowed((prev) => (prev !== undefined ? !prev : undefined));
     },
     onSettled: async () => {
       if (!userData?.id) return;
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['userCounts', userData.id] }),
+        queryClient.invalidateQueries({
+          queryKey: ['userCounts', userData.id],
+        }),
         queryClient.invalidateQueries({ queryKey: ['user', username] }),
         queryClient.invalidateQueries({ queryKey: ['followers', userData.id] }),
-        queryClient.invalidateQueries({ queryKey: ['followings', userData.id] }),
+        queryClient.invalidateQueries({
+          queryKey: ['followings', userData.id],
+        }),
       ]);
     },
   });
@@ -109,7 +118,7 @@ const OthersProfile = () => {
   // --- Loading state ---
   if (isUserLoading)
     return (
-      <div className="flex items-center justify-center h-[300px] text-white">
+      <div className="flex h-[300px] items-center justify-center text-white">
         <LoadingCircle />
       </div>
     );
@@ -143,7 +152,7 @@ const OthersProfile = () => {
         </div>
 
         {/* --- Stats and Buttons --- */}
-        <div className="relative flex-col top-[30%] mr-5 flex h-fit items-start justify-center gap-2 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-5 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-5  md:p-10 lg:mr-15 lg:p-13">
+        <div className="relative top-[30%] mr-5 flex h-fit flex-col items-start justify-center gap-2 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-5 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-5 md:p-10 lg:mr-15 lg:p-13">
           <motion.div
             className="relative flex gap-4 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent p-6 shadow-xl backdrop-blur-xl sm:gap-6 sm:p-6 md:gap-10 md:p-8 lg:gap-12 lg:p-15"
             initial={{ opacity: 0, x: 30 }}
@@ -154,7 +163,10 @@ const OthersProfile = () => {
               type="button"
               onClick={() => {
                 setFollowersOpen(true);
-                if (userData?.id) queryClient.invalidateQueries({ queryKey: ['followers', userData.id] });
+                if (userData?.id)
+                  queryClient.invalidateQueries({
+                    queryKey: ['followers', userData.id],
+                  });
               }}
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
@@ -182,7 +194,10 @@ const OthersProfile = () => {
               type="button"
               onClick={() => {
                 setFollowingsOpen(true);
-                if (userData?.id) queryClient.invalidateQueries({ queryKey: ['followings', userData.id] });
+                if (userData?.id)
+                  queryClient.invalidateQueries({
+                    queryKey: ['followings', userData.id],
+                  });
               }}
               whileHover={{ scale: 1.05, y: -3 }}
               whileTap={{ scale: 0.95 }}
@@ -209,14 +224,15 @@ const OthersProfile = () => {
 
           <div className="flex items-center justify-center gap-4">
             <motion.button
-              whileHover={!followMutation.isPending ? { scale: 1.05, y: -2 } : {}}
+              whileHover={
+                !followMutation.isPending ? { scale: 1.05, y: -2 } : {}
+              }
               whileTap={!followMutation.isPending ? { scale: 0.95 } : {}}
               onClick={() => followMutation.mutate()}
               disabled={isFollowed === undefined || followMutation.isPending}
-              className={`cursor-pointer flex items-center gap-2 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent px-5 py-3 text-sm font-medium shadow-lg backdrop-blur-xl transition-all duration-200
-              ${
+              className={`flex cursor-pointer items-center gap-2 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent px-5 py-3 text-sm font-medium shadow-lg backdrop-blur-xl transition-all duration-200 ${
                 followMutation.isPending
-                  ? 'text-gray-400 cursor-not-allowed opacity-70'
+                  ? 'cursor-not-allowed text-gray-400 opacity-70'
                   : 'text-white hover:scale-[1.02]'
               }`}
             >
@@ -236,7 +252,10 @@ const OthersProfile = () => {
               </span>
             </motion.button>
 
-            <span className="cursor-pointer text-center text-[7px] text-white transition-all hover:text-gray-200/90">
+            <span
+              className="cursor-pointer text-center text-[14px] text-white transition-all hover:text-gray-200/90"
+              onClick={() => setMenuOpen(true)}
+            >
               ● ● ●
             </span>
           </div>
@@ -255,7 +274,15 @@ const OthersProfile = () => {
           onClose={() => setFollowingsOpen(false)}
           id={userData?.id}
         />
+        <TripleDotMenu
+          isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          userId={Number(userData?.id ? userData?.id : 2)}
+          username={username}
+        />
       </div>
+
+
     </div>
   );
 };
