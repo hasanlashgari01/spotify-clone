@@ -4,17 +4,22 @@ import {
   SongSortBy,
   SortOrder,
 } from '../../services/playlistDetailsService';
-import PauseIcon from '../icons/PauseIcon';
-import PlayIcon from '../icons/PlayIcon';
+
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
 import SortMenu from './SortMenu';
-
+import { useMediaQuery } from 'react-responsive';
+import LoadingCircle from '../loading/LoadingCircle';
+import { PlayIcon, PauseIcon } from 'lucide-react';
+import '../../styles/scrollbar-hide.css';
 interface PlSongsProps {
   songs: PlaylistSong[];
   setSortBy: React.Dispatch<SetStateAction<SongSortBy>>;
   setOrder: React.Dispatch<SetStateAction<SortOrder>>;
   sortBy: SongSortBy;
   order: SortOrder;
+  isOwner: boolean | null;
+  deleteMusic: (songId: number) => void;
+  deletingId: number | null;
 }
 
 const PlSongs: React.FC<PlSongsProps> = ({
@@ -23,12 +28,17 @@ const PlSongs: React.FC<PlSongsProps> = ({
   setOrder,
   sortBy,
   order,
+  deleteMusic,
+  isOwner,
+  deletingId,
 }) => {
   const { currentTrack, isPlaying, playSong, handlePlayPause } =
     useMusicPlayer();
   const [Album, setAlbum] = useState(true);
   const [DateAdded, setDateAdded] = useState(true);
   const [HoveredRow, setHoveredRow] = useState<number | null>(null);
+  const isTablet = useMediaQuery({ maxWidth: 1280 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const handlePlayClick = (ts: PlaylistSong, e: React.MouseEvent) => {
     e.preventDefault();
@@ -42,6 +52,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
       playSong(ts.song);
     }
   };
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 780) {
@@ -59,65 +70,57 @@ const PlSongs: React.FC<PlSongsProps> = ({
   }, []);
 
   return (
-    <div className="w-full">
-      <div className="w-full overflow-x-auto">
+    <div className="w-full border-b-1 ">
+      <div
+        className={`w-full overflow-x-auto ${songs.length > 8 ? 'scrollbar-hide relative max-h-[55vh] overflow-y-auto md:max-h-[65vh] lg:max-h-[70vh]' : ''}`}
+      >
         <table className="min-w-full text-left">
-          <thead className="text-white">
+          <thead className="sticky top-0 z-10 text-white backdrop-blur-sm">
             <tr>
               <th className="h-5 w-6 sm:w-8">
                 <h6 className="text-center">#</h6>
               </th>
-
-              <th
-                className={
-                  (Album === false ? 'pl-2 ' : 'pl-2 ') +
-                  'w-[60vw] text-start sm:w-[50vw] md:w-[40vw] lg:w-[38vw] xl:w-[36vw]'
-                }
-              >
+              <th className="w-[60vw] pl-2 text-start sm:w-[50vw] md:w-[40vw] lg:w-[38vw] xl:w-[36vw]">
                 Title
               </th>
-
               {Album && (
-                <th
-                  className={
-                    (DateAdded === false ? 'pl-3 ' : 'pl-3 ') +
-                    'hidden text-start md:table-cell md:w-[16vw] lg:w-[14vw]'
-                  }
-                >
+                <th className="hidden pl-3 md:table-cell md:w-[16vw] lg:w-[14vw]">
                   Status
                 </th>
               )}
-
               {DateAdded && (
-                <th className="hidden w-[22vw] pl-3 text-start sm:table-cell md:w-[18vw] lg:w-[16vw]">
+                <th className="hidden pl-3 sm:table-cell md:w-[18vw] lg:w-[16vw]">
                   Date added
                 </th>
               )}
-
-              <th className="hidden w-[8vw] pl-2 md:table-cell">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="white"
-                  className="text-black"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z" />
-                  <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z" />
-                  <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
-                </svg>
-              </th>
-
-              <th className="w-[1%] pr-2 pl-2 text-right whitespace-nowrap sm:pr-4">
-                <SortMenu
-                  sortBy={sortBy}
-                  order={order}
-                  onChange={(s, o) => {
-                    setSortBy(s);
-                    setOrder(o);
-                  }}
-                />
+              {DateAdded && (
+                <th className="hidden pl-3 md:table-cell">
+                  {' '}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="white"
+                    className="text-black"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z" />
+                    <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z" />
+                    <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
+                  </svg>
+                </th>
+              )}
+              <th className="w-[1%] pr-2 pl-2 text-right sm:pr-4">
+                {!isMobile && (
+                  <SortMenu
+                    sortBy={sortBy}
+                    order={order}
+                    onChange={(s, o) => {
+                      setSortBy(s);
+                      setOrder(o);
+                    }}
+                  />
+                )}
               </th>
             </tr>
           </thead>
@@ -145,15 +148,17 @@ const PlSongs: React.FC<PlSongsProps> = ({
                     </span>
                     <div
                       onClick={(e) => handlePlayClick(ts, e)}
-                      className={`playBTN absolute top-1/2 left-1/2 flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-green-600 p-1 sm:h-5 sm:w-5 ${
-                        HoveredRow === i
-                          ? 'z-10 opacity-100'
+                      className={`playBTN absolute top-1/2 left-1/2 flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-green-600 p-1 text-white sm:h-5 sm:w-5 ${
+                        HoveredRow === i || isTablet
+                          ? 'z-1 opacity-100'
                           : '-z-10 opacity-0'
                       }`}
                     >
                       {isActive && isPlaying ? <PauseIcon /> : <PlayIcon />}
                     </div>
                   </td>
+
+                  {/* Title */}
                   <td className="py-2 sm:py-3">
                     <div className="flex items-center gap-3 sm:gap-4">
                       <img
@@ -163,12 +168,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
                       />
                       <div className="flex min-w-0 flex-col items-start justify-center">
                         <h3
-                          className={
-                            (Album === false
-                              ? 'font-md text-start font-bold text-white '
-                              : 'font-md text-start font-bold text-white ') +
-                            'max-w-[60vw] truncate sm:max-w-[50vw] md:max-w-[40vw] lg:max-w-[36vw]'
-                          }
+                          className="font-md max-w-[60vw] truncate text-start font-bold text-white sm:max-w-[50vw] md:max-w-[40vw] lg:max-w-[36vw]"
                           title={ts.song.title}
                         >
                           {ts.song.title}
@@ -183,6 +183,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
                     </div>
                   </td>
 
+                  {/* Status */}
                   {Album && (
                     <td className="hidden md:table-cell">
                       <h6
@@ -197,17 +198,44 @@ const PlSongs: React.FC<PlSongsProps> = ({
                     </td>
                   )}
 
+                  {/* Date added */}
                   {DateAdded && (
                     <td className="hidden text-white sm:table-cell">
                       {ts.song.createdAt.split('T')[0]}
                     </td>
                   )}
 
-                  <td className="pl-2 text-right text-white md:text-left">
-                    {Math.floor(ts.song.duration / 60)}:
-                    {String(ts.song.duration % 60).padStart(2, '0')}
+                  {/* Duration */}
+                  {DateAdded && (
+                    <td className="pl-2 text-right text-white md:text-left">
+                      {Math.floor(ts.song.duration / 60)}:
+                      {String(ts.song.duration % 60).padStart(2, '0')}
+                    </td>
+                  )}
+
+                  {/* Delete Button */}
+                  <td className="w-[1%] text-center">
+                    {isOwner && (
+                      <div className="flex justify-center">
+                        {deletingId === ts.song.id ? (
+                          <LoadingCircle />
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            onClick={() => deleteMusic(ts.song.id)}
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="h-6 w-6 cursor-pointer text-gray-400 transition-all hover:text-white"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8" />
+                          </svg>
+                        )}
+                      </div>
+                    )}
                   </td>
-                  <td className="pl-2 text-right text-white md:text-left"></td>
                 </tr>
               );
             })}

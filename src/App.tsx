@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import MusicPlayers from './components/MusicPlayer/MusicPlayer';
 import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
 import { MusicPlayerProvider } from './context/MusicPlayerContext';
@@ -8,6 +8,16 @@ import PlaylistPage from './pages/PlaylistPage';
 import Profile from './pages/Profile';
 import RegisterPage from './pages/RegisterPage';
 import ReactQueryProvider from './providers/react-query-provider';
+import UsersProfile from './pages/UsersProfile';
+
+// Component to conditionally render MusicPlayer
+const ConditionalMusicPlayer = () => {
+  const location = useLocation();
+  const shouldHidePlayer = location.pathname === '/login' || location.pathname === '/register';
+  
+  return !shouldHidePlayer ? <MusicPlayers /> : null;
+};
+
 
 function App() {
   return (
@@ -19,6 +29,7 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/playlist/:slug" element={<PlaylistPage />} />
+            <Route path="/profile/:username" element={<UsersProfile/>}></Route>
             <Route
               path="/profile"
               element={
@@ -28,7 +39,8 @@ function App() {
               }
             />
           </Routes>
-          <MusicPlayers />
+          
+          <ConditionalMusicPlayer />
         </MusicPlayerProvider>
       </BrowserRouter>
     </ReactQueryProvider>

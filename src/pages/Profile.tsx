@@ -1,9 +1,17 @@
 import MyPlaylists from '../components/MyPlayLists/MyPlaylist';
+import UserInfo from '../components/profilePage/UserInfo';
+import { FollowProvider } from '../context/UserFansContext';
 
 const Profile = () => {
   return (
     <>
-      <div className='bg-[#101721] w-full h-[100vh]'>
+      <div className="min-h-[100vh] w-full">
+        <FollowProvider>
+          <div className="pb-15">
+            <UserInfo />
+          </div>
+        </FollowProvider>
+
         <MyPlaylists />
       </div>
     </>

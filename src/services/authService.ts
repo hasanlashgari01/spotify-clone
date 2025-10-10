@@ -13,10 +13,13 @@ export interface RegisterCredentials extends LoginCredentials {
 
 export interface User {
   id: string;
-  name: string;
   email: string;
   username: string;
-  profileImage?: string;
+  fullName : string;
+  bio : string;
+  avatar : string;
+  gender : string;
+  
 }
 
 export interface LoginResponse {
@@ -83,10 +86,20 @@ export const authService = {
 
   async getUser(): Promise<User | null> {
     const user = await httpService('/user/my-profile');
-
+    
+    
+    
     return user.data;
   },
-
+  async updateUser(updates :Partial<User> | FormData): Promise<string | null> {
+    const result = await httpService.put("/user/my-profile" , updates, {
+      headers: {
+    'Content-Type': 'multipart/form-data'
+  }
+    });
+    
+    return result.data;
+  },
   isAuthenticated(): boolean {
     return !!this.getToken();
   },

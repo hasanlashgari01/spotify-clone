@@ -1,23 +1,36 @@
-import { useEffect, useState, useRef } from 'react';
+// FollowingCard.tsx
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   getFollowingCount,
   Followings,
   getUserFollowings,
-} from '../../services/userDetailsService';
+} from '../../services/userDetailsService'; 
 import { authService } from '../../services/authService';
 import defAvatar from '../../../public/default-avatar.webp';
 import FollowingSection from './FollowingSection';
 import { useMediaQuery } from 'react-responsive';
+import LoadingCircle from '../loading/LoadingCircle';
+import { useFollow } from '../../context/UserFansContext';
+import { XIcon } from 'lucide-react';
+import { UserService } from '../../services/userDetailsService';
 
-const FollowingCard = () => {
+interface FollowingCardProps {
+  open?: boolean;
+  onClose?: () => void;
+}
+
+const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
-  const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
+  
   const isDesktop = useMediaQuery({ minWidth: 1195 });
 
-  const [followings, setFollowings] = useState<Followings[]>([]);
-  const [fCount, setFCount] = useState<number>(0);
-  const [modal, setModal] = useState<boolean | null>(null);
+  const { followings, setFollowings , setCount } = useFollow();
 
+  
+  const [fCount, setFCount] = useState<number>(0);
+  const [modal, setModal] = useState<boolean>(false);
+  const isControlled = typeof open === 'boolean';
+  const isOpen = isControlled ? !!open : modal;
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 10;
@@ -25,79 +38,123 @@ const FollowingCard = () => {
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const fetchFollowings = async () => {
-      if (page > totalPages) return;
+ 
+  const fetchFollowings = useCallback(async (p: number) => {
+    if (p > totalPages) return;
+    setLoading(true);
+    try {
+      const data = await authService.getUser();
+      if (!data?.id) return;
 
-      setLoading(true);
-      try {
-        const data = await authService.getUser();
-        if (!data?.id) return;
+      const [res, counter] = await Promise.all([
+        getUserFollowings(String(data.id), p, limit),
+        getFollowingCount(String(data.id), 'followings'),
+      ]);
 
-        const [res, counter] = await Promise.all([
-          getUserFollowings(String(data.id), page, limit),
-          getFollowingCount(String(data.id), 'followings'),
-        ]);
-
-        setFollowings((prev) => {
-          const newFollowings = [...prev, ...(res?.followings ?? [])];
-          const uniqueFollowings = newFollowings.filter(
-            (f, index, self) =>
-              index === self.findIndex((x) => x.following.id === f.following.id)
-          );
-          return uniqueFollowings;
+      
+      setFollowings(prev => {
+        const combined = [...prev, ...(res?.followings ?? [])];
+        
+        const map = new Map<number, Followings>();
+        combined.forEach(item => {
+          const key = item.following?.id ?? item.followingId ?? item.following?.id;
+          if (typeof key === 'number') map.set(key, item);
         });
+        return Array.from(map.values());
+      });
 
-        setFCount(counter ?? 0);
+      
+      if (res?.pagination?.pageCount) setTotalPages(res.pagination.pageCount);
 
-        if (res?.pagination.pageCount) {
-          setTotalPages(res.pagination.pageCount);
-        }
-      } catch (error) {
-        console.error(error);
-      }
+     
+      setFCount(counter ?? 0);
+    } catch (err) {
+      console.error('fetchFollowings error', err);
+    } finally {
       setLoading(false);
-    };
-
-    fetchFollowings();
-  }, [page]);
+    }
+  }, [limit, setFollowings, totalPages]);
 
   useEffect(() => {
-    if (!modal) return;
+    fetchFollowings(page);
+ 
+  }, [fetchFollowings, page]);
 
+  
+  useEffect(() => {
+    setFCount(followings.length);
+  }, [followings]);
+
+
+  useEffect(() => {
+    if (!isOpen) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && !loading && page < totalPages) {
-          setPage((prev) => prev + 1);
+          setPage(prev => prev + 1);
         }
       },
       { threshold: 1 }
     );
-
-    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
-
+    const el = loadMoreRef.current;
+    if (el) observer.observe(el);
     return () => {
-      if (loadMoreRef.current) observer.unobserve(loadMoreRef.current);
+      if (el) observer.unobserve(el);
     };
-  }, [modal, loading, page, totalPages]);
+  }, [isOpen, loading, page, totalPages]);
+  
+  
+  const handleUnfollow = useCallback(async (id: number) => {
+    const res = await UserService.FollowUnFollow(id);
+    if (res === 200) {
+      setFollowings(prev => prev.filter(item => item.following?.id !== id));
+      setCount(prev => ({
+        ...prev,
+        followings: Math.max(0, prev.followings - 1),
+      }));
+    } else {
+      return;
+    }
+  }, [setFollowings, setCount]);
+
+  // In controlled mode, avoid occupying any layout space when closed
+  if (isControlled && !isOpen) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col items-center justify-center gap-20 bg-transparent p-10">
-      {modal && followings.length > 0 && (
+     
+      {isOpen && (
         <div
           className="fixed inset-0 z-10000 flex items-center justify-center bg-black/50"
-          onClick={() => setModal(false)}
+          onClick={() => {
+            if (isControlled) onClose?.(); else setModal(false)
+          }}
         >
           <div
-            className="relative flex max-h-[80vh] w-[90%] max-w-[600px] min-h-[80vh] flex-col gap-6 overflow-y-auto rounded-2xl bg-gray-800 p-6 text-white"
+            className="relative flex max-h-[80vh] min-h-[80vh] w-[90%] max-w-[500px] flex-col gap-6 overflow-y-auto rounded-2xl bg-[#101721] p-6 text-white"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-center text-2xl font-bold">Followings</h2>
+            <div className="flex flex-row items-center justify-start">
+              <h2 className="text-center text-2xl font-bold">Followings</h2>
+              <div
+                onClick={() => { if (isControlled) onClose?.(); else setModal(false) }}
+                className="ml-auto cursor-pointer rounded-2xl bg-red-600 p-1 transition-all hover:bg-red-700"
+              >
+                <XIcon color="white" />
+              </div>
+            </div>
 
             <div className="flex flex-col" style={{ maxHeight: '60vh', overflowY: 'auto', paddingBottom: '60px' }}>
-              {followings.map((f, i) => (
-                <table key={i} className="w-full">
-                  <FollowingSection avatar={f.following.avatar} fullName={f.following.fullName} />
+              {followings.map((f) => (
+                <table key={f.following.id} className="w-full">
+                  <FollowingSection
+                    avatar={f.following.avatar}
+                    fullName={f.following.fullName}
+                    userId={f.following.id}
+                    onUnfollow={handleUnfollow}
+                  />
                 </table>
               ))}
 
@@ -106,96 +163,12 @@ const FollowingCard = () => {
                 {!loading && page >= totalPages && <p className="text-gray-400">No more followings</p>}
               </div>
             </div>
-
-            <button
-              onClick={() => setModal(false)}
-              className="fixed bottom-[10%] left-1/2 -translate-x-1/2 rounded-xl bg-red-600 px-6 py-2 font-bold hover:bg-red-700 cursor-pointer"
-            >
-              Close
-            </button>
           </div>
         </div>
       )}
 
-      {isDesktop && (
-        <div className="bg-[] flex h-60 w-300 flex-row items-center justify-start rounded-3xl border-4 border-blue-900 text-center">
-          <div className="flex w-[30%] flex-col gap-5">
-            <h2 className="text-5xl text-white">Following</h2>
-            <h2 className="text-5xl font-bold text-blue-600">{fCount}+</h2>
-          </div>
-
-          {followings.length > 0 && (
-            <>
-              <div className="flex w-[50%] flex-row">
-                {followings.slice(0, 5).map((f, i) => (
-                  <img
-                    key={i}
-                    src={f.following.avatar ? f.following.avatar : defAvatar}
-                    alt="maybe"
-                    className={`-ml-5 h-35 w-35 rounded-[25px] border-3 border-blue-900 first:ml-0`}
-                    style={{ zIndex: followings.length + i }}
-                  />
-                ))}
-              </div>
-
-              <div className="flex w-[20%] justify-end">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="h-10 w-20 cursor-pointer text-white"
-                  viewBox="0 0 16 16"
-                  onClick={() => setModal(true)}
-                >
-                  <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
-                </svg>
-              </div>
-            </>
-          )}
-        </div>
-      )}
-
-      {(isMobile || isTablet) && (
-        <div className="w-content flex flex-col items-center gap-5">
-          <div className="w-content flex flex-row items-start justify-start gap-6">
-            <h2 className="text-3xl text-white">Following</h2>
-            <h2 className="text-3xl font-bold text-blue-600">{fCount}+</h2>
-          </div>
-
-          {followings.length > 0 && (
-            <>
-              <div className="flex flex-row">
-                {followings.slice(0, 5).map((f, i) => (
-                  <img
-                    key={i}
-                    src={f.following.avatar ? f.following.avatar : defAvatar}
-                    alt="maybe"
-                    className={`-ml-3 rounded-full border-3 border-blue-900 first:ml-0 ${
-                      isMobile ? 'h-12 w-12' : 'h-16 w-16'
-                    }`}
-                    style={{ zIndex: followings.length + i }}
-                  />
-                ))}
-              </div>
-
-              <div className="flex w-[20%] justify-end">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  className="h-7 w-10 rotate-90 transform cursor-pointer text-white"
-                  viewBox="0 0 16 16"
-                  onClick={() => setModal(true)}
-                >
-                  <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z" />
-                </svg>
-              </div>
-            </>
-          )}
-        </div>
-      )}
+      
+      
     </div>
   );
 };

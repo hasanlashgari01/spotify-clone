@@ -13,11 +13,8 @@ const Navbar = () => {
 
   // Close profile menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        profileMenuRef.current &&
-        !profileMenuRef.current.contains(event.target as Node)
-      ) {
+    const handleClickOutside = (event:MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
         setProfileMenuOpen(false);
       }
     };
@@ -54,27 +51,27 @@ const Navbar = () => {
 
         {/* Right side (Mobile: Bell + Profile) */}
         <div className="flex items-center gap-3 md:hidden">
-          <FaBell className="h-8 w-8 cursor-pointer rounded-full bg-white p-1 text-xl text-black" />
+          <FaBell className="h-8 w-8 bg-white text-black p-1 rounded-full cursor-pointer text-xl" />
           <div className="relative" ref={profileMenuRef}>
-            <div
-              className="h-8 w-8 cursor-pointer overflow-hidden rounded-full text-white"
+            <div 
+              className="h-8 w-8 text-white overflow-hidden rounded-full cursor-pointer" 
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
             >
               {isAuthenticated && user?.profileImage ? (
-                <img
-                  src={user.profileImage}
-                  alt={user.name}
-                  className="h-full w-full object-cover"
+                <img 
+                  src={user.profileImage} 
+                  alt={user.name} 
+                  className="w-full h-full object-cover"
                 />
               ) : (
-                <CgProfile size={30} />
+                <CgProfile size={30}/>
               )}
             </div>
             {profileMenuOpen && (
-              <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-800 py-1 shadow-lg">
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
                 {isAuthenticated ? (
                   <>
-                    <div className="border-b border-gray-700 px-4 py-2 text-sm text-white">
+                    <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
                       {user?.name || user?.email}
                     </div>
                     <button
@@ -82,7 +79,7 @@ const Navbar = () => {
                         logout();
                         setProfileMenuOpen(false);
                       }}
-                      className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-gray-700"
+                      className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
                     >
                       Logout
                     </button>
@@ -117,15 +114,15 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="flex w-full max-w-md items-center rounded-full bg-gray-800/70 px-4 py-2 shadow-sm backdrop-blur-md transition-all duration-300 focus-within:shadow-lg focus-within:ring-2 focus-within:ring-[#155DFC]">
+          <div className="flex items-center rounded-full bg-gray-800 px-3 py-1">
             <input
               type="text"
               placeholder="Search for artists, songs, or podcasts..."
-              className="flex-1 bg-transparent text-sm text-white placeholder-gray-400 outline-none"
+              className="bg-transparent text-sm text-white outline-none"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-400 transition-colors duration-300 group-hover:text-white"
+              className="h-5 w-5 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -149,25 +146,25 @@ const Navbar = () => {
               size={5}
             />
             <div className="relative" ref={profileMenuRef}>
-              <div
-                className="h-8 w-8 cursor-pointer overflow-hidden rounded-full"
+              <div 
+                className="h-8 w-8 overflow-hidden rounded-full cursor-pointer"
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               >
                 {isAuthenticated && user?.profileImage ? (
-                  <img
-                    src={user.profileImage}
-                    alt={user.name}
-                    className="h-full w-full object-cover"
+                  <img 
+                    src={user.profileImage} 
+                    alt={user.name} 
+                    className="w-full h-full object-cover"
                   />
                 ) : (
-                  <CgProfile className="text-2xl text-white" size={30} />
+                  <CgProfile className="text-2xl text-white" size={30}/>
                 )}
               </div>
               {profileMenuOpen && (
-                <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-800 py-1 shadow-lg">
+                <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
                   {isAuthenticated ? (
                     <>
-                      <div className="border-b border-gray-700 px-4 py-2 text-sm text-white">
+                      <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
                         {user?.name || user?.email}
                       </div>
                       <button
@@ -175,7 +172,7 @@ const Navbar = () => {
                           logout();
                           setProfileMenuOpen(false);
                         }}
-                        className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-gray-700"
+                        className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
                       >
                         Logout
                       </button>

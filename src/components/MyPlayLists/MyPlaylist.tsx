@@ -5,7 +5,7 @@ import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useMyPlaylists } from '../../hooks/useMyPlaylists';
 import Error from './ErrorMessage';
-import Loading from './loding';
+import Loading from './loading';
 import PlayListItem from './PlayListItem';
 import { SlArrowRight } from 'react-icons/sl';
 import CreatePlaylist from './CreatePlaylist';
@@ -13,12 +13,14 @@ import Modal from './Modal';
 import CreatePlaylistForm from './CreatePlaylistForm';
 
 const MyPlaylist: React.FC = () => {
-  const { data, isLoading, error,refetch  } = useMyPlaylists();
-    const [open, setOpen] = useState(false);
-  if (error) return <Error {...error} />;
+  const { data, isLoading, error, refetch } = useMyPlaylists();
+  const [open, setOpen] = useState(false);
+
+  if (error) return <Error message={error.message || 'Unknown error'} />;
 
   return (
-    <div className="h-[300px]sm:h-[333px] relative rounded-xl border-2 border-[#1574f5]">
+    <div className='w-full flex justify-center items-center'>
+    <div className="h-[300px] sm:h-[400px] relative rounded-3xl border-4 border-blue-900 w-[93%]">
       <div className="mt-10 mb-[20px] flex items-center justify-between px-[20px] sm:mb-[40px] sm:pr-[77px]">
         <h2 className="text-lg font-bold text-white sm:text-2xl">
           My PlayLists
@@ -44,11 +46,11 @@ const MyPlaylist: React.FC = () => {
             }}
             spaceBetween={20}
             breakpoints={{
-              320: { slidesPerView: 1.5, spaceBetween: 10 },
-              480: { slidesPerView: 2, spaceBetween: 15 },
-              640: { slidesPerView: 3, spaceBetween: 20 },
-              1024: { slidesPerView: 4, spaceBetween: 20 },
-              1440: { slidesPerView: 4, spaceBetween: 20 },
+              320: { slidesPerView: 1, spaceBetween: 20 },
+              480: { slidesPerView: 2, spaceBetween: 25 },
+              640: { slidesPerView: 2, spaceBetween: 25 },
+              1024: { slidesPerView: 3, spaceBetween: 25 },
+              1440: { slidesPerView: 4, spaceBetween: 25 },
               1600: { slidesPerView: 5, spaceBetween: 20 },
             }}
             style={{ height: '240px', paddingBottom: '10px' }}
@@ -83,7 +85,7 @@ const MyPlaylist: React.FC = () => {
         />
       </Modal>
     </div>
-  
+  </div>
   );
 };
 
