@@ -101,7 +101,7 @@ const UserInfo = () => {
     userValue: string | undefined,
     fallback: string = ''
   ) => {
-    if (inputValue.trim() !== '') {T
+    if (inputValue.trim() !== '') {
       return inputValue;
     }
     if (typeof userValue === 'string' && userValue.trim() !== '') {
