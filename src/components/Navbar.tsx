@@ -57,10 +57,10 @@ const Navbar = () => {
               className="h-8 w-8 text-white overflow-hidden rounded-full cursor-pointer" 
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
             >
-              {isAuthenticated && user?.profileImage ? (
+              {isAuthenticated && user?.avatar ? (
                 <img 
-                  src={user.profileImage} 
-                  alt={user.name} 
+                  src={user.avatar}
+                  alt={user.fullName}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -72,7 +72,7 @@ const Navbar = () => {
                 {isAuthenticated ? (
                   <>
                     <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
-                      {user?.name || user?.email}
+                      {user?.fullName || user?.email}
                     </div>
                     <button
                       onClick={() => {
@@ -150,10 +150,10 @@ const Navbar = () => {
                 className="h-8 w-8 overflow-hidden rounded-full cursor-pointer"
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               >
-                {isAuthenticated && user?.profileImage ? (
+                {isAuthenticated && user?.avatar ? (
                   <img 
-                    src={user.profileImage} 
-                    alt={user.name} 
+                    src={user.avatar}
+                    alt={user.fullName}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -165,7 +165,7 @@ const Navbar = () => {
                   {isAuthenticated ? (
                     <>
                       <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
-                        {user?.name || user?.email}
+                        {user?.fullName || user?.email}
                       </div>
                       <button
                         onClick={() => {

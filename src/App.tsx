@@ -7,10 +7,15 @@ import MusicPlayers from './components/MusicPlayer/MusicPlayer';
 import PlaylistPage from './pages/PlaylistPage';
 import Profile from './pages/Profile';
 import ReactQueryProvider from './providers/react-query-provider';
+
 import RegisterPage from './pages/RegisterPage';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
 import { MusicPlayerProvider } from './context/MusicPlayerContext';
+
+import UsersProfile from './pages/UsersProfile';
+import {Toaster} from 'react-hot-toast';
+
 
 function App() {
   return (
@@ -33,10 +38,23 @@ function App() {
               }
             />
           </Routes>
+
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                background: '#101720',
+                color: '#fff',
+                borderRadius: '10px',
+              },
+            }}
+          />
+
           <MusicPlayers />
         </MusicPlayerProvider>
       </BrowserRouter>
     </ReactQueryProvider>
+
   );
 }
 
