@@ -1,6 +1,6 @@
-import { httpService } from "../config/axios";
-import { User } from "./authService";
-import { getMe } from "./meService";
+import { httpService } from '../config/axios';
+import { User } from './authService';
+import { getMe } from './meService';
 
 export interface Pagination {
   page: number;

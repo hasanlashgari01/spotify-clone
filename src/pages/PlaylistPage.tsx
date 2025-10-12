@@ -1,7 +1,9 @@
-import PlaylistDeatails from "../components/playlistpage/PlaylistDeatails";
-import PlaylistSongs from "../components/playlistpage/PlaylistSongs";
-import { useEffect, useRef, useState } from "react";
-import { getMe } from "../services/meService";
+import { useEffect, useRef, useState } from 'react';
+import PlaylistDeatails from '../components/playlistpage/PlaylistDeatails';
+
+import PlaylistSongs from '../components/playlistpage/PlaylistSongs';
+import { getMe } from '../services/meService';
+
 
 const PlaylistPage = () => {
   const [owner, setOwner] = useState<number | null>(null);

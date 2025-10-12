@@ -1,4 +1,4 @@
-import { httpService } from "../config/axios";
+import { httpService } from '../config/axios';
 
 export interface Playlist {
   id: number;
@@ -74,6 +74,19 @@ export const playlistService = {
       return data;
     } catch (error) {
       console.error(error);
+    }
+  },
+  async deletePlaylist(playlistId: string) {
+    try {
+      const { data } = await httpService.delete<DeleteResponse>(
+        `/playlists/${playlistId}`
+      );
+      if (data.statusCode) data.stat = 'error';
+      if (!data.statusCode) data.stat = 'success';
+      return data;
+    } catch (error) {
+      console.error(error);
+      return { message: 'Failed to delete playlist', stat: 'error' };
     }
   },
   

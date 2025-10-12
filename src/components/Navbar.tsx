@@ -1,9 +1,9 @@
-import HomeLogo from "../../public/home/home-logo.png";
-import { useEffect, useRef, useState } from "react";
-import { CgProfile } from "react-icons/cg";
-import { FaBell, FaCrown } from "react-icons/fa";
-import { IoClose, IoMenu } from "react-icons/io5";
-import { useAuth } from "../hooks/useAuth";
+import { useState, useEffect, useRef } from 'react';
+import { FaCrown, FaBell } from 'react-icons/fa';
+import { IoMenu, IoClose } from 'react-icons/io5';
+import { CgProfile } from 'react-icons/cg';
+import { useAuth } from '../hooks/useAuth';
+import HomeLogo from '../../public/home/home-logo.png';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -57,10 +57,10 @@ const Navbar = () => {
               className="h-8 w-8 text-white overflow-hidden rounded-full cursor-pointer" 
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
             >
-              {isAuthenticated && user?.avatar ? (
+              {isAuthenticated && user?.profileImage ? (
                 <img 
-                  src={user.avatar}
-                  alt={user.fullName}
+                  src={user.profileImage} 
+                  alt={user.name} 
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -72,7 +72,7 @@ const Navbar = () => {
                 {isAuthenticated ? (
                   <>
                     <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
-                      {user?.fullName || user?.email}
+                      {user?.name || user?.email}
                     </div>
                     <button
                       onClick={() => {
@@ -150,10 +150,10 @@ const Navbar = () => {
                 className="h-8 w-8 overflow-hidden rounded-full cursor-pointer"
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               >
-                {isAuthenticated && user?.avatar ? (
+                {isAuthenticated && user?.profileImage ? (
                   <img 
-                    src={user.avatar}
-                    alt={user.fullName}
+                    src={user.profileImage} 
+                    alt={user.name} 
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -165,7 +165,7 @@ const Navbar = () => {
                   {isAuthenticated ? (
                     <>
                       <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
-                        {user?.fullName || user?.email}
+                        {user?.name || user?.email}
                       </div>
                       <button
                         onClick={() => {

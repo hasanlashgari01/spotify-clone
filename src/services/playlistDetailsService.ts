@@ -1,5 +1,5 @@
-import { httpService } from "../config/axios";
-import { Song } from "../types/song.type";
+import { httpService } from '../config/axios';
+import { Song } from '../types/song.type';
 
 export interface Owner {
   id: 4;

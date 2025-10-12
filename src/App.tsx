@@ -1,20 +1,23 @@
-import './styles/App.css';
-import GenreItems from './pages/Genres/GenreItems';
-import Genres from './pages/Genres/Genres';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import MusicPlayers from './components/MusicPlayer/MusicPlayer';
-import PlaylistPage from './pages/PlaylistPage';
-import Profile from './pages/Profile';
-import ReactQueryProvider from './providers/react-query-provider';
-
-import RegisterPage from './pages/RegisterPage';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
 import { MusicPlayerProvider } from './context/MusicPlayerContext';
-
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import PlaylistPage from './pages/PlaylistPage';
+import Profile from './pages/Profile';
+import RegisterPage from './pages/RegisterPage';
+import ReactQueryProvider from './providers/react-query-provider';
 import UsersProfile from './pages/UsersProfile';
-import {Toaster} from 'react-hot-toast';
+import Search from './pages/Search';
+
+// Component to conditionally render MusicPlayer
+const ConditionalMusicPlayer = () => {
+  const location = useLocation();
+  const shouldHidePlayer = location.pathname === '/login' || location.pathname === '/register';
+  
+  return !shouldHidePlayer ? <MusicPlayers /> : null;
+};
 
 
 function App() {
@@ -26,9 +29,9 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/genre" element={<Genres />} />
-            <Route path="/genre/:title" element={<GenreItems />} />
             <Route path="/playlist/:slug" element={<PlaylistPage />} />
+            <Route path="/profile/:username" element={<UsersProfile/>}></Route>
+            <Route path='/search' element={<Search />} />
             <Route
               path="/profile"
               element={
@@ -38,23 +41,11 @@ function App() {
               }
             />
           </Routes>
-
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: {
-                background: '#101720',
-                color: '#fff',
-                borderRadius: '10px',
-              },
-            }}
-          />
-
-          <MusicPlayers />
+          
+          <ConditionalMusicPlayer />
         </MusicPlayerProvider>
       </BrowserRouter>
     </ReactQueryProvider>
-
   );
 }
 

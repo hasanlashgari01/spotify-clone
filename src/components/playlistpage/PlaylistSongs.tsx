@@ -1,9 +1,6 @@
-import "../../styles/playlist.css";
-import PlSongs from "./PlSongs";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { playlistService } from "../../services/playlistService";
-
+import React, { useEffect, useState } from 'react';
+import '../../styles/playlist.css';
+import { useParams } from 'react-router-dom';
 import {
   PlaylistSong,
   Playlistinfo,
@@ -11,6 +8,8 @@ import {
   SortOrder,
   getPlaylistDetails,
 } from '../../services/playlistDetailsService';
+import PlSongs from './PlSongs';
+import { playlistService } from '../../services/playlistService';
 
 type Props = {
   refFetch?: React.MutableRefObject<() => void>;

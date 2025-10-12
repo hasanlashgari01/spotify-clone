@@ -1,17 +1,16 @@
-import "../../styles/scrollbar-hide.css";
-import LoadingCircle from "../loading/LoadingCircle";
-import React, { SetStateAction, useEffect, useState } from "react";
-import SortMenu from "./SortMenu";
-import { PauseIcon, PlayIcon } from "lucide-react";
-import { useMediaQuery } from "react-responsive";
-import { useMusicPlayer } from "../../context/MusicPlayerContext";
-
+import React, { useState, useEffect, SetStateAction } from 'react';
 import {
   PlaylistSong,
   SongSortBy,
   SortOrder,
 } from '../../services/playlistDetailsService';
 
+import { useMusicPlayer } from '../../context/MusicPlayerContext';
+import SortMenu from './SortMenu';
+import { useMediaQuery } from 'react-responsive';
+import LoadingCircle from '../loading/LoadingCircle';
+import { PlayIcon, PauseIcon } from 'lucide-react';
+import '../../styles/scrollbar-hide.css';
 interface PlSongsProps {
   songs: PlaylistSong[];
   setSortBy: React.Dispatch<SetStateAction<SongSortBy>>;
