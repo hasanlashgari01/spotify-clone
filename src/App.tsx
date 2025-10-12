@@ -9,7 +9,9 @@ import Profile from './pages/Profile';
 import RegisterPage from './pages/RegisterPage';
 import ReactQueryProvider from './providers/react-query-provider';
 import UsersProfile from './pages/UsersProfile';
-import {Toaster} from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
+import GenreItems from './pages/Genres/GenreItems';
+import Genres from './pages/Genres/Genres';
 
 function App() {
   return (
@@ -21,7 +23,9 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/playlist/:slug" element={<PlaylistPage />} />
-            <Route path="/profile/:username" element={<UsersProfile/>}></Route>
+            <Route path="/profile/:username" element={<UsersProfile />}></Route>
+            <Route path="/genre" element={<Genres />} />
+            <Route path="/genre/:title" element={<GenreItems />} />
             <Route
               path="/profile"
               element={
@@ -45,7 +49,6 @@ function App() {
         </MusicPlayerProvider>
       </BrowserRouter>
     </ReactQueryProvider>
-
   );
 }
 
