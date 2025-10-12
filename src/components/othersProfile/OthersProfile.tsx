@@ -274,12 +274,12 @@ const OthersProfile = () => {
           onClose={() => setFollowingsOpen(false)}
           id={userData?.id}
         />
-        <TripleDotMenu
+        {/* <TripleDotMenu
           isOpen={menuOpen}
           onClose={() => setMenuOpen(false)}
           userId={Number(userData?.id ? userData?.id : 2)}
           username={username}
-        />
+        /> */}
       </div>
 
 
