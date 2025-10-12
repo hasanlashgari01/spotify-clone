@@ -1,39 +1,23 @@
-import ErrorMessage from "../../components/error/ErrorMessage";
-import Loading from "../../components/loading/Loading";
-import { HeartIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { httpService } from "../../config/axios";
-import { GenreInfo } from "../../types/song.type";
+import ErrorMessage from '../../components/error/ErrorMessage';
+import Loading from '../../components/loading/Loading';
+import { HeartIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useGenres } from './../../hooks/useFechSongs';
 
 const Genres = () => {
-  const [genres, setGenres] = useState<GenreInfo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  useEffect(() => {
-    const fetchGenre = async () => {
-      try {
-        const response = await httpService.get<GenreInfo[]>('/genres');
-        setGenres(response.data);
-        setLoading(false);
-      } catch (error: any) {
-        setError(error.message);
-        setLoading(false);
-      }
-    };
-    fetchGenre();
-  }, []);
-  if (loading) return <Loading />;
+  const { data: genres, isLoading, error } = useGenres();
+
+  if (isLoading) return <Loading />;
   if (error) return <ErrorMessage error={error} />;
   return (
     <div className="bgColor height-auto flex min-h-screen items-center justify-evenly text-black">
-      {genres.map((genre) => (
+      {genres?.map((genre) => (
         <div
           className="relative inline-flex w-[350px] flex-col rounded-[15px] bg-white font-light shadow-[0_0_100px_-10px_rgba(0,0,0,0.2)] transition-shadow hover:shadow-lg"
           key={genre.slug}
         >
           <Link
-            to={`/song/genre/${genre.id}`}
+            to={`/genre/${genre.title.toLowerCase()}`}
             key={genre.id}
             className="no-underline"
           >

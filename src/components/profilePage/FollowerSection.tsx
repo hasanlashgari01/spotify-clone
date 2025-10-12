@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import defAvatar from '../../../public/default-avatar.webp';
-import { Link } from 'react-router-dom';
-import { UserService, getUserFollowings } from '../../services/userDetailsService';
-import { getMe } from '../../services/meService';
-import LoadingCircle from '../loading/LoadingCircle';
-import { useFollow } from '../../context/UserFansContext';
+import LoadingCircle from "../loading/LoadingCircle";
+import React, { useState } from "react";
+import defAvatar from "../../../public/default-avatar.webp";
+import { Link } from "react-router-dom";
+import { useFollow } from "../../context/UserFansContext";
+import { getMe } from "../../services/meService";
+import { UserService, getUserFollowings } from "../../services/userDetailsService";
 
 interface FollowerProps {
   avatar?: string;
@@ -18,13 +18,13 @@ const FollowerSection: React.FC<FollowerProps> = ({
   userId,
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { followings, setFollowings } = useFollow();
-
+  const { followings, setFollowings  , setCount} = useFollow();
+  
   
   const isFollowing = followings.some(f => f.following?.id === userId);
 
   const fnunf = async (id: number): Promise<void> => {
-    if (!id) return;
+    if (!id || loading) return;
     try {
       setLoading(true);
 
@@ -34,6 +34,10 @@ const FollowerSection: React.FC<FollowerProps> = ({
       const res = await getMe();
       const data = await getUserFollowings(`${res.sub}`, 1, 1000000);
       setFollowings(data?.followings ? data.followings : []);
+      setCount(prev => ({
+        ...prev,
+        followings: prev.followings + (isFollowing ? -1 : 1),
+      }))
     } catch (error) {
       console.error(error);
     } finally {
@@ -42,7 +46,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
   };
 
   return (
-    <tbody>
+    <tbody className='z-1000'>
       <tr className="song-tableRow border-b border-gray-700 transition hover:bg-gray-800/40">
         <td className="w-16">
           <img
@@ -63,7 +67,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
           <button
             onClick={() => fnunf(userId)}
             disabled={loading}
-            className="text-md w-content min-w-20 cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900"
+            className="text-md w-content min-w-20 cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? (
               <LoadingCircle />

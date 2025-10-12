@@ -1,10 +1,12 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { FiEdit } from 'react-icons/fi';
-import { TbMusicHeart } from 'react-icons/tb';
-import { IoMdShare, IoMdCopy, IoMdTrash } from 'react-icons/io';
-import Modal from '../MyPlayLists/Modal';
-import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
+import EditPlaylistForm from "../Edit playlist details/EditPlaylistForm";
+import Modal from "../MyPlayLists/Modal";
+import SearchModal from "./SearchModal";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { FiEdit } from "react-icons/fi";
+import { IoMdCopy, IoMdShare, IoMdTrash } from "react-icons/io";
+import { PiMusicNotesPlusFill } from "react-icons/pi";
+import { TbMusicHeart } from "react-icons/tb";
 
 interface Props {
   isOpen: boolean;
@@ -13,6 +15,7 @@ interface Props {
   isPublic?: boolean;
   playlist?: any;
   onPlaylistUpdated?: () => void;
+
 }
 
 const PlaylistMenu = ({
@@ -24,7 +27,7 @@ const PlaylistMenu = ({
 }: Props) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
-
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const menuItems = [
     {
       icon: IoMdShare,
@@ -46,6 +49,14 @@ const PlaylistMenu = ({
     },
     ...(isOwner
       ? [
+          {
+            icon: PiMusicNotesPlusFill,
+            label: 'Add music',
+            action: () => {
+              (setSearchModalOpen(true), onClose());
+            },
+            color: 'text-white hover:text-blue-400',
+          },
           {
             icon: FiEdit,
             label: 'Edit Details',
@@ -99,7 +110,7 @@ const PlaylistMenu = ({
 
             <motion.div
               ref={menuRef}
-              className="fixed inset-x-0 bottom-20 z-70 mx-2 mb-2 sm:mx-4 sm:mb-4 md:right-4 md:bottom-4 md:left-auto md:mx-0 md:w-80"
+              className="fixed inset-x-0 bottom-20 z-70 mx-2 mb-2 sm:mx-4 sm:mb-4 md:left-4 md:bottom-4 md:right-auto md:mx-0 md:w-80"
               initial={{ y: '100%', opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '100%', opacity: 0 }}
@@ -220,6 +231,10 @@ const PlaylistMenu = ({
           }}
         />
       </Modal>
+   <SearchModal
+  open={searchModalOpen}
+  onClose={() => setSearchModalOpen(false)}
+/>
     </>
   );
 };

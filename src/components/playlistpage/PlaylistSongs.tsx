@@ -66,7 +66,6 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch, isOwner, search }) => {
 
   
   useEffect(() => {
-    console.log(songs)
     if (!search) {
       setFilteredSongs(songs);
     } else {
@@ -90,7 +89,7 @@ const PlaylistSongs: React.FC<Props> = ({ refFetch, isOwner, search }) => {
   }, [refFetch]);
 
   return (
-    <div className="playlist-container flex flex-wrap gap-4 ">
+    <div className="playlist-container flex flex-wrap gap-4 mt-9 ">
       <PlSongs
         songs={filteredSongs}
         setSortBy={setSortBy}

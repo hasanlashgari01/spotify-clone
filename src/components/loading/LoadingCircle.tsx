@@ -1,4 +1,5 @@
 import "../../styles/loader.css";
+import React from "react";
 
 const LoadingCircle = () => {
   return (

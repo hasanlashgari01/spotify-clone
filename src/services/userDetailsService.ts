@@ -1,4 +1,6 @@
-import { httpService } from '../config/axios';
+import { httpService } from "../config/axios";
+import { User } from "./authService";
+import { getMe } from "./meService";
 
 export interface Pagination {
   page: number;
@@ -66,6 +68,12 @@ export const getUserFollowings = async (
     return null;
   }
 };
+export const getOthersDetails = async (
+  username : string
+) : Promise<User> => {
+  const response = await httpService.get<User>(`/user/profile/${username}`)
+  return response.data
+}
 export const getFollowingCount = async (
   id: string,
   action: string
@@ -78,11 +86,16 @@ export const getFollowingCount = async (
 export const UserService = {
   async FollowUnFollow(id: number) {
     if (!id) return;
+    const me = await getMe();
+    if (!me) return;
+    if (me.sub === id) return;
     try {
       const response = await httpService.get(`/follow/${id}`);
-      return response.data.message;
+    return response.status;
     } catch (error) {
-      console.error(error);
+      console.log('Error occurred:', error);
+      return;
     }
   },
+  
 };

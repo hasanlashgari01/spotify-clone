@@ -1,4 +1,4 @@
-import { httpService } from '../config/axios';
+import { httpService } from "../config/axios";
 
 export interface Playlist {
   id: number;
@@ -24,15 +24,15 @@ export interface PlaylistResponse {
   pagination: Pagination;
 }
 export interface AddResponse {
-  message : string;
-  error? : string
-  statusCode? : number;
+  message: string;
+  error?: string;
+  statusCode?: number;
 }
 export interface DeleteResponse {
-  message : string;
-  error? : string
-  statusCode? : number;
-  stat : string;
+  message: string;
+  error?: string;
+  statusCode?: number;
+  stat: string;
 }
 
 export const playlistService = {
@@ -40,26 +40,41 @@ export const playlistService = {
     const { data } = await httpService.get<PlaylistResponse>('/playlists/my', {
       params: { page, limit },
     });
+    
     return data;
+    
   },
-  async Addmusic(playlistId : string ,songId : string ){
+  async Addmusic(playlistId: string, songId: string) {
     try {
-      const {data} = await httpService.patch<AddResponse>(`/playlists/${playlistId}/song/${songId}`)
-    return data?.message
+      const { data } = await httpService.patch<AddResponse>(
+        `/playlists/${playlistId}/song/${songId}`
+      );
+      return data?.message;
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-
   },
-  async Deletemusic(playlistId : string , songId : string){
-  try {
-        const {data} = await httpService.delete<DeleteResponse>(`/playlists/${playlistId}/song/${songId}`);
-        if (data.statusCode) data.stat = "error";
-        if (!data.statusCode) data.stat = "success";
-    return data
-  } catch (error) {
-      console.error(error)
-  }    
-  }
+  async Deletemusic(playlistId: string, songId: string) {
+    try {
+      const { data } = await httpService.delete<DeleteResponse>(
+        `/playlists/${playlistId}/song/${songId}`
+      );
+      if (data.statusCode) data.stat = 'error';
+      if (!data.statusCode) data.stat = 'success';
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  async LikeorUnlike(playlistId: string) {
+    try {
+      const { data } = await httpService.get<AddResponse>(
+        `/playlists/${playlistId}/toggle-like`
+      );
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  
 };
-

@@ -15,9 +15,7 @@ export interface PlaylistSong {
   songId: number;
   createdAt: string;
   updatedAt: string;
-  artistId: number;
 }
-
 
 export interface Playlistinfo {
   id: number;

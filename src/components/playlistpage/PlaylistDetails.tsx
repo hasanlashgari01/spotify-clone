@@ -1,13 +1,13 @@
-import PlaylistMenu from './Playlistmenu';
-import PlaylistStatusControl from './PlaylistStatusControl';
-import { Search, X } from 'lucide-react';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { FaRegHeart } from 'react-icons/fa';
-import { IoMdShare } from 'react-icons/io';
-import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
-import { useMediaQuery } from 'react-responsive';
-import { useParams } from 'react-router-dom';
-import { MeResponse, getMe } from '../../services/meService';
+import PlaylistMenu from "./Playlistmenu";
+import PlaylistStatusControl from "./PlaylistStatusControl";
+import { Search, X } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { FaRegHeart } from "react-icons/fa";
+import { IoMdShare } from "react-icons/io";
+import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
+import { useMediaQuery } from "react-responsive";
+import { useParams } from "react-router-dom";
+import { MeResponse, getMe } from "../../services/meService";
 
 // Custom gradient loader (blue luxury tones)
 import {
@@ -65,6 +65,7 @@ const PlaylistDetails = ({
   const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSearch, setShowSearch] = useState<boolean>(false);
+  
   const [_, setMe] = useState<MeResponse | null>(null);
   const [isOwner, setIsOwner] = useState(false);
   useEffect(() => {

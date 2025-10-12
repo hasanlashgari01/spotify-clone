@@ -21,8 +21,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/song/genre" element={<Genres />} />
-            <Route path="/song/genre/:id" element={<GenreItems />} />
+            <Route path="/genre" element={<Genres />} />
+            <Route path="/genre/:title" element={<GenreItems />} />
             <Route path="/playlist/:slug" element={<PlaylistPage />} />
             <Route
               path="/profile"

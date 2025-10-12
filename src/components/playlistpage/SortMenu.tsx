@@ -74,7 +74,7 @@ const SortMenu: React.FC<Props> = ({ sortBy, order, onChange }) => {
             return (
               <button
                 key={opt.key}
-                className={`flex w-full cursor-pointer items-center justify-between rounded-sm px-3 py-2 text-sm ${active ? 'bg-[#00c754] text-white' : 'text-zinc-200 hover:bg-[#00c75373] hover:text-white'}`}
+                className={`flex w-full cursor-pointer items-center justify-between px-3 py-2 text-sm rounded-sm ${active ? 'bg-[#00c754] text-white' : 'text-zinc-200 hover:bg-[#00c75373] hover:text-white'}`}
                 onClick={() => handleSelect(opt.key)}
               >
                 <span>{opt.label}</span>

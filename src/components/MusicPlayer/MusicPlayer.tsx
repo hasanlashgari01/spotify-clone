@@ -1,6 +1,8 @@
+import React, { useMemo } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMusicPlayer } from "../../context/MusicPlayerContext";
+
 // MusicPlayer.tsx
-import React, { useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play,
   Pause,
@@ -13,7 +15,6 @@ import {
   ChevronUp,
   ChevronDown,
 } from 'lucide-react';
-import { useMusicPlayer } from '../../context/MusicPlayerContext';
 
 // ===== Helpers =====
 const formatTime = (sec: number) => {
@@ -56,7 +57,7 @@ const MusicPlayer: React.FC = () => {
     <>
       {/* 🟢 Desktop Player */}
       <motion.div
-        className="fixed bottom-4 left-1/2 z-50 hidden w-[95%] -translate-x-1/2 transform items-center justify-between rounded-2xl bg-gray-900/90 p-4 text-white shadow-xl backdrop-blur-md md:flex md:w-4/5"
+        className="fixed bottom-4 left-1/2 z-10 hidden w-[95%] -translate-x-1/2 transform items-center justify-between rounded-2xl bg-gray-900/90 p-4 text-white shadow-xl backdrop-blur-md md:flex md:w-4/5"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
       >
