@@ -1,5 +1,5 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { httpService } from '../config/axios';
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { httpService } from "../config/axios";
 
 import {
   ApiResponse,

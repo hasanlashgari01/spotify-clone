@@ -1,10 +1,10 @@
-import FloatingMusicIcons from './../../components/playlistpage/FloatingMusicIcons';
-import PlaylistMenu from './../../components/playlistpage/Playlistmenu';
-import { Search, X } from 'lucide-react';
-import { FC } from 'react';
-import { IoMdShare } from 'react-icons/io';
-import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
-import { GenreDetailsWrapperProps } from '../../types/song.type';
+import FloatingMusicIcons from "./../../components/playlistpage/FloatingMusicIcons";
+import PlaylistMenu from "./../../components/playlistpage/Playlistmenu";
+import { Search, X } from "lucide-react";
+import { FC } from "react";
+import { IoMdShare } from "react-icons/io";
+import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
+import { GenreDetailsWrapperProps } from "../../types/song.type";
 
 const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
   genreDetails,
@@ -34,7 +34,7 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
         <div
           className="relative h-[50vh] w-full bg-cover bg-center"
           style={{
-            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url(${genreDetails.cover || '/default.webp'})`,
+            backgroundImage: `bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)], url(${genreDetails.cover || '/default.webp'})`,
           }}
         >
           <div className="absolute inset-0 backdrop-blur-[2px]" />
@@ -113,7 +113,7 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
 
       <div className="hidden md:flex md:flex-col md:items-center md:justify-center md:md:justify-start md:p-5">
         <div className="group relative">
-          <div className="absolute -inset-1 rounded-2xl bg-[#1574f5] opacity-75 blur transition duration-1000 group-hover:opacity-100"></div>
+          <div className="absolute -inset-1 rounded-2xl  bg-[#1574f5] opacity-75 blur transition duration-1000 group-hover:opacity-100"></div>
           <img
             src={genreDetails.cover || '/default.webp'}
             alt={genreDetails.title}
