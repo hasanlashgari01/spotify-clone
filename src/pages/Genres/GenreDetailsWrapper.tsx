@@ -1,10 +1,10 @@
-import FloatingMusicIcons from "./../../components/playlistpage/FloatingMusicIcons";
-import PlaylistMenu from "./../../components/playlistpage/Playlistmenu";
-import { Search, X } from "lucide-react";
-import { FC } from "react";
-import { IoMdShare } from "react-icons/io";
-import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
-import { GenreDetailsWrapperProps } from "../../types/song.type";
+import FloatingMusicIcons from './../../components/playlistpage/FloatingMusicIcons';
+import PlaylistMenu from './../../components/playlistpage/Playlistmenu';
+import { Search, X } from 'lucide-react';
+import { FC } from 'react';
+import { IoMdShare } from 'react-icons/io';
+import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
+import { GenreDetailsWrapperProps } from '../../types/song.type';
 
 const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
   genreDetails,
@@ -25,7 +25,7 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
   }
 
   return (
-    <div className="relative flex w-full flex-col md:flex-row ">
+    <div className="relative flex w-full flex-col md:flex-row">
       <div className="pointer-events-none absolute inset-0 hidden overflow-hidden md:block">
         <FloatingMusicIcons />
       </div>
@@ -113,7 +113,7 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
 
       <div className="hidden md:flex md:flex-col md:items-center md:justify-center md:md:justify-start md:p-5">
         <div className="group relative">
-          <div className="absolute -inset-1 rounded-2xl  bg-[#1574f5] opacity-75 blur transition duration-1000 group-hover:opacity-100"></div>
+          <div className="absolute -inset-1 rounded-2xl bg-[#1574f5] opacity-75 blur transition duration-1000 group-hover:opacity-100"></div>
           <img
             src={genreDetails.cover || '/default.webp'}
             alt={genreDetails.title}
