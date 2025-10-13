@@ -12,6 +12,7 @@ import UsersProfile from './pages/UsersProfile';
 import { Toaster } from 'react-hot-toast';
 import GenreItems from './pages/Genres/GenreItems';
 import Genres from './pages/Genres/Genres';
+import SearchPage from './pages/SearchPage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/playlist/:slug" element={<PlaylistPage />} />
             <Route path="/profile/:username" element={<UsersProfile />}></Route>
+            <Route path="/search" element={<SearchPage />}></Route>
             <Route path="/genre" element={<Genres />} />
             <Route path="/genre/:title" element={<GenreItems />} />
             <Route
