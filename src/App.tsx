@@ -1,17 +1,18 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MusicPlayers from './components/MusicPlayer/MusicPlayer';
-import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
-import { MusicPlayerProvider } from './context/MusicPlayerContext';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import PlaylistPage from './pages/PlaylistPage';
-import Profile from './pages/Profile';
-import RegisterPage from './pages/RegisterPage';
-import ReactQueryProvider from './providers/react-query-provider';
-import UsersProfile from './pages/UsersProfile';
-import { Toaster } from 'react-hot-toast';
+import './styles/App.css';
 import GenreItems from './pages/Genres/GenreItems';
 import Genres from './pages/Genres/Genres';
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import MusicPlayers from './components/MusicPlayer/MusicPlayer';
+import PlaylistPage from './pages/PlaylistPage';
+import Profile from './pages/Profile';
+import ReactQueryProvider from './providers/react-query-provider';
+import RegisterPage from './pages/RegisterPage';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
+import { MusicPlayerProvider } from './context/MusicPlayerContext';
+import { Toaster } from 'react-hot-toast';
+import UsersProfile from './pages/UsersProfile';
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/genre" element={<Genres />} />
+            <Route path="/genre/:title" element={<GenreItems />} />
             <Route path="/playlist/:slug" element={<PlaylistPage />} />
             <Route path="/profile/:username" element={<UsersProfile />}></Route>
             <Route path="/genre" element={<Genres />} />
@@ -35,6 +38,7 @@ function App() {
               }
             />
           </Routes>
+
           <Toaster
             position="top-right"
             toastOptions={{
@@ -45,6 +49,7 @@ function App() {
               },
             }}
           />
+
           <MusicPlayers />
         </MusicPlayerProvider>
       </BrowserRouter>

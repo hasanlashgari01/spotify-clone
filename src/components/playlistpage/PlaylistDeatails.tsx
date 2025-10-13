@@ -1,24 +1,25 @@
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useMediaQuery } from 'react-responsive';
-import { useParams } from 'react-router-dom';
-import { IoMdShare } from 'react-icons/io';
-import { FaRegHeart, FaHeart } from 'react-icons/fa';
-import { X, Search } from 'lucide-react';
-import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
+import FloatingMusicIcons from "./FloatingMusicIcons";
+import LoadingCircle from "../loading/LoadingCircle";
+import PlaylistMenu from "./Playlistmenu";
+import PlaylistStatusControl from "./PlaylistStatusControl";
+import { Search, X } from "lucide-react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { IoMdShare } from "react-icons/io";
+import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
+import { useMediaQuery } from "react-responsive";
+import { useParams } from "react-router-dom";
+import { MeResponse, getMe } from "../../services/meService";
+import { playlistService } from "../../services/playlistService";
+
 import {
   getPlaylistDetails,
   Playlistinfo,
 } from '../../services/playlistDetailsService';
-import PlaylistStatusControl from './PlaylistStatusControl';
 import {
   updatePlaylistStatus,
   PlaylistStatus,
 } from '../../services/playlistDetailsService';
-import PlaylistMenu from './Playlistmenu';
-import { getMe, MeResponse } from '../../services/meService';
-import LoadingCircle from '../loading/LoadingCircle';
-import { playlistService } from '../../services/playlistService';
-import FloatingMusicIcons from './FloatingMusicIcons';
 const LuxeLoader = () => (
   <svg
     className="h-20 w-20 animate-[spin_1.8s_ease-in-out_infinite] drop-shadow-[0_0_12px_rgba(59,130,246,0.35)]"
@@ -201,10 +202,10 @@ const PlaylistDetails = ({
                       <IoMdShare className="text-lg text-white" />
                     </button>
                     <button
-                      onClick={handleHeartClick}
-                      disabled={isLiking}
-                      aria-disabled={isLiking}
-                      className={`group flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
+                        onClick={handleHeartClick}
+                        disabled={isLiking}
+                        aria-disabled={isLiking}
+                        className={`group flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
                     >
                       {isLiking ? (
                         <div className="flex h-5 w-5 items-center justify-center">
@@ -309,6 +310,8 @@ const PlaylistDetails = ({
                     setShowSearch(false);
                     setSearch('');
                   }}
+
+                  
                   className="group flex h-9 w-11 cursor-pointer items-center justify-center rounded-full bg-red-500/20 ring-1 ring-red-400/30 transition-all duration-200 hover:scale-105 hover:bg-red-500/50 hover:ring-red-400/60"
                 >
                   <X className="h-4 w-4 text-white transition-colors duration-200" />

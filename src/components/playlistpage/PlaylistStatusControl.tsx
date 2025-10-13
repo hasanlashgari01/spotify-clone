@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
-import type { PlaylistStatus } from '../../services/playlistDetailsService';
-import { getMe, MeResponse } from '../../services/meService';
+import { useEffect, useRef, useState } from "react";
+import { MeResponse, getMe } from "../../services/meService";
+import type { PlaylistStatus } from "../../services/playlistDetailsService";
 
 type Props = {
   value?: PlaylistStatus | null;

@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import { FaCrown, FaBell } from 'react-icons/fa';
-import { IoMenu, IoClose } from 'react-icons/io5';
-import { CgProfile } from 'react-icons/cg';
-import { useAuth } from '../hooks/useAuth';
-import HomeLogo from '../../public/home/home-logo.png';
+import HomeLogo from "../../public/home/home-logo.png";
+import { useEffect, useRef, useState } from "react";
+import { CgProfile } from "react-icons/cg";
+import { FaBell, FaCrown } from "react-icons/fa";
+import { IoClose, IoMenu } from "react-icons/io5";
+import { useAuth } from "../hooks/useAuth";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);

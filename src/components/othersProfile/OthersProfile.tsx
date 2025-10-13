@@ -5,7 +5,6 @@ import '../../styles/userinfo.css';
 import FollowersCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
 import LoadingCircle from '../loading/LoadingCircle.tsx';
-import TripleDotMenu from './modal/TripleDotMenu.tsx';
 import {
   getFollowingCount,
   getOthersDetails,

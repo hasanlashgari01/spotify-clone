@@ -1,6 +1,8 @@
+import React, { useMemo } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useMusicPlayer } from "../../context/MusicPlayerContext";
+
 // MusicPlayer.tsx
-import React, { useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play,
   Pause,
@@ -13,7 +15,6 @@ import {
   ChevronUp,
   ChevronDown,
 } from 'lucide-react';
-import { useMusicPlayer } from '../../context/MusicPlayerContext';
 
 // ===== Helpers =====
 const formatTime = (sec: number) => {

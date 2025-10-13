@@ -1,4 +1,4 @@
-import { httpService } from '../config/axios';
+import { httpService } from "../config/axios";
 
 export interface Playlist {
   id: number;

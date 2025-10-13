@@ -1,14 +1,14 @@
-import 'swiper/css';
-import 'swiper/css/navigation';
-import { Navigation } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { useMadeForYouSongs } from '../../hooks/usePopularSongs';
-import Loading from '../loading/Loading';
-import SongItem from '../song-item/SongItem';
-import LeftArrowIcon from '../icons/LeftArrowIcon';
-import RightArrowIcon from '../icons/RightArrowIcon';
-import { useAuth } from '../../hooks/useAuth';
-import { Song } from '../../types/song.type';
+import "swiper/css";
+import "swiper/css/navigation";
+import LeftArrowIcon from "../icons/LeftArrowIcon";
+import Loading from "../loading/Loading";
+import RightArrowIcon from "../icons/RightArrowIcon";
+import SongItem from "../song-item/SongItem";
+import { Navigation } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { useAuth } from "../../hooks/useAuth";
+import { useMadeForYouSongs } from "../../hooks/usePopularSongs";
+import { Song } from "../../types/song.type";
 
 const MadeForYou: React.FC = () => {
   const { isAuthenticated } = useAuth();
