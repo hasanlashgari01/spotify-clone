@@ -9,9 +9,9 @@ type TopResultProps = {
 };
 
 const TopResults: React.FC<TopResultProps> = ({
-  title = 'Timar',
+  title = 'Nagoo Na',
   artist = 'Amir Tataloo',
-  cover = '/default.webp',
+  cover = '/tataloo.webp',
   onClick,
 }) => {
   const [hovered, setHovered] = useState(false);
@@ -48,7 +48,7 @@ const TopResults: React.FC<TopResultProps> = ({
       </div>
       <div className="min-w-0 flex-1">
         <div className="truncate text-2xl leading-tight font-bold text-white md:text-3xl">
-          {title}
+          Nagoo Na
         </div>
         <div className="truncate text-lg text-gray-300 md:text-xl">
           {artist}
