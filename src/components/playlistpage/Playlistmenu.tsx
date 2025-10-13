@@ -1,13 +1,13 @@
-import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
-import Modal from '../MyPlayLists/Modal';
-import SearchModal from './SearchModal';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
-import { IoMdCopy, IoMdShare, IoMdTrash } from 'react-icons/io';
-import { PiMusicNotesPlusFill } from 'react-icons/pi';
 import { TbMusicHeart } from 'react-icons/tb';
-
+import { IoMdShare, IoMdCopy, IoMdTrash } from 'react-icons/io';
+import Modal from '../MyPlayLists/Modal';
+import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
+import { PiMusicNotesPlusFill } from 'react-icons/pi';
+import SearchModal from './SearchModal';
+import DeleteConfirmationModal from '../MyPlayLists/DeleteConfirmationModal';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -15,6 +15,7 @@ interface Props {
   isPublic?: boolean;
   playlist?: any;
   onPlaylistUpdated?: () => void;
+
 }
 
 const PlaylistMenu = ({
@@ -27,6 +28,16 @@ const PlaylistMenu = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const handleDeleteSuccess = () => {
+    setDeleteModalOpen(false);
+    if (onPlaylistUpdated) {
+      onPlaylistUpdated();
+    }
+    // Redirect to profile page after successful deletion
+    window.location.href = '/profile';
+  };
   const menuItems = [
     {
       icon: IoMdShare,
@@ -67,7 +78,10 @@ const PlaylistMenu = ({
           {
             icon: IoMdTrash,
             label: 'Delete Playlist',
-            action: () => console.log('Delete'),
+            action: () => {
+              setDeleteModalOpen(true);
+              onClose();
+            },
             color: 'text-white hover:text-red-500',
             danger: true,
           },
@@ -109,7 +123,7 @@ const PlaylistMenu = ({
 
             <motion.div
               ref={menuRef}
-              className="fixed inset-x-0 bottom-20 z-70 mx-2 mb-2 sm:mx-4 sm:mb-4 md:right-auto md:bottom-4 md:left-4 md:mx-0 md:w-80"
+              className="fixed inset-x-0 bottom-20 z-70 mx-2 mb-2 sm:mx-4 sm:mb-4 md:left-4 md:bottom-4 md:right-auto md:mx-0 md:w-80"
               initial={{ y: '100%', opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: '100%', opacity: 0 }}
@@ -230,10 +244,24 @@ const PlaylistMenu = ({
           }}
         />
       </Modal>
-      <SearchModal
-        open={searchModalOpen}
-        onClose={() => setSearchModalOpen(false)}
-      />
+   <SearchModal
+  open={searchModalOpen}
+  onClose={() => setSearchModalOpen(false)}
+/>
+      
+      {/* Delete Confirmation Modal */}
+      {playlist && (
+        <DeleteConfirmationModal
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          playlist={{
+            id: playlist.id,
+            title: playlist.title,
+            cover: playlist.cover
+          }}
+          onSuccess={handleDeleteSuccess}
+        />
+      )}
     </>
   );
 };

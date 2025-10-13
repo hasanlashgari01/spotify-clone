@@ -1,18 +1,29 @@
 import './styles/App.css';
 import GenreItems from './pages/Genres/GenreItems';
 import Genres from './pages/Genres/Genres';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import MusicPlayers from './components/MusicPlayer/MusicPlayer';
+import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
+import { MusicPlayerProvider } from './context/MusicPlayerContext';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
-import MusicPlayers from './components/MusicPlayer/MusicPlayer';
 import PlaylistPage from './pages/PlaylistPage';
 import Profile from './pages/Profile';
 import ReactQueryProvider from './providers/react-query-provider';
 import RegisterPage from './pages/RegisterPage';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
-import { MusicPlayerProvider } from './context/MusicPlayerContext';
+
 import { Toaster } from 'react-hot-toast';
 import UsersProfile from './pages/UsersProfile';
+
+
+// Component to conditionally render MusicPlayer
+const ConditionalMusicPlayer = () => {
+  const location = useLocation();
+  const shouldHidePlayer = location.pathname === '/login' || location.pathname === '/register';
+  
+  return !shouldHidePlayer ? <MusicPlayers /> : null;
+};
+
 
 function App() {
   return (
@@ -29,6 +40,7 @@ function App() {
             <Route path="/profile/:username" element={<UsersProfile />}></Route>
             <Route path="/genre" element={<Genres />} />
             <Route path="/genre/:title" element={<GenreItems />} />
+            <Route path="/profile/:username" element={<UsersProfile/>}></Route>
             <Route
               path="/profile"
               element={
@@ -51,6 +63,8 @@ function App() {
           />
 
           <MusicPlayers />
+          
+          <ConditionalMusicPlayer />
         </MusicPlayerProvider>
       </BrowserRouter>
     </ReactQueryProvider>
