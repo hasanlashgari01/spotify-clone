@@ -174,6 +174,7 @@ const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose, id }) => {
                   <FollowingSection
                     avatar={f.following.avatar}
                     fullName={f.following.fullName}
+                    username={f.following.username}
                     userId={f.following.id}
                     isFollowing={isUserFollowing(f.following.id, followings)}
                     onUnfollow={handleUnfollow}

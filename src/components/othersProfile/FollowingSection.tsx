@@ -8,6 +8,7 @@ import { useFollow } from '../../context/UserFansContext';
 interface FollowerProps {
   avatar: string;
   fullName: string;
+  username: string;
   userId: number;
   onUnfollow?: (id: number) => void;
   isFollowing?: boolean; // <-- add this prop to determine follow state
@@ -17,6 +18,7 @@ interface FollowerProps {
 const FollowingSection: React.FC<FollowerProps> = ({
   avatar,
   fullName,
+  username,
   userId,
   onUnfollow,
   isFollowing: isFollowingProp,
@@ -66,7 +68,7 @@ const FollowingSection: React.FC<FollowerProps> = ({
 
         <td>
           <div className="flex w-20 flex-col items-start justify-center sm:w-60">
-            <Link to={`/profile/${userId}`}>
+            <Link to={`/profile/${username}`}>
               <h3 className="text-base font-semibold text-white">{fullName}</h3>
             </Link>
           </div>

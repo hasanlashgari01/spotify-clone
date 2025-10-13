@@ -21,13 +21,8 @@ interface FollowingCardProps {
 }
 
 const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
-  const isMobile = useMediaQuery({ maxWidth: 779 });
-
-  const isDesktop = useMediaQuery({ minWidth: 1195 });
-
   const { followings, setFollowings, setCount } = useFollow();
-
-  const [fCount, setFCount] = useState<number>(0);
+  const [, setFCount] = useState<number>(0);
   const [modal, setModal] = useState<boolean>(false);
   const isControlled = typeof open === 'boolean';
   const isOpen = isControlled ? !!open : modal;
@@ -162,6 +157,7 @@ const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
                 <table key={f.following.id} className="w-full">
                   <FollowingSection
                     avatar={f.following.avatar}
+                    username={f.following.username}
                     fullName={f.following.fullName}
                     userId={f.following.id}
                     onUnfollow={handleUnfollow}

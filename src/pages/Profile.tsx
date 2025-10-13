@@ -12,8 +12,8 @@ const Profile = () => {
   return (
     <>
       <div className="min-h-[100vh] w-full bg-[#101721]">
-        <UserInfo />
         <FollowProvider>
+          <UserInfo />
           {isDesktop && (
             <>
               <div className="flex max-w-[70%] flex-col justify-center p-8">
@@ -44,7 +44,6 @@ const Profile = () => {
             </>
           )}
         </FollowProvider>
-
         <MyPlaylists />
       </div>
     </>
