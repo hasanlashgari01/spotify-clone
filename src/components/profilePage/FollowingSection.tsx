@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 interface FollowerProps {
   avatar: string;
   fullName: string;
+  username: string;
   userId: number;
   onUnfollow?: (id: number) => void;
 }
@@ -14,6 +15,7 @@ interface FollowerProps {
 const FollowingSection: React.FC<FollowerProps> = ({
   avatar,
   fullName,
+  username,
   userId,
   onUnfollow,
 }) => {
@@ -47,7 +49,7 @@ const FollowingSection: React.FC<FollowerProps> = ({
 
         <td>
           <div className="flex w-20 flex-col items-start justify-center sm:w-60">
-            <Link to={`/profile/${userId}`}>
+            <Link to={`/profile/${username}`}>
               <h3 className="text-base font-semibold text-white">{fullName}</h3>
             </Link>
           </div>

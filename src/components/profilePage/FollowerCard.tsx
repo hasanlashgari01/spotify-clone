@@ -17,12 +17,8 @@ interface FollowersCardProps {
 }
 
 const FollowersCard = ({ open, onClose }: FollowersCardProps) => {
-  const isMobile = useMediaQuery({ maxWidth: 779 });
-  const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
-  const isDesktop = useMediaQuery({ minWidth: 1195 });
-
   const { followers, setFollowers } = useFollow();
-  const [fCount, setFCount] = useState<number>(0);
+  const [, setFCount] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 10;
   const [loading, setLoading] = useState<boolean>(false);
@@ -140,8 +136,8 @@ const FollowersCard = ({ open, onClose }: FollowersCardProps) => {
                     <FollowerSection
                       avatar={f.follower.avatar}
                       fullName={f.follower.fullName}
-                      userId={f.follower.id}
                       username={f.follower.username}
+                      userId={f.follower.id}
                     />
                   </table>
                 ))
