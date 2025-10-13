@@ -24,7 +24,7 @@ const OthersProfile = () => {
   const { username } = useParams<{ username: string }>();
   const { followings } = useFollow();
   const queryClient = useQueryClient();
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [, setMenuOpen] = useState(false);
 
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followingsOpen, setFollowingsOpen] = useState(false);
@@ -280,8 +280,6 @@ const OthersProfile = () => {
           username={username}
         /> */}
       </div>
-
-
     </div>
   );
 };
