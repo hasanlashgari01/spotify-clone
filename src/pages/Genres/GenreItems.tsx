@@ -54,7 +54,7 @@ const GenreItems = () => {
   if (error) return <ErrorMessage error={error} />;
 
   return (
-    <div className="no-scrollbar bgColor">
+    <div className="no-scrollbar bgColor bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)]">
       {songs.length === 0 ? (
         <h4>No songs found for this genre.</h4>
       ) : (

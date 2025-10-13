@@ -34,7 +34,7 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
         <div
           className="relative h-[50vh] w-full bg-cover bg-center"
           style={{
-            backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url(${genreDetails.cover || '/default.webp'})`,
+            backgroundImage: `bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)], url(${genreDetails.cover || '/default.webp'})`,
           }}
         >
           <div className="absolute inset-0 backdrop-blur-[2px]" />
@@ -186,6 +186,7 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
         playlist={genreDetails}
       />
     </div>
+
   );
 };
 

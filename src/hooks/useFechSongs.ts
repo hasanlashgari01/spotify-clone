@@ -1,5 +1,5 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { httpService } from "../config/axios";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { httpService } from '../config/axios';
 
 import {
   ApiResponse,
@@ -7,7 +7,6 @@ import {
   GenreInfo,
   UseGenreDetailsParams,
 } from '../types/song.type';
-
 
 // ^ fetch all genres
 export const useGenres = () => {

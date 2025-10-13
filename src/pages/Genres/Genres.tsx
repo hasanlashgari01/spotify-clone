@@ -10,7 +10,7 @@ const Genres = () => {
   if (isLoading) return <Loading />;
   if (error) return <ErrorMessage error={error} />;
   return (
-    <div className="bgColor height-auto flex min-h-screen items-center justify-evenly text-black">
+    <div className="bgColor height-auto flex min-h-screen items-center justify-evenly text-black bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)]">
       {genres?.map((genre) => (
         <div
           className="relative inline-flex w-[350px] flex-col rounded-[15px] bg-white font-light shadow-[0_0_100px_-10px_rgba(0,0,0,0.2)] transition-shadow hover:shadow-lg"
