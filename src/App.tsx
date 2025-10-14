@@ -40,7 +40,6 @@ function App() {
             <Route path="/profile/:username" element={<UsersProfile />}></Route>
             <Route path="/genre" element={<Genres />} />
             <Route path="/genre/:title" element={<GenreItems />} />
-            <Route path="/profile/:username" element={<UsersProfile/>}></Route>
             <Route
               path="/profile"
               element={
