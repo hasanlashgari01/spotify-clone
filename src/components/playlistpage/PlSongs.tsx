@@ -1,16 +1,16 @@
-import "../../styles/scrollbar-hide.css";
-import LoadingCircle from "../loading/LoadingCircle";
-import React, { SetStateAction, useEffect, useState } from "react";
-import SortMenu from "./SortMenu";
-import { PauseIcon, PlayIcon } from "lucide-react";
-import { useMediaQuery } from "react-responsive";
-import { useMusicPlayer } from "../../context/MusicPlayerContext";
-
+import '../../styles/scrollbar-hide.css';
+import LoadingCircle from '../loading/LoadingCircle';
+import React, { SetStateAction, useEffect, useState } from 'react';
+import SortMenu from './SortMenu';
+import { PauseIcon, PlayIcon } from 'lucide-react';
+import { useMediaQuery } from 'react-responsive';
+import { useMusicPlayer } from '../../context/MusicPlayerContext';
 import {
   PlaylistSong,
   SongSortBy,
   SortOrder,
 } from '../../services/playlistDetailsService';
+import '../../styles/scrollbar-hide.css';
 
 interface PlSongsProps {
   songs: PlaylistSong[];
@@ -71,7 +71,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
   }, []);
 
   return (
-    <div className="w-full border-b-1 ">
+    <div className="w-full border-b-1">
       <div
         className={`w-full overflow-x-auto ${songs.length > 8 ? 'scrollbar-hide relative max-h-[55vh] overflow-y-auto md:max-h-[65vh] lg:max-h-[70vh]' : ''}`}
       >

@@ -9,6 +9,7 @@ const Profile = () => {
   const isMobile = useMediaQuery({ maxWidth: 779 });
   const isTablet = useMediaQuery({ minWidth: 780, maxWidth: 1194 });
   const isDesktop = useMediaQuery({ minWidth: 1195 });
+
   return (
     <>
       <div className="min-h-[100vh] w-full bg-[#101721]">

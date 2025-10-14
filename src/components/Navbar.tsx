@@ -1,9 +1,9 @@
-import HomeLogo from "../../public/home/home-logo.png";
-import { useEffect, useRef, useState } from "react";
-import { CgProfile } from "react-icons/cg";
-import { FaBell, FaCrown } from "react-icons/fa";
-import { IoClose, IoMenu } from "react-icons/io5";
-import { useAuth } from "../hooks/useAuth";
+import { useState, useEffect, useRef } from 'react';
+import { FaCrown, FaBell } from 'react-icons/fa';
+import { IoMenu, IoClose } from 'react-icons/io5';
+import { CgProfile } from 'react-icons/cg';
+import { useAuth } from '../hooks/useAuth';
+import HomeLogo from '../../public/home/home-logo.png';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -13,8 +13,11 @@ const Navbar = () => {
 
   // Close profile menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event:MouseEvent) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
         setProfileMenuOpen(false);
       }
     };
@@ -51,27 +54,27 @@ const Navbar = () => {
 
         {/* Right side (Mobile: Bell + Profile) */}
         <div className="flex items-center gap-3 md:hidden">
-          <FaBell className="h-8 w-8 bg-white text-black p-1 rounded-full cursor-pointer text-xl" />
+          <FaBell className="h-8 w-8 cursor-pointer rounded-full bg-white p-1 text-xl text-black" />
           <div className="relative" ref={profileMenuRef}>
-            <div 
-              className="h-8 w-8 text-white overflow-hidden rounded-full cursor-pointer" 
+            <div
+              className="h-8 w-8 cursor-pointer overflow-hidden rounded-full text-white"
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
             >
               {isAuthenticated && user?.avatar ? (
-                <img 
+                <img
                   src={user.avatar}
                   alt={user.fullName}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
-                <CgProfile size={30}/>
+                <CgProfile size={30} />
               )}
             </div>
             {profileMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
+              <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-800 py-1 shadow-lg">
                 {isAuthenticated ? (
                   <>
-                    <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
+                    <div className="border-b border-gray-700 px-4 py-2 text-sm text-white">
                       {user?.fullName || user?.email}
                     </div>
                     <button
@@ -79,7 +82,7 @@ const Navbar = () => {
                         logout();
                         setProfileMenuOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+                      className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-gray-700"
                     >
                       Logout
                     </button>
@@ -146,25 +149,25 @@ const Navbar = () => {
               size={5}
             />
             <div className="relative" ref={profileMenuRef}>
-              <div 
-                className="h-8 w-8 overflow-hidden rounded-full cursor-pointer"
+              <div
+                className="h-8 w-8 cursor-pointer overflow-hidden rounded-full"
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               >
                 {isAuthenticated && user?.avatar ? (
-                  <img 
+                  <img
                     src={user.avatar}
                     alt={user.fullName}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
-                  <CgProfile className="text-2xl text-white" size={30}/>
+                  <CgProfile className="text-2xl text-white" size={30} />
                 )}
               </div>
               {profileMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
+                <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-800 py-1 shadow-lg">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
+                      <div className="border-b border-gray-700 px-4 py-2 text-sm text-white">
                         {user?.fullName || user?.email}
                       </div>
                       <button
@@ -172,7 +175,7 @@ const Navbar = () => {
                           logout();
                           setProfileMenuOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+                        className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-gray-700"
                       >
                         Logout
                       </button>
