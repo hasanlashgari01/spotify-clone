@@ -42,7 +42,6 @@ const FollowersCard = ({ open, onClose, id }: FollowersCardProps) => {
           getUserFollowers(String(id), p, limit),
           getFollowingCount(String(id), 'followers'),
         ]);
-
         setFFollowers((prev) => {
           const prevArr = prev ?? [];
           const combined = [...prevArr, ...(res?.followers ?? [])];

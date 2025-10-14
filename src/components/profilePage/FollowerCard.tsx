@@ -1,11 +1,8 @@
-import FollowerSection from './FollowerSection';
-import LoadingCircle from '../loading/LoadingCircle';
-import defAvatar from '../../../public/default-avatar.webp';
 import { XIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { useMediaQuery } from 'react-responsive';
 import { useFollow } from '../../context/UserFansContext';
 import { authService } from '../../services/authService';
+import FollowerSection from './FollowerSection';
 
 import {
   getFollowingCount,

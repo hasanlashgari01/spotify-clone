@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 import { Dispatch, SetStateAction } from "react";
 
+=======
+>>>>>>> Search-page-and-DeletePlayList
 export interface Song {
   id: number;
   title: string;
@@ -18,6 +21,7 @@ export interface Song {
   updatedAt: string;
 }
 export interface Pagination {
+<<<<<<< HEAD
   page: number;
   limit: number;
   pageCount: number;
@@ -99,4 +103,14 @@ export interface UseGenreDetailsParams {
 export interface GenreDetailsResponse {
   genre: GenreInfo;
   songs: ApiResponse['songs'];
+=======
+  page : number;
+  limit : number;
+  pageCount : number;
+  totalCount : number;
+}
+export interface AllSongs{
+  songs : Song[];
+  pagination : Pagination;
+>>>>>>> Search-page-and-DeletePlayList
 }

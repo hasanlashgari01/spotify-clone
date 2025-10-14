@@ -1,17 +1,14 @@
-import FollowingSection from './FollowingSection';
-import LoadingCircle from '../loading/LoadingCircle';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import defAvatar from '../../../public/default-avatar.webp';
 import { XIcon } from 'lucide-react';
-import { useMediaQuery } from 'react-responsive';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useFollow } from '../../context/UserFansContext';
 import { authService } from '../../services/authService';
 import { UserService } from '../../services/userDetailsService';
+import FollowingSection from './FollowingSection';
 
 // FollowingCard.tsx
 import {
-  getFollowingCount,
   Followings,
+  getFollowingCount,
   getUserFollowings,
 } from '../../services/userDetailsService';
 
