@@ -1,5 +1,34 @@
 @import 'tailwindcss';
 
+@font-face {
+  font-family: 'roboto';
+  src: url('/public/fonts/roboto/roboto.ttf') format('ttf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'vazir';
+  src: url('/public/fonts/vazir/vazirmatn-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-roboto: 'roboto';
+  --font-vazir: 'vazir';
+}
+
+html {
+  font-family: var(--font-roboto), var(--font-vazir);
+}
+
+body {
+  @apply mb-28 bg-[#131a22];
+}
+
 .swiper-button-next,
 .swiper-button-prev {
   color: #1574f5 !important;
