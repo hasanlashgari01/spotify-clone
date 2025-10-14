@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from 'react';
 
 export interface Song {
   id: number;
@@ -99,4 +99,13 @@ export interface UseGenreDetailsParams {
 export interface GenreDetailsResponse {
   genre: GenreInfo;
   songs: ApiResponse['songs'];
+  page: number;
+  limit: number;
+  pageCount: number;
+  totalCount: number;
+}
+
+export interface AllSongs {
+  songs: Song[];
+  pagination: Pagination;
 }
