@@ -12,7 +12,7 @@ import RightArrowIcon from '../icons/RightArrowIcon';
 const TrendingSongs: React.FC = () => {
   const { data, isLoading, error } = usePopularSongs();
 
-  if (error) return <Error {...error} />;
+  if (error) return <Error error={error} />;
 
   return (
     <div className="relative mx-[20px] h-[340px] bg-[#101720] sm:mx-[64px] sm:h-[373px]">
@@ -24,10 +24,10 @@ const TrendingSongs: React.FC = () => {
           See more
         </button>
       </div>
-      <button className="trending-prev absolute top-[150px] left-2 sm:left-4 md:left-6 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[180px] sm:h-[48px] sm:w-[48px] sm:p-2 hidden md:block">
+      <button className="trending-prev absolute top-[150px] left-2 z-10 hidden h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[180px] sm:left-4 sm:h-[48px] sm:w-[48px] sm:p-2 md:left-6 md:block">
         <LeftArrowIcon />
       </button>
-      <button className="trending-next absolute top-[150px] right-2 sm:right-4 md:right-6 z-10 h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[180px] sm:h-[48px] sm:w-[48px] sm:p-2 hidden md:block">
+      <button className="trending-next absolute top-[150px] right-2 z-10 hidden h-[36px] w-[36px] cursor-pointer rounded-full p-1 hover:bg-gray-800 sm:top-[180px] sm:right-4 sm:h-[48px] sm:w-[48px] sm:p-2 md:right-6 md:block">
         <RightArrowIcon />
       </button>
       <div className="relative mt-[40px] mr-[20px] mb-[10px] ml-[20px] sm:mt-[50px] sm:mr-[75px] sm:mb-[21px] sm:ml-[75px]">

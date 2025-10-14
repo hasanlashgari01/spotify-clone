@@ -76,7 +76,7 @@ export const playlistService = {
       console.error(error);
     }
   },
-  async deletePlaylist(playlistId: string) {
+  async deletePlaylist(playlistId: number) {
     try {
       const { data } = await httpService.delete<DeleteResponse>(
         `/playlists/${playlistId}`

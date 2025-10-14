@@ -14,19 +14,19 @@ interface Props {
   onSuccess: () => void;
 }
 
-const DeleteConfirmationModal: React.FC<Props> = ({ 
-  open, 
-  onClose, 
-  playlist, 
-  onSuccess 
+const DeleteConfirmationModal: React.FC<Props> = ({
+  open,
+  onClose,
+  playlist,
+  onSuccess,
 }) => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      const result = await playlistService.deletePlaylist(playlist.id.toString());
-      
+      const result = await playlistService.deletePlaylist(playlist.id);
+
       if (result?.stat === 'success') {
         onSuccess();
         onClose();
@@ -61,42 +61,47 @@ const DeleteConfirmationModal: React.FC<Props> = ({
 
           {/* Modal */}
           <motion.div
-            className="relative z-10 w-full max-w-md mx-4 rounded-2xl p-6 shadow-2xl"
+            className="relative z-10 mx-4 w-full max-w-md rounded-2xl p-6 shadow-2xl"
             style={{
-              background: 'linear-gradient(180deg, #101721 0%, rgba(16,23,33,0.95) 100%)',
+              background:
+                'linear-gradient(180deg, #101721 0%, rgba(16,23,33,0.95) 100%)',
               border: '1px solid rgba(239, 68, 68, 0.3)',
             }}
             initial={{ scale: 0.9, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-            transition={{ 
-              type: 'spring', 
-              stiffness: 300, 
+            transition={{
+              type: 'spring',
+              stiffness: 300,
               damping: 30,
-              duration: 0.3 
+              duration: 0.3,
             }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/20">
                   <IoMdTrash className="h-6 w-6 text-red-400" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Delete Playlist</h3>
-                  <p className="text-sm text-gray-400">This action cannot be undone</p>
+                  <h3 className="text-lg font-bold text-white">
+                    Delete Playlist
+                  </h3>
+                  <p className="text-sm text-gray-400">
+                    This action cannot be undone
+                  </p>
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="rounded-full p-2 text-gray-400 hover:bg-white/10 hover:text-white transition-colors"
+                className="rounded-full p-2 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
               >
                 <IoMdClose size={20} />
               </button>
             </div>
 
             {/* Playlist Info */}
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5 mb-6">
+            <div className="mb-6 flex items-center gap-4 rounded-xl bg-white/5 p-4">
               <img
                 src={playlist.cover || '/default.webp'}
                 alt={playlist.title}
@@ -105,8 +110,8 @@ const DeleteConfirmationModal: React.FC<Props> = ({
                   (e.currentTarget as HTMLImageElement).src = '/default.webp';
                 }}
               />
-              <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-white truncate">
+              <div className="min-w-0 flex-1">
+                <h4 className="truncate font-semibold text-white">
                   {playlist.title}
                 </h4>
                 <p className="text-sm text-gray-400">
@@ -116,9 +121,10 @@ const DeleteConfirmationModal: React.FC<Props> = ({
             </div>
 
             {/* Warning */}
-            <div className="mb-6 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+            <div className="mb-6 rounded-lg border border-red-500/20 bg-red-500/10 p-3">
               <p className="text-sm text-red-300">
-                <strong>Warning:</strong> This will permanently delete the playlist and all its songs. This action cannot be undone.
+                <strong>Warning:</strong> This will permanently delete the
+                playlist and all its songs. This action cannot be undone.
               </p>
             </div>
 
@@ -127,14 +133,14 @@ const DeleteConfirmationModal: React.FC<Props> = ({
               <button
                 onClick={onClose}
                 disabled={isDeleting}
-                className="flex-1 rounded-xl bg-white/10 px-4 py-3 text-white font-medium hover:bg-white/20 transition-colors disabled:opacity-50"
+                className="flex-1 rounded-xl bg-white/10 px-4 py-3 font-medium text-white transition-colors hover:bg-white/20 disabled:opacity-50"
               >
                 Cancel
               </button>
               <motion.button
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className="flex-1 rounded-xl bg-red-500 px-4 py-3 text-white font-medium hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-500 px-4 py-3 font-medium text-white transition-colors hover:bg-red-600 disabled:opacity-50"
                 whileHover={{ scale: isDeleting ? 1 : 1.02 }}
                 whileTap={{ scale: isDeleting ? 1 : 0.98 }}
               >

@@ -62,7 +62,7 @@ export const useGenreDetails = ({
       return {
         genre: findGenre,
         songs: data.songs,
-      };
+      } as GenreDetailsResponse;
     },
     // keepPreviousData: true, // ✅ prevents UI flicker when sort/order changes
     retry: false,

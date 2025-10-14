@@ -20,7 +20,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
   const { currentTrack, isPlaying, playSong, handlePlayPause } =
     useMusicPlayer();
 
-  const [playSongs, setPlaysongs] = useState<PlaylistSong[]>([]);
+  const [, setPlaysongs] = useState<PlaylistSong[]>([]);
   const [songsInPlaylist, setSongsInPlaylist] = useState<Song[]>([]);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [playlistId, setPlaylistId] = useState<number>();
