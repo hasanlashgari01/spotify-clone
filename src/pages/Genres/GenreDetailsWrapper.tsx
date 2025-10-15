@@ -1,10 +1,10 @@
-import FloatingMusicIcons from "./../../components/playlistpage/FloatingMusicIcons";
-import PlaylistMenu from "./../../components/playlistpage/Playlistmenu";
-import { Search, X } from "lucide-react";
-import { FC } from "react";
-import { IoMdShare } from "react-icons/io";
-import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
-import { GenreDetailsWrapperProps } from "../../types/song.type";
+import FloatingMusicIcons from '../../components/playlistpage/FloatingMusicIcons';
+import PlaylistMenu from '../../components/playlistpage/Playlistmenu';
+import { Search, X } from 'lucide-react';
+import { FC } from 'react';
+import { IoMdShare } from 'react-icons/io';
+import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
+import { GenreDetailsWrapperProps } from '../../types/song.type';
 
 const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
   genreDetails,
@@ -134,7 +134,7 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
           </div>
         </div>
 
-        <div className="mt-4 flex items-center gap-6 ml-10">
+        <div className="mt-4 ml-10 flex items-center gap-6">
           {!showSearch ? (
             <>
               <button

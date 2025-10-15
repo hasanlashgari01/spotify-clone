@@ -80,8 +80,8 @@ const SongsList: React.FC = () => {
                 </span>
                 <div
                   onClick={() => handlePlayClick(i)}
-                  className={`absolute top-1/2 left-1/2 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-green-600 text-white transition-all duration-200 ${
-                    isHovered ? 'z-10 opacity-100' : 'z-0 opacity-0'
+                  className={`absolute md:z-0 md:opacity-0 top-1/2 left-1/2 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-green-600 text-white transition-all duration-200 ${
+                    isHovered ? 'md:z-10 md:opacity-100' : ''
                   }`}
                 >
                   {isActive && isPlaying ? (
@@ -98,11 +98,11 @@ const SongsList: React.FC = () => {
                   className="h-10 w-10 rounded-lg object-cover shadow"
                 />
                 <div className="min-w-0">
-                  <p className="truncate font-bold text-white">{s.title}</p>
+                  <p className="text-nowrap font-bold text-white">{s.title}</p>
                   <p className="truncate text-sm text-gray-300">{s.artist}</p>
                 </div>
               </div>
-              <span className="pr-2 text-sm text-white/70 tabular-nums">
+              <span className="pr-2 text-sm text-white/70 tabular-nums  max-sm:opacity-0 md:opacity-100">
                 {Math.floor(s.duration / 60)}:
                 {String(s.duration % 60).padStart(2, '0')}
               </span>

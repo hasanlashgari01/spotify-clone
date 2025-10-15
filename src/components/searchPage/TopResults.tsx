@@ -33,32 +33,33 @@ const TopResults: React.FC<TopResultProps> = ({
         <img
           src={cover}
           alt={title}
-          className="h-20 w-20 rounded-lg object-cover shadow-xl md:h-64 md:w-64"
+          className="h-24 w-24 rounded-lg object-cover shadow-xl sm:h-36 sm:w-36 md:h-52 md:w-52 lg:h-64 lg:w-64"
         />
-        <button
-          onClick={handlePlayClick}
-          className={`absolute top-1/2 left-1/2 flex h-20 w-20 translate-x-120 translate-y-10 items-center justify-center rounded-full bg-green-600 text-white shadow transition-all duration-150 ${
-            hovered
-              ? 'scale-100 opacity-100'
-              : 'pointer-events-none scale-90 opacity-0'
-          }`}
-        >
-          {isPlaying ? <PauseIcon size={38} /> : <PlayIcon size={38} />}
-        </button>
       </div>
+
       <div className="min-w-0 flex-1">
-        <div className="truncate text-2xl leading-tight font-bold text-white md:text-3xl">
+        <div className="text-base leading-tight font-bold text-nowrap text-white sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">
           Nagoo Na
         </div>
-        <div className="truncate text-lg text-gray-300 md:text-xl">
+        <div className="text-sm text-nowrap text-gray-300 sm:text-base md:text-lg lg:text-xl">
           {artist}
         </div>
         <div className="mt-2 flex items-center gap-2">
-          <span className="rounded bg-neutral-900/80 px-2 py-1 text-xs text-gray-500">
+          <span className="rounded bg-neutral-900/80 px-2 py-1 text-[10px] text-gray-500 sm:text-xs md:text-sm">
             Song
           </span>
         </div>
       </div>
+      <button
+        onClick={handlePlayClick}
+        className={`pointer-events-auto relative -bottom-7 flex h-10 w-10 scale-100 items-center justify-center rounded-full bg-green-600 text-white opacity-100 shadow transition-all duration-150 sm:-bottom-7 sm:h-12 sm:w-12 md:pointer-events-none md:-bottom-23 md:h-16 md:w-16 md:scale-90 md:opacity-0 lg:-bottom-23 lg:h-20 lg:w-20 ${hovered ? 'md:pointer-events-auto md:scale-100 md:opacity-100' : ''} `}
+      >
+        {isPlaying ? (
+          <PauseIcon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-10 lg:w-10" />
+        ) : (
+          <PlayIcon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-10 lg:w-10" />
+        )}
+      </button>
     </div>
   );
 };

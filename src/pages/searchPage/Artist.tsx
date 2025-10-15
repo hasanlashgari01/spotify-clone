@@ -18,7 +18,7 @@ const Artist = () => {
   ];
 
   return (
-    <section className="w-full py-8 text-white">
+    <section className="w-full p-8 text-white">
       <h2 className="text-2xl font-bold mb-4 px-6">Artists</h2>
 
       <Swiper
@@ -33,7 +33,7 @@ const Artist = () => {
       >
         {Artists.map((artist) => (
           <SwiperSlide key={artist.id} className="!w-auto">
-            <div className="relative w-48 h-60 rounded-xl bg-gray-800 hover:bg-gray-700 transition-all duration-300 p-4 group cursor-pointer shadow-lg transform hover:scale-105">
+            <div className="relative w-48 h-60 rounded-xl bg-black/40 hover:bg-gray-700 transition-all duration-300 p-4 group cursor-pointer shadow-lg transform ">
               <img
                 src={artist.img}
                 alt={artist.name}

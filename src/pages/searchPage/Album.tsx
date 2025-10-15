@@ -18,7 +18,7 @@ const Album = () => {
   ];
 
   return (
-    <section className="w-full py-8 text-white">
+    <section className="w-full p-8 text-white">
       <h2 className="text-2xl font-bold mb-4 px-6">Albums</h2>
 
       <Swiper
@@ -33,7 +33,7 @@ const Album = () => {
       >
         {Albums.map((album) => (
           <SwiperSlide key={album.id} className="!w-auto">
-            <div className="relative h-56 w-48 rounded-lg px-8 py-4 bg-gray-800 hover:bg-gray-700 hover:shadow-xl transition-all duration-300">
+            <div className="relative h-56 w-48 rounded-lg px-8 py-4 bg-black/40 hover:bg-gray-700 hover:shadow-xl transition-all duration-300">
               <img
                 src={album.img}
                 alt={album.name}

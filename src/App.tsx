@@ -15,7 +15,6 @@ import { Toaster } from 'react-hot-toast';
 import UsersProfile from './pages/UsersProfile';
 import SearchPage from './pages/SearchPage';
 
-// Component to conditionally render MusicPlayer
 const ConditionalMusicPlayer = () => {
   const location = useLocation();
   const shouldHidePlayer =
