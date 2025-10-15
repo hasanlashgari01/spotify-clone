@@ -19,7 +19,7 @@ const MyPlaylist: React.FC = () => {
   if (error) return <Error message={error.message || 'Unknown error'} />;
 
   return (
-    <div className='w-full flex justify-center items-center'>
+    <div className='w-full flex justify-center items-center mt-10'>
     <div className="h-[300px] sm:h-[400px] relative rounded-3xl border-4 border-blue-900 w-[93%]">
       <div className="mt-10 mb-[20px] flex items-center justify-between px-[20px] sm:mb-[40px] sm:pr-[77px]">
         <h2 className="text-lg font-bold text-white sm:text-2xl">

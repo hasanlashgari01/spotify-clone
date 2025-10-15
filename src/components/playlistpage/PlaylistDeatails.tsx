@@ -16,7 +16,6 @@ import {
 } from '../../services/playlistDetailsService';
 import PlaylistMenu from './Playlistmenu';
 import { getMe, MeResponse } from '../../services/meService';
-import LoadingCircle from '../loading/LoadingCircle';
 import { playlistService } from '../../services/playlistService';
 import FloatingMusicIcons from './FloatingMusicIcons';
 const LuxeLoader = () => (
@@ -206,11 +205,7 @@ const PlaylistDetails = ({
                       aria-disabled={isLiking}
                       className={`group flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
                     >
-                      {isLiking ? (
-                        <div className="flex h-5 w-5 items-center justify-center">
-                          <LoadingCircle />
-                        </div>
-                      ) : isLiked ? (
+                      {isLiked ? (
                         <FaHeart className="text-lg text-red-500 transition-colors" />
                       ) : (
                         <FaRegHeart className="text-lg text-white transition-colors group-hover:text-red-400" />
@@ -281,11 +276,7 @@ const PlaylistDetails = ({
                   aria-disabled={isLiking}
                   className={`group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
                 >
-                  {isLiking ? (
-                    <div className="flex h-6 w-6 items-center justify-center">
-                      <LoadingCircle />
-                    </div>
-                  ) : isLiked ? (
+                  { isLiked ? (
                     <FaHeart className="text-2xl text-red-500 transition-colors sm:text-3xl" />
                   ) : (
                     <FaRegHeart className="text-2xl text-white transition-colors group-hover:text-red-400 sm:text-3xl" />
