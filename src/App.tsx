@@ -13,7 +13,7 @@ import ReactQueryProvider from './providers/react-query-provider';
 import RegisterPage from './pages/RegisterPage';
 import { Toaster } from 'react-hot-toast';
 import UsersProfile from './pages/UsersProfile';
-import Search from './pages/Search';
+import SearchPage from './pages/SearchPage';
 
 // Component to conditionally render MusicPlayer
 const ConditionalMusicPlayer = () => {
@@ -35,10 +35,10 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/playlist/:slug" element={<PlaylistPage />} />
             <Route path="/profile/:username" element={<UsersProfile />}></Route>
+            <Route path="/search" element={<SearchPage />}></Route>
             <Route path="/genre" element={<Genres />} />
             <Route path="/genre/:title" element={<GenreItems />} />
             <Route path="/profile/:username" element={<UsersProfile />}></Route>
-            <Route path="/search" element={<Search />} />
             <Route
               path="/profile"
               element={
