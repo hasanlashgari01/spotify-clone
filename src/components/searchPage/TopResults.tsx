@@ -18,10 +18,11 @@ const TopResults: React.FC<TopResultProps> = ({
   const [isPlaying, setIsPlaying] = useState(false);
 
   const handlePlayClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsPlaying((p) => !p);
-    if (onClick) onClick();
-  };
+  e.stopPropagation();
+  setIsPlaying((prev) => !prev); // مهم: استفاده از prev برای toggle
+  if (onClick) onClick();
+};
+
 
   return (
     <div
@@ -50,16 +51,23 @@ const TopResults: React.FC<TopResultProps> = ({
           </span>
         </div>
       </div>
-      <button
-        onClick={handlePlayClick}
-        className={`pointer-events-auto relative -bottom-7 flex h-10 w-10 scale-100 items-center justify-center rounded-full bg-green-600 text-white opacity-100 shadow transition-all duration-150 sm:-bottom-7 sm:h-12 sm:w-12 md:pointer-events-none md:-bottom-23 md:h-16 md:w-16 md:scale-90 md:opacity-0 lg:-bottom-23 lg:h-20 lg:w-20 ${hovered ? 'md:pointer-events-auto md:scale-100 md:opacity-100' : ''} `}
-      >
-        {isPlaying ? (
-          <PauseIcon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-10 lg:w-10" />
-        ) : (
-          <PlayIcon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-10 lg:w-10" />
-        )}
-      </button>
+<button
+  onClick={handlePlayClick}
+  className={`relative flex items-center justify-center rounded-full bg-green-600 text-white shadow transition-all duration-150
+    -bottom-7 h-10 w-10 opacity-100 scale-100 pointer-events-auto
+    sm:-bottom-7 sm:h-12 sm:w-12
+    md:-bottom-23 md:h-16 md:w-16 md:opacity-0 md:scale-90 md:pointer-events-auto
+    lg:h-20 lg:w-20
+    ${hovered ? 'md:opacity-100 md:scale-100 md:pointer-events-auto' : ''}
+  `}
+>
+  {isPlaying ? (
+    <PauseIcon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-10 lg:w-10" />
+  ) : (
+    <PlayIcon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-10 lg:w-10" />
+  )}
+</button>
+
     </div>
   );
 };
