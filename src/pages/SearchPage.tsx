@@ -10,16 +10,16 @@ const SearchPage = () => {
       <Navbar />
       <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
         <section>
-          <TopResults title="Timar" artist="Amir Tataloo" onClick={() => {}} />
+          <TopResults query="tataloo" />
         </section>
         <section>
-          <SongsList />
+          <SongsList query="tataloo" />
         </section>
       </div>
-          <div>
-      <Artist />
-      <Album />
-    </div>
+      <div>
+        <Artist query="tataloo" />
+        <Album query="tataloo" />
+      </div>
     </>
   );
 };

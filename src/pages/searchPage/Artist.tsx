@@ -1,51 +1,78 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import { Play } from "lucide-react";
-import artistImg from "../../../public/search/shadmehr.jpg";
+import { useEffect, useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import { Play } from 'lucide-react';
+import { searchService, SearchArtist } from '../../services/searchService';
 
-const Artist = () => {
-  const Artists = [
-    { id: 1, name: "Shadmehr Aghili", img: artistImg },
-    { id: 2, name: "Ehsan Khajeh Amiri", img: artistImg },
-    { id: 3, name: "Mohammad Alizadeh", img: artistImg },
-    { id: 4, name: "Ebi", img: artistImg },
-    { id: 5, name: "Googoosh", img: artistImg },
-    { id: 6, name: "Dariush", img: artistImg },
-    { id: 7, name: "Hayedeh", img: artistImg },
-    { id: 8, name: "Sattar", img: artistImg },
-    { id: 9, name: "Hayedeh", img: artistImg },
-    { id: 10, name: "Sattar", img: artistImg },
-  ];
+type ArtistProps = {
+  query: string;
+};
+
+const Artist = ({ query }: ArtistProps) => {
+  const [artists, setArtists] = useState<SearchArtist[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!query) return;
+    const fetchArtists = async () => {
+      try {
+        setLoading(true);
+        const data = await searchService.search(query);
+        setArtists(data.artists || []);
+      } catch (error) {
+        console.error('Error fetching artists:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchArtists();
+  }, [query]);
+
+  if (loading)
+    return (
+      <section className="w-full p-8 text-white">
+        <h2 className="mb-4 px-6 text-2xl font-bold">Artists</h2>
+        <p className="px-6 text-gray-400">Loading...</p>
+      </section>
+    );
+
+  if (!artists.length)
+    return (
+      <section className="w-full p-8 text-white">
+        <h2 className="mb-4 px-6 text-2xl font-bold">Artists</h2>
+        <p className="px-6 text-gray-500">No artists found.</p>
+      </section>
+    );
 
   return (
     <section className="w-full p-8 text-white">
-      <h2 className="text-2xl font-bold mb-4 px-6">Artists</h2>
+      <h2 className="mb-4 px-6 text-2xl font-bold">Artists</h2>
 
       <Swiper
         spaceBetween={20}
         slidesPerView="auto"
         breakpoints={{
-          640: { slidesPerView: 2 }, // برای موبایل، نمایش ۲ آیتم
-          768: { slidesPerView: 3 }, // برای تبلت، نمایش ۳ آیتم
-          1024: { slidesPerView: 5 }, // برای دسکتاپ، نمایش ۵ آیتم
+          640: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 5 },
         }}
         className="px-6"
       >
-        {Artists.map((artist) => (
-          <SwiperSlide key={artist.id} className="!w-auto">
-            <div className="relative w-48 h-60 rounded-xl bg-black/40 hover:bg-gray-700 transition-all duration-300 p-4 group cursor-pointer shadow-lg transform ">
+        {artists.map((artist, i) => (
+          <SwiperSlide key={i} className="!w-auto">
+            <div className="group relative h-60 w-48 transform cursor-pointer rounded-xl bg-black/40 p-4 shadow-lg transition-all duration-300 hover:bg-gray-700">
               <img
-                src={artist.img}
-                alt={artist.name}
-                className="w-36 h-36 mx-auto object-cover rounded-full mb-4"
+                src={artist.avatar}
+                alt={artist.fullName}
+                className="mx-auto mb-4 h-36 w-36 rounded-full object-cover"
               />
-              <h3 className="text-sm font-semibold text-center truncate">{artist.name}</h3>
-              <p className="text-xs text-gray-400 text-center">Artist</p>
-
-              {/* دکمه پلی - نمایش در حالت Hover */}
-              <div className="absolute bottom-16 right-8 opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300">
-                <div className="bg-green-500 p-3 rounded-full shadow-lg hover:scale-110">
-                  <Play className="text-white w-5 h-5" />
+              <h3 className="truncate text-center text-sm font-semibold">
+                {artist.fullName}
+              </h3>
+              <p className="text-center text-xs text-gray-400">Artist</p>
+              <div className="absolute right-8 bottom-16 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                <div className="rounded-full bg-green-500 p-3 shadow-lg hover:scale-110">
+                  <Play className="h-5 w-5 text-white" />
                 </div>
               </div>
             </div>

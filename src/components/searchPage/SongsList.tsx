@@ -1,49 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlayIcon, PauseIcon } from 'lucide-react';
+import { searchService, SearchSong } from '../../services/searchService';
 
-type Song = {
-  id: string;
-  title: string;
-  artist: string;
-  duration: number;
-  cover: string;
+type SongsListProps = {
+  query: string;
 };
 
-const songs: Song[] = [
-  {
-    id: '1',
-    title: 'Timar',
-    artist: 'Amir Tataloo',
-    duration: 236,
-    cover: '/default.webp',
-  },
-  {
-    id: '2',
-    title: 'Timar',
-    artist: 'Mohsen Ebrahimzadeh',
-    duration: 186,
-    cover: '/default.webp',
-  },
-  {
-    id: '3',
-    title: 'Timarhane',
-    artist: 'CeG',
-    duration: 230,
-    cover: '/default.webp',
-  },
-  {
-    id: '4',
-    title: 'VENDETTA',
-    artist: 'Timar',
-    duration: 150,
-    cover: '/default.webp',
-  },
-];
-
-const SongsList: React.FC = () => {
+const SongsList: React.FC<SongsListProps> = ({ query }) => {
+  const [songs, setSongs] = useState<SearchSong[]>([]);
   const [hovered, setHovered] = useState<number | null>(null);
   const [active, setActive] = useState<number | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const fetchSongs = async () => {
+      if (!query) return;
+      const res = await searchService.search(query);
+     setSongs(res.songs.slice(0, 4));
+    };
+    fetchSongs();
+  }, [query]);
 
   const handlePlayClick = (idx: number) => {
     if (active === idx) {
@@ -53,6 +29,8 @@ const SongsList: React.FC = () => {
       setIsPlaying(true);
     }
   };
+
+  if (songs.length === 0) return null;
 
   return (
     <div className="w-full rounded-xl bg-black/40 p-4 md:p-6 lg:p-8">
@@ -99,7 +77,7 @@ const SongsList: React.FC = () => {
                 />
                 <div className="min-w-0">
                   <p className="text-nowrap font-bold text-white">{s.title}</p>
-                  <p className="truncate text-sm text-gray-300">{s.artist}</p>
+                  <p className="truncate text-sm text-gray-300">{s.artist.fullName}</p>
                 </div>
               </div>
               <span className="pr-2 text-sm text-white/70 tabular-nums  max-sm:opacity-0 md:opacity-100">
