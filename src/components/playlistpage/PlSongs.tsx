@@ -112,16 +112,14 @@ const PlSongs: React.FC<PlSongsProps> = ({
                 </th>
               )}
               <th className="w-[1%] pr-2 pl-2 text-right sm:pr-4">
-                {!isMobile && (
-                  <SortMenu
-                    sortBy={sortBy}
-                    order={order}
-                    onChange={(s, o) => {
-                      setSortBy(s);
-                      setOrder(o);
-                    }}
-                  />
-                )}
+                <SortMenu
+                  sortBy={sortBy}
+                  order={order}
+                  onChange={(s, o) => {
+                    setSortBy(s);
+                    setOrder(o);
+                  }}
+                />
               </th>
             </tr>
           </thead>
