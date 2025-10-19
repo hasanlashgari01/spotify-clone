@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+@font-face {
+  font-family: 'roboto';
+  src: url('/public/fonts/roboto/roboto.ttf') format('ttf');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'vazir';
+  src: url('/public/fonts/vazir/vazirmatn-medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-roboto: 'roboto';
+  --font-vazir: 'vazir';
+}
+
+html {
+  font-family: var(--font-roboto), var(--font-vazir);
+}
+
+body {
+  @apply mb-28 bg-[#131a22];
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #1574f5 !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 20px !important;
+}
+
+.swiper-button-disabled {
+  opacity: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 16px !important;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+.bgColor {
+  background-image: linear-gradient(
+    180deg,
+    #1574f5 0%,
+    #1453ab 16%,
+    #13458a 35%,
+    #112745 55%,
+    #101721 75%,
+    #101721 100%
+  );
+}
