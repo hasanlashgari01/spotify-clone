@@ -1,0 +1,28 @@
+/* استایل اسکرول‌بار برای مرورگرهای مختلف */
+
+/* برای همه مرورگرها */
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: #101721;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a4a4a;
+  border-radius: 2px;
+  border: 2px solid #101721;
+}
+
+::-webkit-scrollbar-corner {
+  background: #101721;
+}
+
+/* برای فایرفاکس */
+* {
+ 
+  scrollbar-color: #4a4a4a #101721;
+}
