@@ -9,7 +9,8 @@ import { useFollow } from '../../context/UserFansContext';
 import { User, authService } from '../../services/authService';
 import { playlistService } from '../../services/playlistService';
 
-const MAX_FILE_SIZE = 1 * 1024 * 1024;
+
+const MAX_FILE_SIZE = 1024 * 1024;
 
 const GENDER_OPTIONS = [
   { value: 'male', label: 'Male' },
@@ -35,6 +36,7 @@ const UserInfo = () => {
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followingsOpen, setFollowingsOpen] = useState(false);
   const [PlaylCount, setPlaylCount] = useState<number>(0);
+  const [UserId , setUserId] = useState<string >("")
   const loadingRef = useRef(loading);
   loadingRef.current = loading;
 
@@ -43,7 +45,7 @@ const UserInfo = () => {
       const data = await authService.getUser();
       const res = await playlistService.getMyPlaylists();
       setPlaylCount(res.playlists.length);
-
+      setUserId(data?.id ? data?.id : "")
       setFullName(data?.fullName || '');
       setBio(data?.bio || '');
       setUserData(data);
@@ -344,10 +346,15 @@ const UserInfo = () => {
           </AnimatePresence>
 
           <div className="relative flex min-w-full flex-col items-start px-4 pt-26 pb-6 backdrop-blur-[2px] sm:px-6 sm:pt-24 md:px-8 md:pt-28 lg:px-10 lg:pt-32">
+            
             <div className="flex w-full flex-col items-center pb-4 sm:items-start sm:pb-5">
+              
               <div className="flex flex-col items-center pb-3 sm:items-start sm:pb-5">
+                
                 <div className="group relative">
+                  
                   <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-emerald-500/40 via-cyan-400/30 to-indigo-500/30 blur-lg" />
+                 
                   <img
                     className="relative h-28 w-28 rounded-full object-cover ring-2 ring-white/10 transition sm:h-32 sm:w-32 md:h-40 md:w-40 lg:h-44 lg:w-44"
                     src={userData?.avatar || defAvatar}
@@ -382,12 +389,15 @@ const UserInfo = () => {
               <span className="font-extrabold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]">
                 {userData?.fullName ? userData.fullName : 'Name'}
               </span>
+              
+
             </div>
+            
           </div>
         </div>
-        <div className="relative top-[40%] mr-5 flex h-fit items-center justify-center gap-8 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-5 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-5 md:gap-20 md:p-10 lg:mr-15 lg:p-13">
+        <div className="relative top-[30%] mr-5 flex  h-fit items-center justify-center flex-col  rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-5 sm:rounded-3xl sm:p-5 md:top-[20%] lg:top-[10%] md:mr-5 gap-5  md:p-10 lg:mr-15 lg:p-13">
           <motion.div
-            className="relative flex gap-4 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent p-10 shadow-xl backdrop-blur-xl sm:gap-6 sm:p-6 md:gap-10 md:p-8 lg:gap-12 lg:p-15"
+            className="relative flex gap-4  rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent p-4 shadow-xl backdrop-blur-xl sm:gap-6 sm:p-6 md:gap-10 md:p-8 lg:gap-12 lg:p-15"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -399,7 +409,7 @@ const UserInfo = () => {
               onClick={() => setFollowersOpen(true)}
               className="group relative flex cursor-pointer flex-col items-center text-center transition-all outline-none focus:outline-none"
               aria-label="Open followers list"
-              whileHover={{ scale: 1.05, y: -3 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <motion.h2
@@ -425,7 +435,7 @@ const UserInfo = () => {
               onClick={() => setFollowingsOpen(true)}
               className="group relative flex cursor-pointer flex-col items-center text-center transition-all outline-none focus:outline-none"
               aria-label="Open followings list"
-              whileHover={{ scale: 1.05, y: -3 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
               <motion.h2
@@ -448,7 +458,7 @@ const UserInfo = () => {
 
             <motion.div
               className="group relative hidden flex-col items-center text-center transition-all sm:flex"
-              whileHover={{ scale: 1.05, y: -3 }}
+              whileHover={{ scale: 1.05 }}
             >
               <motion.h2
                 className="bg-gradient-to-br from-blue-400 to-cyan-300 bg-clip-text text-2xl leading-none font-black text-transparent sm:text-3xl md:text-5xl lg:text-6xl"
@@ -461,19 +471,50 @@ const UserInfo = () => {
                 }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                {PlaylCount}+
+                {count.followings ? (PlaylCount) : 0}+
               </motion.h2>
               <h3 className="mt-1 text-xs font-medium text-gray-300 sm:text-sm md:text-lg lg:text-xl">
                 Playlists
               </h3>
             </motion.div>
+            
           </motion.div>
+          <h1
+  className="
+    text-white 
+    text-xs 
+    w-[163px]
+    sm:w-fit
+    md:text-md
+    sm:text-sm
+    lg:text-lg
+    font-semibold 
+    px-6 py-3 
+    rounded-3xl 
+    bg-[rgba(0,20,50,0.4)] 
+    backdrop-blur-md 
+    border 
+    border-[rgba(0,150,255,0.3)]
+    shadow-[0_0_20px_rgba(0,120,255,0.6)] 
+    
+    transition-all 
+    duration-300 
+    ease-out 
+    tracking-wide
+    
+  "
+>
+  {userData?.bio || "No bio available"}
+</h1>
         </div>
+        
       </div>
+      
       <div className="fixed">
         <FollowersCard
           open={followersOpen}
           onClose={() => setFollowersOpen(false)}
+          profileUserId={UserId}
         />
         <FollowingCard
           open={followingsOpen}

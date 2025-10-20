@@ -1,16 +1,11 @@
-import { XIcon } from 'lucide-react';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useFollow } from '../../context/UserFansContext';
-import { authService } from '../../services/authService';
-import { UserService } from '../../services/userDetailsService';
-import FollowingSection from './FollowingSection';
-
-// FollowingCard.tsx
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   Followings,
   getFollowingCount,
   getUserFollowings,
 } from '../../services/userDetailsService';
+import { authService } from '../../services/authService';
 
 interface FollowingCardProps {
   open?: boolean;
@@ -19,6 +14,7 @@ interface FollowingCardProps {
 
 const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
   const { followings, setFollowings, setCount } = useFollow();
+
   const [, setFCount] = useState<number>(0);
   const [modal, setModal] = useState<boolean>(false);
   const isControlled = typeof open === 'boolean';
@@ -68,12 +64,33 @@ const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
   );
 
   useEffect(() => {
+    if (!isOpen) return;
     fetchFollowings(page);
-  }, [fetchFollowings, page]);
+  }, [fetchFollowings, page, isOpen]);
+  useEffect(() => {
+  if (isOpen) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
+
+  return () => {
+    document.body.style.overflow = '';
+  };
+}, [isOpen]);
+
 
   useEffect(() => {
     setFCount(followings.length);
   }, [followings]);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose?.();
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [onClose]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -96,9 +113,7 @@ const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
     async (id: number) => {
       const res = await UserService.FollowUnFollow(id);
       if (res === 200) {
-        setFollowings((prev) =>
-          prev.filter((item) => item.following?.id !== id)
-        );
+        setFollowings((prev) => prev.filter((item) => item.following?.id !== id));
         setCount((prev) => ({
           ...prev,
           followings: Math.max(0, prev.followings - 1),
@@ -110,68 +125,87 @@ const FollowingCard: React.FC<FollowingCardProps> = ({ open, onClose }) => {
     [setFollowings, setCount]
   );
 
-  // In controlled mode, avoid occupying any layout space when closed
-  if (isControlled && !isOpen) {
-    return null;
-  }
+  // Controlled mode: render nothing if closed
+  if (isControlled && !isOpen) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center gap-20 bg-transparent p-10">
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-10000 flex items-center justify-center bg-black/50"
-          onClick={() => {
-            if (isControlled) onClose?.();
-            else setModal(false);
-          }}
-        >
-          <div
-            className="relative flex max-h-[80vh] min-h-[80vh] w-[90%] max-w-[500px] flex-col gap-6 overflow-y-auto rounded-2xl bg-[#101721] p-6 text-white"
-            onClick={(e) => e.stopPropagation()}
+    <div className="flex flex-col  items-center justify-center gap-20 bg-transparent p-10">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            key="following-modal"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 backdrop-blur-sm"
+            onClick={() => {
+              if (isControlled) {
+                onClose?.();
+              } else {
+                setModal(false);
+              }
+            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+            aria-modal="true"
+            role="dialog"
+            style={{ cursor: 'pointer' }}
           >
-            <div className="flex flex-row items-center justify-start">
-              <h2 className="text-center text-2xl font-bold">Followings</h2>
-              <div
-                onClick={() => {
-                  if (isControlled) onClose?.();
-                  else setModal(false);
-                }}
-                className="ml-auto cursor-pointer rounded-2xl bg-red-600 p-1 transition-all hover:bg-red-700"
-              >
-                <XIcon color="white" />
-              </div>
-            </div>
-
-            <div
-              className="flex flex-col"
-              style={{
-                maxHeight: '60vh',
-                overflowY: 'auto',
-                paddingBottom: '60px',
+            <motion.div
+              className="relative mb-20 flex w-full max-w-120 flex-col gap-4 rounded-2xl bg-gradient-to-b from-[#101721] to-[#101721e6] p-6 text-white shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ y: -40, scale: 0.95, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 40, scale: 0.95, opacity: 0 }}
+              transition={{
+                type: 'spring',
+                stiffness: 180,
+                damping: 24,
+                mass: 1.1,
+                duration: 0.35,
               }}
+              style={{ cursor: 'default' }}
             >
-              {followings.map((f) => (
-                <table key={f.following.id} className="w-full">
-                  <FollowingSection
-                    avatar={f.following.avatar}
-                    username={f.following.username}
-                    fullName={f.following.fullName}
-                    userId={f.following.id}
-                    onUnfollow={handleUnfollow}
-                  />
-                </table>
-              ))}
-
-              <div ref={loadMoreRef} className="col-span-3 py-4 text-center">
-                {loading && <p>Loading more...</p>}
-                {!loading && page >= totalPages && (
-                  <p className="text-gray-400">No more followings</p>
-                )}
+              <div className="flex flex-row items-center justify-start">
+                <h2 className="text-center text-2xl font-bold">Followings</h2>
+                <div
+                  onClick={() => {
+                    if (isControlled) onClose?.();
+                    else setModal(false);
+                  }}
+                  className="ml-auto cursor-pointer rounded-2xl bg-red-600 p-1 transition-all hover:bg-red-700"
+                >
+                  <XIcon color="white" />
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+
+              <div
+                className="flex flex-col"
+                style={{ maxHeight: '60vh', overflowY: 'auto', paddingBottom: '60px' }}
+              >
+                {followings.map((f) => (
+                  <table key={f.following.id} className="w-full">
+                    <FollowingSection
+                      avatar={f.following.avatar}
+                      fullName={f.following.fullName}
+                      username={f.following.username}
+                      onClose={onClose}
+                      userId={f.following.id}
+                      onUnfollow={handleUnfollow}
+                    />
+                  </table>
+                ))}
+
+                <div ref={loadMoreRef} className="col-span-3 py-4 text-center">
+                  {loading && <p>Loading more...</p>}
+                  {!loading && page >= totalPages && (
+                    <p className="text-gray-400">No more followings</p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -33,8 +33,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
   isOwner,
   deletingId,
 }) => {
-  const { currentTrack, isPlaying, playSong, handlePlayPause } =
-    useMusicPlayer();
+  const { currentTrack, isPlaying, playSong, handlePlayPause } = useMusicPlayer();
   const [Album, setAlbum] = useState(true);
   const [DateAdded, setDateAdded] = useState(true);
   const [HoveredRow, setHoveredRow] = useState<number | null>(null);
@@ -47,11 +46,8 @@ const PlSongs: React.FC<PlSongsProps> = ({
 
     const isActive = currentTrack?.id === ts.song.id;
 
-    if (isActive) {
-      handlePlayPause();
-    } else {
-      playSong(ts.song);
-    }
+    if (isActive) handlePlayPause();
+    else playSong(ts.song);
   };
 
   useEffect(() => {
@@ -73,39 +69,41 @@ const PlSongs: React.FC<PlSongsProps> = ({
   return (
     <div className="w-full border-b-1">
       <div
-        className={`w-full overflow-x-auto ${songs.length > 8 ? 'scrollbar-hide relative max-h-[55vh] overflow-y-auto md:max-h-[65vh] lg:max-h-[70vh]' : ''}`}
+        className={`w-full overflow-x-auto ${
+          songs.length > 8
+            ? 'scrollbar-hide relative max-h-[55vh] overflow-y-auto md:max-h-[65vh] lg:max-h-[70vh]'
+            : ''
+        }`}
       >
         <table className="min-w-full text-left">
           <thead className="sticky top-0 z-10 text-white backdrop-blur-sm">
             <tr>
               <th className="h-5 w-6 sm:w-8">
-                <h6 className="text-center">#</h6>
+                <h6 className="text-center text-[0.85rem] sm:text-[0.9rem] font-normal">#</h6>
               </th>
-              <th className="w-[60vw] pl-2 text-start sm:w-[50vw] md:w-[40vw] lg:w-[38vw] xl:w-[36vw]">
+              <th className="w-[60vw] pl-2 text-start sm:w-[50vw] md:w-[40vw] lg:w-[38vw] xl:w-[36vw] text-[0.9rem] sm:text-[1rem] font-normal">
                 Title
               </th>
               {Album && (
-                <th className="hidden pl-3 md:table-cell md:w-[16vw] lg:w-[14vw]">
+                <th className="hidden pl-3 md:table-cell md:w-[16vw] lg:w-[14vw] text-[0.9rem] font-normal">
                   Status
                 </th>
               )}
               {DateAdded && (
-                <th className="hidden pl-3 sm:table-cell md:w-[18vw] lg:w-[16vw]">
+                <th className="hidden pl-3 sm:table-cell md:w-[18vw] lg:w-[16vw] text-[0.9rem] font-normal">
                   Date added
                 </th>
               )}
               {DateAdded && (
                 <th className="hidden pl-3 md:table-cell">
-                  {' '}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
+                    width="18"
+                    height="18"
                     fill="white"
-                    className="text-black"
                     viewBox="0 0 16 16"
                   >
-                    <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z" />
+                    <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342z" />
                     <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z" />
                     <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5" />
                   </svg>
@@ -138,9 +136,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
                     <span
                       style={{ color: 'white' }}
                       className={
-                        HoveredRow === i
-                          ? '-z-10 opacity-0'
-                          : 'z-10 opacity-100'
+                        HoveredRow === i ? '-z-10 opacity-0' : 'z-10 opacity-100'
                       }
                     >
                       {i + 1}
@@ -167,13 +163,13 @@ const PlSongs: React.FC<PlSongsProps> = ({
                       />
                       <div className="flex min-w-0 flex-col items-start justify-center">
                         <h3
-                          className="font-md max-w-[60vw] truncate text-start font-bold text-white sm:max-w-[50vw] md:max-w-[40vw] lg:max-w-[36vw]"
+                          className="max-w-[60vw] truncate text-start text-white text-[0.9rem] sm:text-[0.95rem] md:text-[1rem] font-normal sm:max-w-[50vw] md:max-w-[40vw] lg:max-w-[36vw]"
                           title={ts.song.title}
                         >
                           {ts.song.title}
                         </h3>
                         <h4
-                          className="max-w-[50vw] truncate text-xs text-white/80 sm:max-w-[40vw] sm:text-sm md:max-w-[32vw] lg:max-w-[28vw]"
+                          className="max-w-[50vw] truncate text-xs sm:text-[0.8rem] md:text-[0.85rem] text-white/70 sm:max-w-[40vw] md:max-w-[32vw] lg:max-w-[28vw]"
                           title={ts.song.artist.fullName}
                         >
                           {ts.song.artist.fullName}
@@ -184,7 +180,7 @@ const PlSongs: React.FC<PlSongsProps> = ({
 
                   {/* Status */}
                   {Album && (
-                    <td className="hidden md:table-cell">
+                    <td className="hidden md:table-cell text-[0.85rem] md:text-[0.9rem]">
                       <h6
                         className={
                           ts.song.status === 'PUBLISHED'
@@ -199,14 +195,14 @@ const PlSongs: React.FC<PlSongsProps> = ({
 
                   {/* Date added */}
                   {DateAdded && (
-                    <td className="hidden text-white sm:table-cell">
+                    <td className="hidden text-white sm:table-cell text-[0.8rem] sm:text-[0.85rem] md:text-[0.9rem]">
                       {ts.song.createdAt.split('T')[0]}
                     </td>
                   )}
 
                   {/* Duration */}
                   {DateAdded && (
-                    <td className="pl-2 text-right text-white md:text-left">
+                    <td className="pl-2 text-right text-white md:text-left text-[0.8rem] sm:text-[0.85rem] md:text-[0.9rem]">
                       {Math.floor(ts.song.duration / 60)}:
                       {String(ts.song.duration % 60).padStart(2, '0')}
                     </td>

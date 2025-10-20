@@ -1,5 +1,6 @@
-import { httpService } from "../config/axios";
-import { Song } from "../types/song.type";
+import { httpService } from '../config/axios';
+import { Song } from '../types/song.type';
+import { Pagination } from './playlistService';
 
 export interface Owner {
   id: 4;
@@ -31,15 +32,18 @@ export interface Playlistinfo {
   updatedAt: string;
   isLiked: boolean;
   count: number;
+  pagination : Pagination;
 }
 export type SongSortBy = 'title' | 'artist' | 'duration' | 'createdAt';
 export type SortOrder = 'ASC' | 'DESC';
 export const getPlaylistDetails = async (
   slug: string,
-  options?: { sortBy?: SongSortBy; order?: SortOrder }
+  options?: { sortBy?: SongSortBy; order?: SortOrder; page : number ; limit : number }
 ): Promise<Playlistinfo> => {
   const { data } = await httpService.get(`/playlists/${slug}`, {
     params: {
+      page : options?.page,
+      limit : options?.limit,
       sortBy: options?.sortBy,
       order: options?.order,
     },

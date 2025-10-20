@@ -9,7 +9,7 @@ import Loading from './loading';
 import PlayListItem from './PlayListItem';
 import { SlArrowRight } from 'react-icons/sl';
 import CreatePlaylist from './CreatePlaylist';
-import Modal from './Modal';
+import Modal from '../layout/modal';
 import CreatePlaylistForm from './CreatePlaylistForm';
 
 const MyPlaylist: React.FC = () => {

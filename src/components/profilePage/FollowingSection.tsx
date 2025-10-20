@@ -7,18 +7,13 @@ import { Link } from 'react-router-dom';
 interface FollowerProps {
   avatar: string;
   fullName: string;
-  username: string;
+  username : string;
+  onClose : (()=>void) | undefined;
   userId: number;
   onUnfollow?: (id: number) => void;
 }
 
-const FollowingSection: React.FC<FollowerProps> = ({
-  avatar,
-  fullName,
-  username,
-  userId,
-  onUnfollow,
-}) => {
+const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, onUnfollow , username , onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const fnunf = async (id: number) => {
@@ -48,9 +43,11 @@ const FollowingSection: React.FC<FollowerProps> = ({
         </td>
 
         <td>
-          <div className="flex w-20 flex-col items-start justify-center sm:w-60">
+          <div className="flex flex-col items-start justify-center w-20 sm:w-60">
             <Link to={`/profile/${username}`}>
-              <h3 className="text-base font-semibold text-white">{fullName}</h3>
+              <h3 className="text-sm sm:text-lg font-semibold text-white" onClick={()=>{
+                onClose?.()
+              }}>{fullName}</h3>
             </Link>
           </div>
         </td>

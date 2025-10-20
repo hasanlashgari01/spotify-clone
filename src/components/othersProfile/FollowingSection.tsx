@@ -10,9 +10,11 @@ interface FollowerProps {
   fullName: string;
   username: string;
   userId: number;
-  onUnfollow?: (id: number) => void;
+  username : string;
+  onUnfollow?: (id: number) => void; 
   isFollowing?: boolean; // <-- add this prop to determine follow state
   onFollow?: (id: number) => void; // <-- optional follow handler
+  onClose : (() => void) | undefined;
 }
 
 const FollowingSection: React.FC<FollowerProps> = ({
@@ -20,6 +22,8 @@ const FollowingSection: React.FC<FollowerProps> = ({
   fullName,
   username,
   userId,
+  username,
+  onClose,
   onUnfollow,
   isFollowing: isFollowingProp,
 }) => {
@@ -67,9 +71,11 @@ const FollowingSection: React.FC<FollowerProps> = ({
         </td>
 
         <td>
-          <div className="flex w-20 flex-col items-start justify-center sm:w-60">
+          <div className="flex flex-col items-start justify-center w-20 sm:w-60">
             <Link to={`/profile/${username}`}>
-              <h3 className="text-base font-semibold text-white">{fullName}</h3>
+              <h3 className="text-sm sm:text-lg font-semibold text-white" onClick={()=> {
+                onClose?.();
+              }}>{fullName}</h3>
             </Link>
           </div>
         </td>

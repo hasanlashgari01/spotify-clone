@@ -10,8 +10,9 @@ export interface Pagination {
 }
 export interface Follower {
   id: number;
+  username : string;
   fullName: string;
-  username: string;
+  
   role: string;
   avatar: string;
 }

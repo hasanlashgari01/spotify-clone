@@ -54,7 +54,8 @@ function App() {
               style: {
                 background: '#101720',
                 color: '#fff',
-                borderRadius: '10px',
+                borderRadius: '20px',
+                padding: '5px',
               },
             }}
           />

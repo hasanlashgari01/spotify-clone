@@ -7,7 +7,8 @@ import { useFollow } from '../../context/UserFansContext';
 interface FollowerProps {
   avatar?: string;
   fullName: string;
-  username: string;
+  username : string,
+  onClose : (()=>void) | undefined;
   userId: number;
   isFollowing?: boolean;
   onFollow?: (id: number) => void;
@@ -17,8 +18,9 @@ interface FollowerProps {
 const FollowerSection: React.FC<FollowerProps> = ({
   avatar,
   fullName,
+  username ,
   userId,
-  username,
+  onClose,
   isFollowing: isFollowingProp,
   onFollow,
   onUnfollow,
@@ -68,7 +70,9 @@ const FollowerSection: React.FC<FollowerProps> = ({
         <td>
           <div className="flex flex-col items-start justify-center">
             <Link to={`/profile/${username}`}>
-              <h3 className="text-base font-semibold text-white">{fullName}</h3>
+              <h3 className="text-sm sm:text-lg font-semibold text-white " onClick={()=> {
+                onClose?.()
+              }}>{fullName}</h3>
             </Link>
           </div>
         </td>

@@ -130,7 +130,14 @@ const OthersProfile = () => {
           onClose={() => setFollowingsOpen(false)}
           id={userData?.id}
         />
+	 <TripleDotMenu
+          isOpen={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          
+          
+        />
       </div>
+
     </div>
   );
 };

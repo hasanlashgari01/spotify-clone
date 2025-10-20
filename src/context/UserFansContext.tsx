@@ -41,16 +41,11 @@ export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!me) return;
       setMeId(me.sub);
       const followersCount = await getFollowingCount(`${me.sub}`, `followers`);
-      const followingsCount = await getFollowingCount(
-        `${me.sub}`,
-        `followings`
-      );
-      const followings = await getUserFollowings(`${me.sub}`, 1, 1000000);
+      const followingsCount = await getFollowingCount(`${me.sub}`, `followings`);
       setCount({
         followers: Number(followersCount) || 0,
         followings: Number(followingsCount) || 0,
       });
-      setFollowings(followings?.followings ?? []);
     } catch (e) {
       console.log('Error occurred:', e);
       setCount({ followers: 0, followings: 0 });

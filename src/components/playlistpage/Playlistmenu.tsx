@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { TbMusicHeart } from 'react-icons/tb';
 import { IoMdShare, IoMdCopy, IoMdTrash } from 'react-icons/io';
-import Modal from '../MyPlayLists/Modal';
+import Modal from '../layout/modal';
 import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
-import { PiMusicNotesPlusFill } from 'react-icons/pi';
+import { PiButterfly, PiMusicNotesPlusFill } from 'react-icons/pi';
 import SearchModal from './SearchModal';
-import DeleteConfirmationModal from '../MyPlayLists/DeleteConfirmationModal';
+import { toast } from 'react-hot-toast';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -42,19 +42,22 @@ const PlaylistMenu = ({
     {
       icon: IoMdShare,
       label: 'Share Playlist',
-      action: () => console.log('Share'),
+      action: () => toast.error("Sorry Backend is Dead"),
       color: 'text-white hover:text-[#00c754]',
     },
     {
       icon: IoMdCopy,
       label: 'Copy Link',
-      action: () => console.log('Copy'),
+      action: () => toast.success(`Copied successfully ( Example )`),
       color: 'text-white hover:text-[#00c754]',
     },
     {
       icon: TbMusicHeart,
       label: 'Add to Favorites',
-      action: () => console.log('Favorite'),
+      action: () => {
+        toast.loading("Adding please wait")
+        
+      },
       color: 'text-white hover:text-red-400',
     },
     ...(isOwner

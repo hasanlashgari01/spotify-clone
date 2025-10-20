@@ -8,6 +8,7 @@ import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 import {
   getPlaylistDetails,
   Playlistinfo,
+  PlaylistSong,
 } from '../../services/playlistDetailsService';
 import PlaylistStatusControl from './PlaylistStatusControl';
 import {
@@ -49,6 +50,7 @@ type OwnerProp = {
   search: string;
   setSearch: Dispatch<SetStateAction<string>>;
   setReady?: Dispatch<SetStateAction<boolean>>;
+  setPlaylistId?: Dispatch<SetStateAction<number | null>>; // <-- اضافه شده
   onHeartAction?: () => Promise<unknown> | void;
 };
 const PlaylistDetails = ({
@@ -56,6 +58,7 @@ const PlaylistDetails = ({
   search,
   setSearch,
   setReady,
+  setPlaylistId, // <-- اضافه شده
 }: OwnerProp) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const isTablet = useMediaQuery({ minWidth: 767 });
@@ -100,6 +103,7 @@ const PlaylistDetails = ({
         ]);
 
         setOwner(playlistData.ownerId);
+        if (setPlaylistId) setPlaylistId(playlistData.id); // <-- فقط همین خط اضافه شد
         setPlaylist(playlistData);
         setIsLiked(playlistData.isLiked);
 
@@ -114,7 +118,7 @@ const PlaylistDetails = ({
     };
 
     fetchData();
-  }, [slug, setOwner, setReady]);
+  }, [slug, setOwner, setReady, setPlaylistId]); // <-- setPlaylistId هم توی dependency اضافه شد
 
   if (loading) {
     return (
@@ -185,8 +189,15 @@ const PlaylistDetails = ({
                 <span>{playlist.owner.username}</span>
                 <span>•</span>
                 <span>{playlist.songs.length} songs</span>
+                
               </div>
-
+              <div className="mt-2 flex items-center justify-center gap-2 text-sm opacity-90">
+                <span className="flex items-center gap-1 text-white">
+                  {hours > 0 && `${hours} hr `}
+                  {minutes > 0 && `${minutes} min `}
+                  {seconds > 0 && `${seconds} sec`}
+                </span>
+              </div>
               <div className="mt-2 flex w-full items-center justify-center gap-4">
                 {!showSearch ? (
                   <div className="flex items-center gap-4">
@@ -276,7 +287,7 @@ const PlaylistDetails = ({
                   aria-disabled={isLiking}
                   className={`group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
                 >
-                  { isLiked ? (
+                  {isLiked ? (
                     <FaHeart className="text-2xl text-red-500 transition-colors sm:text-3xl" />
                   ) : (
                     <FaRegHeart className="text-2xl text-white transition-colors group-hover:text-red-400 sm:text-3xl" />
