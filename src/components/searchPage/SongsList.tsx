@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PlayIcon, PauseIcon } from 'lucide-react';
 import { searchService, SearchSong } from '../../services/searchService';
+import { useMusicPlayer } from '../../context/MusicPlayerContext';
 
 type SongsListProps = {
   query: string;
@@ -10,24 +11,64 @@ const SongsList: React.FC<SongsListProps> = ({ query }) => {
   const [songs, setSongs] = useState<SearchSong[]>([]);
   const [hovered, setHovered] = useState<number | null>(null);
   const [active, setActive] = useState<number | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const {
+    playSong,
+    currentTrack,
+    isPlaying: playerIsPlaying,
+  } = useMusicPlayer();
 
   useEffect(() => {
     const fetchSongs = async () => {
       if (!query) return;
       const res = await searchService.search(query);
-     setSongs(res.songs.slice(0, 4));
+      setSongs(res.songs.slice(0, 4));
     };
     fetchSongs();
   }, [query]);
 
   const handlePlayClick = (idx: number) => {
-    if (active === idx) {
-      setIsPlaying((val) => !val);
-    } else {
-      setActive(idx);
-      setIsPlaying(true);
-    }
+    const song = songs[idx];
+    if (!song) return;
+    const songForPlayer = {
+      id: song.id,
+      title: song.title,
+      audioUrl: song.audioUrl,
+      cover: song.cover,
+      duration: song.duration,
+      status: song.status || 'active',
+      plays: 0,
+      artist: {
+        id: 0,
+        fullName: song.artist.fullName,
+        username: song.artist.username,
+      },
+      artistId: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    playSong(
+      songForPlayer,
+      songs.map((s) => ({
+        id: s.id,
+        title: s.title,
+        audioUrl: s.audioUrl,
+        cover: s.cover,
+        duration: s.duration,
+        status: s.status || 'active',
+        plays: 0,
+        artist: {
+          id: 0,
+          fullName: s.artist.fullName,
+          username: s.artist.username,
+        },
+        artistId: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }))
+    );
+
+    setActive(idx);
   };
 
   if (songs.length === 0) return null;
@@ -58,11 +99,11 @@ const SongsList: React.FC<SongsListProps> = ({ query }) => {
                 </span>
                 <div
                   onClick={() => handlePlayClick(i)}
-                  className={`absolute md:z-0 md:opacity-0 top-1/2 left-1/2 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-green-600 text-white transition-all duration-200 ${
+                  className={`absolute top-1/2 left-1/2 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-green-600 text-white transition-all duration-200 md:z-0 md:opacity-0 ${
                     isHovered ? 'md:z-10 md:opacity-100' : ''
                   }`}
                 >
-                  {isActive && isPlaying ? (
+                  {isActive && currentTrack?.id === s.id && playerIsPlaying ? (
                     <PauseIcon size={14} />
                   ) : (
                     <PlayIcon size={14} />
@@ -76,11 +117,13 @@ const SongsList: React.FC<SongsListProps> = ({ query }) => {
                   className="h-10 w-10 rounded-lg object-cover shadow"
                 />
                 <div className="min-w-0">
-                  <p className="text-nowrap font-bold text-white">{s.title}</p>
-                  <p className="truncate text-sm text-gray-300">{s.artist.fullName}</p>
+                  <p className="font-bold text-nowrap text-white">{s.title}</p>
+                  <p className="truncate text-sm text-gray-300">
+                    {s.artist.fullName}
+                  </p>
                 </div>
               </div>
-              <span className="pr-2 text-sm text-white/70 tabular-nums  max-sm:opacity-0 md:opacity-100">
+              <span className="pr-2 text-sm text-white/70 tabular-nums max-sm:opacity-0 md:opacity-100">
                 {Math.floor(s.duration / 60)}:
                 {String(s.duration % 60).padStart(2, '0')}
               </span>

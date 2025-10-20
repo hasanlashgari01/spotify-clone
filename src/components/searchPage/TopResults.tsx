@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { PlayIcon, PauseIcon } from 'lucide-react';
 import { searchService, SearchSong } from '../../services/searchService';
+import { useMusicPlayer } from '../../context/MusicPlayerContext';
 
 type TopResultProps = {
-  query: string; // ورودی جستجو
+  query: string;
 };
 
 const TopResults: React.FC<TopResultProps> = ({ query }) => {
   const [hovered, setHovered] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [topSong, setTopSong] = useState<SearchSong | null>(null);
+  const {
+    playSong,
+    currentTrack,
+    isPlaying: playerIsPlaying,
+  } = useMusicPlayer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,7 +27,27 @@ const TopResults: React.FC<TopResultProps> = ({ query }) => {
 
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsPlaying((prev) => !prev);
+    if (!topSong) return;
+    const songForPlayer = {
+      id: topSong.id,
+      title: topSong.title,
+      audioUrl: topSong.audioUrl,
+      cover: topSong.cover,
+      duration: topSong.duration,
+      status: topSong.status || 'active',
+      plays: 0,
+      artist: {
+        id: 0,
+        fullName: topSong.artist.fullName,
+        username: topSong.artist.username,
+      },
+      artistId: 0,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    // Play the song
+    playSong(songForPlayer);
   };
 
   if (!topSong) return null;
@@ -30,7 +55,9 @@ const TopResults: React.FC<TopResultProps> = ({ query }) => {
   return (
     <div
       className={`relative flex items-center gap-5 rounded-2xl bg-gradient-to-br from-black/80 to-gray-900/80 p-6 shadow-lg transition-all md:h-86 md:p-8 ${
-        hovered ? 'ring-1 ring-[#00c754]/40 ring-offset-2 ring-offset-transparent' : ''
+        hovered
+          ? 'ring-1 ring-[#00c754]/40 ring-offset-2 ring-offset-transparent'
+          : ''
       }`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
@@ -59,15 +86,9 @@ const TopResults: React.FC<TopResultProps> = ({ query }) => {
 
       <button
         onClick={handlePlayClick}
-        className={`relative flex items-center justify-center rounded-full bg-green-600 text-white shadow transition-all duration-150
-          -bottom-7 h-10 w-10 opacity-100 scale-100 pointer-events-auto
-          sm:-bottom-7 sm:h-12 sm:w-12
-          md:-bottom-23 md:h-16 md:w-16 md:opacity-0 md:scale-90 md:pointer-events-auto
-          lg:h-20 lg:w-20
-          ${hovered ? 'md:opacity-100 md:scale-100 md:pointer-events-auto' : ''}
-        `}
+        className={`pointer-events-auto relative -bottom-7 flex h-10 w-10 scale-100 cursor-pointer items-center justify-center rounded-full bg-green-600 text-white opacity-100 shadow transition-all duration-150 sm:-bottom-7 sm:h-12 sm:w-12 md:pointer-events-auto md:-bottom-23 md:h-16 md:w-16 md:scale-90 md:opacity-0 lg:h-20 lg:w-20 ${hovered ? 'md:pointer-events-auto md:scale-100 md:opacity-100' : ''} `}
       >
-        {isPlaying ? (
+        {currentTrack?.id === topSong.id && playerIsPlaying ? (
           <PauseIcon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-10 lg:w-10" />
         ) : (
           <PlayIcon className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 lg:h-10 lg:w-10" />

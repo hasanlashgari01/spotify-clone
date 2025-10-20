@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import { Play } from 'lucide-react';
 import { searchService, SearchArtist } from '../../services/searchService';
 
 type ArtistProps = {
@@ -70,11 +69,6 @@ const Artist = ({ query }: ArtistProps) => {
                 {artist.fullName}
               </h3>
               <p className="text-center text-xs text-gray-400">Artist</p>
-              <div className="absolute right-8 bottom-16 translate-y-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                <div className="rounded-full bg-green-500 p-3 shadow-lg hover:scale-110">
-                  <Play className="h-5 w-5 text-white" />
-                </div>
-              </div>
             </div>
           </SwiperSlide>
         ))}

@@ -1,15 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { FaCrown, FaBell } from 'react-icons/fa';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import { CgProfile } from 'react-icons/cg';
 import { useAuth } from '../hooks/useAuth';
-import HomeLogo from '../../public/home/home-logo.png';
+const HomeLogo = '/home/Zavazinologo.png';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const { user, isAuthenticated, logout } = useAuth();
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
 
   // Close profile menu when clicking outside
   useEffect(() => {
@@ -27,6 +31,23 @@ const Navbar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Initialize search value from URL when present
+  useEffect(() => {
+    const q = params.get('q') || '';
+    setSearchValue(q);
+  }, [params]);
+
+  // Debounced navigation to search page with query
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const trimmed = searchValue.trim();
+      if (trimmed.length > 0) {
+        navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+      }
+    }, 350);
+    return () => clearTimeout(handler);
+  }, [searchValue, navigate]);
 
   return (
     <>
@@ -49,7 +70,7 @@ const Navbar = () => {
 
         {/* Center: Logo */}
         <div className="flex flex-1 items-center justify-center">
-          <img src={HomeLogo} alt="Logo" className="h-6 w-auto md:h-8" />
+          <Link to={'/'}><img src={HomeLogo} alt="Logo" className="h-6 w-auto md:h-8" /></Link>
         </div>
 
         {/* Right side (Mobile: Bell + Profile) */}
@@ -104,28 +125,30 @@ const Navbar = () => {
         <div className="hidden w-full items-center justify-between md:flex">
           {/* Left: Logo + Menu Items */}
           <div className="flex items-center gap-6">
-            <img src={HomeLogo} alt="Logo" className="h-8 w-auto" />
+            <Link to={'/'}><img src={HomeLogo} alt="Logo" className="w-12" /></Link>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              Music
+              <Link to={'profile'}>Profile</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              Podcasts
+              <Link to={'/podcasts'}>Podcasts</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              Live
+              <Link to={'/genre'}>genre</Link>
             </span>
           </div>
 
           {/* Search Bar */}
-          <div className="flex items-center rounded-full bg-gray-800 px-3 py-1">
+          <div className="flex w-full items-center rounded-full bg-gray-800 px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 md:w-[25%] lg:w-[35%]">
             <input
               type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search for artists, songs, or podcasts..."
-              className="bg-transparent text-sm text-white outline-none"
+              className="w-full bg-transparent text-lg text-white transition-all duration-200 outline-none placeholder:text-gray-400 focus:ring-0 focus:outline-none"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-400"
+              className="h-6 w-6 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -168,7 +191,7 @@ const Navbar = () => {
                   {isAuthenticated ? (
                     <>
                       <div className="border-b border-gray-700 px-4 py-2 text-sm text-white">
-                        {user?.fullName || user?.email}
+                        <Link to={'/profile'}> {user?.fullName || user?.email}</Link>
                       </div>
                       <button
                         onClick={() => {
@@ -198,9 +221,15 @@ const Navbar = () => {
       {/* Mobile dropdown menu */}
       {menuOpen && (
         <div className="flex flex-col items-start gap-3 bg-gray-800 px-6 py-4 text-white md:hidden">
-          <span className="cursor-pointer hover:text-blue-400">Music</span>
-          <span className="cursor-pointer hover:text-blue-400">Podcasts</span>
-          <span className="cursor-pointer hover:text-blue-400">Live</span>
+          <span className="cursor-pointer hover:text-blue-400">
+            <Link to={'/profile'}>Profile</Link>
+          </span>
+          <span className="cursor-pointer hover:text-blue-400">
+            <Link to={'/podcasts'}>Podcasts</Link>
+          </span>
+          <span className="cursor-pointer hover:text-blue-400">
+            <Link to={'/genre'}>genre</Link>
+          </span>
         </div>
       )}
     </>

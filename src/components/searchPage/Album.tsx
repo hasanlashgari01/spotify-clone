@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
-import { Play } from 'lucide-react';
 import { searchService, SearchPlaylist } from '../../services/searchService';
 
 type AlbumProps = {
@@ -60,7 +59,7 @@ const Album = ({ query }: AlbumProps) => {
       >
         {albums.map((album) => (
           <SwiperSlide key={album.id} className="!w-auto">
-            <div className="group relative h-56 w-48 rounded-lg bg-black/40 px-8 py-4 transition-all duration-300 hover:bg-gray-700 hover:shadow-xl">
+            <div className="group relative h-56 w-48 cursor-pointer rounded-lg bg-black/40 px-8 py-4 transition-all duration-300 hover:bg-gray-700 hover:shadow-xl">
               <img
                 src={album.cover}
                 alt={album.title}
@@ -72,11 +71,6 @@ const Album = ({ query }: AlbumProps) => {
               <h4 className="text-center text-xs text-gray-400">
                 {album.owner?.fullName || 'Album'}
               </h4>
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <div className="cursor-pointer rounded-full bg-green-500 p-3 text-center shadow-lg transition-all duration-300 hover:scale-110">
-                  <Play className="text-2xl text-white" />
-                </div>
-              </div>
             </div>
           </SwiperSlide>
         ))}
