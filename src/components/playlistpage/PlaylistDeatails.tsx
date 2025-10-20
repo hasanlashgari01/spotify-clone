@@ -192,11 +192,7 @@ const PlaylistDetails = ({
                 
               </div>
               <div className="mt-2 flex items-center justify-center gap-2 text-sm opacity-90">
-                <span className="flex items-center gap-1 text-white">
-                  {hours > 0 && `${hours} hr `}
-                  {minutes > 0 && `${minutes} min `}
-                  {seconds > 0 && `${seconds} sec`}
-                </span>
+
               </div>
               <div className="mt-2 flex w-full items-center justify-center gap-4">
                 {!showSearch ? (

@@ -3,6 +3,7 @@ import GenreDetailsWrapper from './GenreDetailsWrapper';
 import Loading from '../../components/MyPlayLists/loding';
 import PlSongs from '../../components/playlistpage/PlSongs';
 import { useMemo, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGenreDetails } from '../../hooks/useFechSongs';
 import { SongSortBy, SortOrder } from '../../services/playlistDetailsService';
@@ -10,25 +11,52 @@ import { Song } from '../../types/song.type';
 
 const GenreItems = () => {
   const { title = '' } = useParams<{ title: string }>();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<SongSortBy>('title');
   const [order, setOrder] = useState<SortOrder>('ASC');
   const [deleteMusic] = useState<number | null>(null);
   const [isOwner] = useState(false);
   const [showSearch, setShowSearch] = useState<boolean>(false);
-
+  const loadMoreRef = useRef<HTMLTableRowElement | null>(null);
   const titleLowered = title.toLowerCase();
 
-  const { data, isLoading, error } = useGenreDetails({
+  const {
+    data: genreDetailsQuery,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+    isLoading,
+    error,
+  } = useGenreDetails({
     titleLowered,
     sortBy,
     order,
   });
+  const pages = genreDetailsQuery?.pages ?? [];
+  const genreDetails = pages[0]?.genre ?? null;
+  const songs = pages.flatMap((info) => info.songs);
+  useEffect(() => {
+    const element = loadMoreRef.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: '100px' }
+    );
+    observer.observe(element);
 
-  const genreDetails = data?.genre ?? null;
-  const songs = data?.songs ?? [];
-
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasNextPage, isFetchingNextPage, pages]);
+  const totalSongsLength = useMemo(
+    () => pages.reduce((acc, page) => acc + page.songs.length, 0),
+    [pages]
+  );
   const playlistSongs = useMemo(
     () =>
       songs.map((song: Song) => ({
@@ -54,9 +82,9 @@ const GenreItems = () => {
   if (error) return <ErrorMessage error={error} />;
 
   return (
-    <div className="no-scrollbar bgColor bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)]">
+    <div className="bgColor">
       {songs.length === 0 ? (
-        <h4>No songs found for this genre.</h4>
+        <ErrorMessage error={'No songs found for this genre'} />
       ) : (
         <>
           <GenreDetailsWrapper
@@ -65,12 +93,11 @@ const GenreItems = () => {
             hours={hours}
             minutes={minutes}
             seconds={seconds}
-            menuOpen={menuOpen}
-            setMenuOpen={setMenuOpen}
             showSearch={showSearch}
             setShowSearch={setShowSearch}
             setSearch={setSearch}
             search={search}
+            totalSongsLength={totalSongsLength}
           />
           <PlSongs
             songs={playlistSongs}
@@ -81,6 +108,7 @@ const GenreItems = () => {
             isOwner={isOwner}
             deleteMusic={deleteMusicById}
             deletingId={deleteMusic}
+            ref={loadMoreRef}
           />
         </>
       )}

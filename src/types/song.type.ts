@@ -1,21 +1,19 @@
 import { Dispatch, SetStateAction } from 'react';
-
-export interface Song {
-  id: number;
-  title: string;
-  audioUrl: string;
-  cover: string;
-  duration: number;
-  status: string;
-  plays: number;
-  artist: {
-    id: number;
-    username: string;
-    fullName: string;
-  };
-  artistId: number;
-  createdAt: string;
-  updatedAt: string;
+import {
+  PlaylistSong,
+  SongSortBy,
+  SortOrder,
+} from '../services/playlistDetailsService';
+export interface PlSongsProps {
+  songs: PlaylistSong[];
+  setSortBy: React.Dispatch<SetStateAction<SongSortBy>>;
+  setOrder: React.Dispatch<SetStateAction<SortOrder>>;
+  sortBy: SongSortBy;
+  order: SortOrder;
+  isOwner: boolean | null;
+  deleteMusic: (songId: number) => void;
+  deletingId: number | null;
+  ref: boolean;
 }
 export interface Pagination {
   page: number;
@@ -44,6 +42,11 @@ export type GenreInfo = {
   title: string;
   cover: string;
 };
+export interface GenreDetailsResponse {
+  genre: GenreInfo;
+  songs: Song[];
+  pagination: Pagination;
+}
 
 export interface Song {
   id: number;
@@ -62,33 +65,17 @@ export interface Song {
   createdAt: string;
   updatedAt: string;
 }
-export interface Pagination {
-  page: number;
-  limit: number;
-  pageCount: number;
-  totalCount: number;
-}
-export interface AllSongs {
-  songs: Song[];
-  pagination: Pagination;
-}
 export type GenreDetailsWrapperProps = {
-  genreDetails: {
-    cover: string;
-    title: string;
-    slug?: string;
-  } | null;
+  genreDetails: GenreInfo | null;
   songs: any[];
   hours: number;
   minutes: number;
   seconds: number;
-  isOwner?: boolean;
-  menuOpen: boolean;
-  setMenuOpen: Dispatch<SetStateAction<boolean>>;
   showSearch: boolean;
   setShowSearch: Dispatch<SetStateAction<boolean>>;
   setSearch: Dispatch<SetStateAction<string>>;
   search: string;
+  totalSongsLength: any;
 };
 export interface UseGenreDetailsParams {
   titleLowered: string | undefined;
@@ -103,9 +90,4 @@ export interface GenreDetailsResponse {
   limit: number;
   pageCount: number;
   totalCount: number;
-}
-
-export interface AllSongs {
-  songs: Song[];
-  pagination: Pagination;
 }

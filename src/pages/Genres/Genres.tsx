@@ -1,8 +1,7 @@
-import ErrorMessage from '../../components/error/ErrorMessage';
-import Loading from '../../components/loading/Loading';
-import { HeartIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useGenres } from '../../hooks/useFechSongs';
+import ErrorMessage from "../../components/error/ErrorMessage";
+import Loading from "../../components/loading/Loading";
+import { Link } from "react-router-dom";
+import { useGenres } from "../../hooks/useFechSongs";
 
 const Genres = () => {
   const { data: genres, isLoading, error } = useGenres();
@@ -10,35 +9,30 @@ const Genres = () => {
   if (isLoading) return <Loading />;
   if (error) return <ErrorMessage error={error} />;
   return (
-    <div className="bgColor height-auto flex min-h-screen items-center justify-evenly bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)] text-black">
-      {genres?.map((genre) => (
-        <div
-          className="relative inline-flex w-[350px] flex-col rounded-[15px] bg-white font-light shadow-[0_0_100px_-10px_rgba(0,0,0,0.2)] transition-shadow hover:shadow-lg"
-          key={genre.slug}
-        >
+    <div className="bgColor h-[100dvh]">
+      <div className="grid grid-cols-1 gap-8 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {genres?.map((genre) => (
           <Link
             to={`/genre/${genre.title.toLowerCase()}`}
             key={genre.id}
             className="no-underline"
           >
-            <div className="h-[250px] w-full overflow-hidden rounded-t-[15px]">
+            <div
+              key={genre?.id}
+              className="genres-start relative flex min-h-[150px] min-w-[210px] justify-start overflow-hidden rounded-xl bg-[#88bef5] p-4"
+            >
+              <span className="z-10 text-[1.5rem] font-semibold text-white">
+                {genre.title}
+              </span>
               <img
                 src={genre.cover}
-                alt={`${genre.title} Cover`}
-                className="h-full w-full rounded-t-[15px] object-cover transition-transform duration-300 ease-in-out hover:scale-110"
+                alt={genre.title}
+                className="absolute right-0 bottom-0 h-25 w-25 rotate-12 rounded-lg shadow-lg"
               />
             </div>
           </Link>
-          <div className="flex min-h-[5vh] items-center justify-evenly px-4 py-2">
-            <label className="truncate font-normal text-black">
-              {genre.title}
-            </label>
-            <button className="p-1 text-[#fff`]">
-              <HeartIcon className="h-5 w-5" />
-            </button>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

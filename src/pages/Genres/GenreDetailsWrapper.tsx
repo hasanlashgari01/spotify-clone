@@ -1,10 +1,10 @@
-import FloatingMusicIcons from '../../components/playlistpage/FloatingMusicIcons';
-import PlaylistMenu from '../../components/playlistpage/Playlistmenu';
-import { Search, X } from 'lucide-react';
-import { FC } from 'react';
-import { IoMdShare } from 'react-icons/io';
-import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
-import { GenreDetailsWrapperProps } from '../../types/song.type';
+import ErrorMessage from "../../components/error/ErrorMessage";
+import FloatingMusicIcons from "../../components/playlistpage/FloatingMusicIcons";
+import Loading from "../../components/loading/Loading";
+import { Search, X } from "lucide-react";
+import { FC } from "react";
+import { IoMdShare } from "react-icons/io";
+import { GenreDetailsWrapperProps } from "../../types/song.type";
 
 const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
   genreDetails,
@@ -12,20 +12,18 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
   hours,
   minutes,
   seconds,
-  isOwner,
-  menuOpen,
-  setMenuOpen,
   showSearch,
   setShowSearch,
   setSearch,
   search,
+  totalSongsLength,
 }) => {
   if (!genreDetails) {
-    return <div className="p-4 text-center">Loading genre details...</div>;
+    return <ErrorMessage error={'Genre Not Found'} />;
   }
 
   return (
-    <div className="relative flex w-full flex-col md:flex-row">
+    <div className="relative mb-10 flex w-full flex-col md:flex-row">
       <div className="pointer-events-none absolute inset-0 hidden overflow-hidden md:block">
         <FloatingMusicIcons />
       </div>
@@ -54,8 +52,10 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
                   <span className="mx-1 my-3 text-2xl font-bold drop-shadow-lg">
                     {genreDetails.title}
                   </span>
-                  <span className="mx-1 my-2 text-2xl">.</span>
-                  <h4 className="mt-4">{songs.length} songs</h4>
+                  <h4 className="mt-4">
+                    {totalSongsLength > 0 ? totalSongsLength : <Loading />}{' '}
+                    songs
+                  </h4>
                 </div>
                 <span className="items-center gap-1 text-[#ffffff86]">
                   {hours > 0 && `${hours} hr `}
@@ -74,13 +74,6 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
                     </button>
                     <button className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60">
                       <IoMdShare className="text-lg text-white" />
-                    </button>
-
-                    <button
-                      className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60"
-                      onClick={() => setMenuOpen(!menuOpen)}
-                    >
-                      <PiDotsThreeOutlineVerticalFill className="text-lg text-white" />
                     </button>
                   </div>
                 ) : (
@@ -111,7 +104,6 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
         </div>
       </div>
 
-      {/* Modified desktop mode start */}
       <div className="hidden md:flex md:flex-col md:items-start md:gap-6 md:p-5">
         <div className="flex md:flex-row md:items-center md:gap-8">
           <div className="group relative">
@@ -134,7 +126,7 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
           </div>
         </div>
 
-        <div className="mt-4 ml-10 flex items-center gap-6">
+        <div className="mt-2 ml-20 flex items-center justify-center gap-6">
           {!showSearch ? (
             <>
               <button
@@ -145,12 +137,6 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
               </button>
               <button className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14">
                 <IoMdShare className="text-2xl text-white transition-colors sm:text-3xl" />
-              </button>
-              <button
-                className="group flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-white/10 backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:bg-white/20 sm:h-14 sm:w-14"
-                onClick={() => setMenuOpen(!menuOpen)}
-              >
-                <PiDotsThreeOutlineVerticalFill className="text-2xl text-white transition-colors sm:text-3xl" />
               </button>
             </>
           ) : (
@@ -176,13 +162,6 @@ const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
           )}
         </div>
       </div>
-
-      <PlaylistMenu
-        isOpen={menuOpen}
-        onClose={() => setMenuOpen(false)}
-        isOwner={isOwner}
-        playlist={genreDetails}
-      />
     </div>
   );
 };

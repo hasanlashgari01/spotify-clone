@@ -1,5 +1,10 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { httpService } from '../config/axios';
+import { httpService } from "../config/axios";
+
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import {
   ApiResponse,
@@ -18,12 +23,11 @@ export const useGenres = () => {
     },
     retry: false,
     refetchOnWindowFocus: false,
-    staleTime: 5 * 60 * 1000, // Cache genres for 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 };
 
 // ^ fetch genres  by id
-
 export const useGenreDetails = ({
   titleLowered,
   sortBy,
@@ -31,18 +35,18 @@ export const useGenreDetails = ({
 }: UseGenreDetailsParams) => {
   const queryClient = useQueryClient();
 
-  return useQuery<GenreDetailsResponse, Error>({
+  return useInfiniteQuery<GenreDetailsResponse, Error>({
     queryKey: ['genreDetails', titleLowered, sortBy, order],
-    enabled: !!titleLowered, // don’t fetch until we have a valid title
-    queryFn: async () => {
-      // 1️⃣ Try to use cached genres to avoid refetch
+    enabled: !!titleLowered,
+    queryFn: async ({ pageParam = 1 }) => {
+      // #1 Try to use cached genres to avoid refetch
       const cachedGenres = queryClient.getQueryData<GenreInfo[]>(['genres']);
       const genres =
         cachedGenres ?? (await httpService.get<GenreInfo[]>('/genres')).data;
 
-      // 2️⃣ Find the genre by lowered title
+      // #2 Find the genre by lowered title
       const findGenre = genres.find(
-        (g) => g.title.toLowerCase() === titleLowered
+        (genre) => genre.title.toLowerCase() === titleLowered
       );
 
       if (!findGenre?.id) {
@@ -51,20 +55,28 @@ export const useGenreDetails = ({
         throw error;
       }
 
-      // 3️⃣ Fetch songs for that genre
+      // #3 Fetch songs for that genre
       const { data } = await httpService.get<ApiResponse>(
         `/song/genre/${findGenre.id}`,
         {
-          params: { sortBy, order },
+          params: { sortBy, order, page: pageParam, limit: 10 },
         }
       );
 
       return {
         genre: findGenre,
-        songs: data.songs,
+        songs: data.songs ,
+        pagination: data.pagination,
       } as GenreDetailsResponse;
     },
-    // keepPreviousData: true, // ✅ prevents UI flicker when sort/order changes
+    // #4 pagination function
+    getNextPageParam: (lastPage) => {
+      if (lastPage.pagination.page < lastPage.pagination.pageCount) {
+        return lastPage.pagination.page + 1;
+      }
+      return undefined;
+    },
+    initialPageParam: 1,
     retry: false,
     refetchOnWindowFocus: false,
     staleTime: 2 * 60 * 1000, // 2 minutes
