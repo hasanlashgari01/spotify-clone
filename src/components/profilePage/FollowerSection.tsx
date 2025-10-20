@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import defAvatar from '../../../public/default-avatar.webp';
 import { Link } from 'react-router-dom';
 import { Followings, UserService } from '../../services/userDetailsService';
-import LoadingCircle from '../loading/LoadingCircle';
 import { useFollow } from '../../context/UserFansContext';
 
 interface FollowerProps {

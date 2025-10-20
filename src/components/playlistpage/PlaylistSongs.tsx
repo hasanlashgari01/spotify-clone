@@ -8,6 +8,8 @@ import {
   SortOrder,
   getPlaylistDetails,
 } from '../../services/playlistDetailsService';
+import PlSongs from './PlSongs';
+import { playlistService } from '../../services/playlistService';
 
 type Props = {
   playlistSongsRef?: React.MutableRefObject<(() => void | Promise<void>) | null>;

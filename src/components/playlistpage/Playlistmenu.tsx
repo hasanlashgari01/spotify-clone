@@ -1,13 +1,14 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { FiEdit } from 'react-icons/fi';
-import { TbMusicHeart } from 'react-icons/tb';
-import { IoMdShare, IoMdCopy, IoMdTrash } from 'react-icons/io';
-import Modal from '../layout/modal';
-import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
-import { PiButterfly, PiMusicNotesPlusFill } from 'react-icons/pi';
-import SearchModal from './SearchModal';
 import { toast } from 'react-hot-toast';
+import { FiEdit } from 'react-icons/fi';
+import { IoMdCopy, IoMdShare, IoMdTrash } from 'react-icons/io';
+import { PiMusicNotesPlusFill } from 'react-icons/pi';
+import { TbMusicHeart } from 'react-icons/tb';
+import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
+import Modal from '../layout/modal';
+import SearchModal from './SearchModal';
+import DeleteConfirmationModal from '../MyPlayLists/DeleteConfirmationModal';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -15,7 +16,6 @@ interface Props {
   isPublic?: boolean;
   playlist?: any;
   onPlaylistUpdated?: () => void;
-
 }
 
 const PlaylistMenu = ({

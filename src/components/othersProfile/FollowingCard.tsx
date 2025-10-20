@@ -1,15 +1,13 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { XIcon } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useFollow } from '../../context/UserFansContext';
 import {
-  getUserFollowings,
   Followings,
+  getUserFollowings,
   UserService,
 } from '../../services/userDetailsService';
 import FollowingSection from './FollowingSection';
-
-import { XIcon } from 'lucide-react';
-import { UserService } from '../../services/userDetailsService';
-import { useFollow } from '../../context/UserFansContext';
 
 interface FollowingCardProps {
   open?: boolean;
@@ -23,8 +21,6 @@ const isUserFollowing = (userId: number, followings: Followings[]): boolean =>
 const FollowingCard = ({ open, onClose, id }: FollowingCardProps) => {
   const { followings, setCount } = useFollow();
   const [ffollowings, setFFollowings] = useState<Followings[]>([]);
-
-  const [, setFCount] = useState<number>(0);
   const [modal, setModal] = useState<boolean>(false);
   const isControlled = typeof open === 'boolean';
   const isOpen = isControlled ? !!open : modal;
@@ -54,8 +50,6 @@ const FollowingCard = ({ open, onClose, id }: FollowingCardProps) => {
         });
 
         if (res?.pagination?.pageCount) setTotalPages(res.pagination.pageCount);
-
-        setFCount(counter ?? 0);
       } catch (err) {
         console.error('fetchFollowings error', err);
       } finally {
@@ -68,10 +62,6 @@ const FollowingCard = ({ open, onClose, id }: FollowingCardProps) => {
   useEffect(() => {
     fetchFollowings(page);
   }, [fetchFollowings, page]);
-
-  useEffect(() => {
-    setFCount(ffollowings.length);
-  }, [ffollowings.length]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -180,7 +170,11 @@ const FollowingCard = ({ open, onClose, id }: FollowingCardProps) => {
 
               <div
                 className="flex flex-col"
-                style={{ maxHeight: '60vh', overflowY: 'auto', paddingBottom: '60px' }}
+                style={{
+                  maxHeight: '60vh',
+                  overflowY: 'auto',
+                  paddingBottom: '60px',
+                }}
               >
                 {ffollowings.length > 0 ? (
                   ffollowings.map((f) => (
@@ -188,16 +182,21 @@ const FollowingCard = ({ open, onClose, id }: FollowingCardProps) => {
                       <FollowingSection
                         avatar={f.following.avatar}
                         fullName={f.following.fullName}
-                        username ={f.following.username}
+                        username={f.following.username}
                         userId={f.following.id}
-                        isFollowing={isUserFollowing(f.following.id, followings)}
+                        isFollowing={isUserFollowing(
+                          f.following.id,
+                          followings
+                        )}
                         onClose={onClose}
                         onUnfollow={handleUnfollow}
                       />
                     </table>
                   ))
                 ) : (
-                  <div className="py-6 text-center text-gray-400">No followings yet</div>
+                  <div className="py-6 text-center text-gray-400">
+                    No followings yet
+                  </div>
                 )}
 
                 <div ref={loadMoreRef} className="py-4 text-center">

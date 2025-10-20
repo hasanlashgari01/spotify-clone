@@ -1,18 +1,16 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { XIcon } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useFollow } from '../../context/UserFansContext';
+import { authService } from '../../services/authService';
 import {
-  getUserFollowers,
-  getUserFollowings,
   Followers,
   Followings,
+  getUserFollowers,
+  getUserFollowings,
   UserService,
 } from '../../services/userDetailsService';
-import { authService } from '../../services/authService';
 import FollowerSection from './FollowerSection';
-import { XIcon } from 'lucide-react';
-import { useFollow } from '../../context/UserFansContext';
-import { Followers, Followings } from '../../services/userDetailsService';
-import { UserService } from '../../services/userDetailsService';
 interface FollowersCardProps {
   open?: boolean;
   onClose?: () => void;

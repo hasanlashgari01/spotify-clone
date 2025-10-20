@@ -12,7 +12,6 @@ export interface Follower {
   id: number;
   username : string;
   fullName: string;
-  
   role: string;
   avatar: string;
 }

@@ -4,8 +4,12 @@ import {
   Followings,
   getFollowingCount,
   getUserFollowings,
+  UserService,
 } from '../../services/userDetailsService';
 import { authService } from '../../services/authService';
+import { useFollow } from '../../context/UserFansContext';
+import { XIcon } from 'lucide-react';
+import FollowingSection from './FollowingSection';
 
 interface FollowingCardProps {
   open?: boolean;

@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import {
-  Followings,
-  Followers,
-  getFollowingCount,
-  getUserFollowings,
-} from '../services/userDetailsService';
 import { getMe } from '../services/meService';
+import {
+  Followers,
+  Followings,
+  getFollowingCount,
+} from '../services/userDetailsService';
 
 interface Count {
   followers: number;
@@ -41,7 +40,10 @@ export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({
       if (!me) return;
       setMeId(me.sub);
       const followersCount = await getFollowingCount(`${me.sub}`, `followers`);
-      const followingsCount = await getFollowingCount(`${me.sub}`, `followings`);
+      const followingsCount = await getFollowingCount(
+        `${me.sub}`,
+        `followings`
+      );
       setCount({
         followers: Number(followersCount) || 0,
         followings: Number(followingsCount) || 0,

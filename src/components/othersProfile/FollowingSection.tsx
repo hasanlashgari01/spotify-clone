@@ -10,7 +10,6 @@ interface FollowerProps {
   fullName: string;
   username: string;
   userId: number;
-  username : string;
   onUnfollow?: (id: number) => void; 
   isFollowing?: boolean; // <-- add this prop to determine follow state
   onFollow?: (id: number) => void; // <-- optional follow handler
@@ -20,7 +19,6 @@ interface FollowerProps {
 const FollowingSection: React.FC<FollowerProps> = ({
   avatar,
   fullName,
-  username,
   userId,
   username,
   onClose,
