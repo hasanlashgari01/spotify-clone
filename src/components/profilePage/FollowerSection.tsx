@@ -1,8 +1,8 @@
+import LoadingCircle from '../loading/LoadingCircle';
 import React, { useState } from 'react';
 import defAvatar from '../../../public/default-avatar.webp';
 import { Link } from 'react-router-dom';
 import { Followings, UserService } from '../../services/userDetailsService';
-import LoadingCircle from '../loading/LoadingCircle';
 import { useFollow } from '../../context/UserFansContext';
 
 interface FollowerProps {
@@ -102,7 +102,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
           <button
             onClick={toggleFollow}
             disabled={loading}
-            className="text-md w-content cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="text-md w-content min-w-20 cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? <LoadingCircle /> : isFollowing ? 'Unfollow' : 'Follow'}
           </button>

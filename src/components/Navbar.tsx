@@ -1,20 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { FaCrown, FaBell } from 'react-icons/fa';
 import { IoMenu, IoClose } from 'react-icons/io5';
 import { CgProfile } from 'react-icons/cg';
 import { useAuth } from '../hooks/useAuth';
-import HomeLogo from '../../public/home/home-logo.png';
+const HomeLogo = '/home/Zavazinologo.png';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
   const { user, isAuthenticated, logout } = useAuth();
   const profileMenuRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const [params] = useSearchParams();
 
   // Close profile menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event:MouseEvent) => {
-      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
         setProfileMenuOpen(false);
       }
     };
@@ -24,6 +31,23 @@ const Navbar = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Initialize search value from URL when present
+  useEffect(() => {
+    const q = params.get('q') || '';
+    setSearchValue(q);
+  }, [params]);
+
+  // Debounced navigation to search page with query
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const trimmed = searchValue.trim();
+      if (trimmed.length > 0) {
+        navigate(`/search?q=${encodeURIComponent(trimmed)}`);
+      }
+    }, 350);
+    return () => clearTimeout(handler);
+  }, [searchValue, navigate]);
 
   return (
     <>
@@ -46,32 +70,32 @@ const Navbar = () => {
 
         {/* Center: Logo */}
         <div className="flex flex-1 items-center justify-center">
-          <img src={HomeLogo} alt="Logo" className="h-6 w-auto md:h-8" />
+          <Link to={'/'}><img src={HomeLogo} alt="Logo" className="h-6 w-auto md:h-8" /></Link>
         </div>
 
         {/* Right side (Mobile: Bell + Profile) */}
         <div className="flex items-center gap-3 md:hidden">
-          <FaBell className="h-8 w-8 bg-white text-black p-1 rounded-full cursor-pointer text-xl" />
+          <FaBell className="h-8 w-8 cursor-pointer rounded-full bg-white p-1 text-xl text-black" />
           <div className="relative" ref={profileMenuRef}>
-            <div 
-              className="h-8 w-8 text-white overflow-hidden rounded-full cursor-pointer" 
+            <div
+              className="h-8 w-8 cursor-pointer overflow-hidden rounded-full text-white"
               onClick={() => setProfileMenuOpen(!profileMenuOpen)}
             >
               {isAuthenticated && user?.avatar ? (
-                <img 
+                <img
                   src={user.avatar}
                   alt={user.fullName}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
-                <CgProfile size={30}/>
+                <CgProfile size={30} />
               )}
             </div>
             {profileMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
+              <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-800 py-1 shadow-lg">
                 {isAuthenticated ? (
                   <>
-                    <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
+                    <div className="border-b border-gray-700 px-4 py-2 text-sm text-white">
                       {user?.fullName || user?.email}
                     </div>
                     <button
@@ -79,7 +103,7 @@ const Navbar = () => {
                         logout();
                         setProfileMenuOpen(false);
                       }}
-                      className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+                      className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-gray-700"
                     >
                       Logout
                     </button>
@@ -101,28 +125,30 @@ const Navbar = () => {
         <div className="hidden w-full items-center justify-between md:flex">
           {/* Left: Logo + Menu Items */}
           <div className="flex items-center gap-6">
-            <img src={HomeLogo} alt="Logo" className="h-8 w-auto" />
+            <Link to={'/'}><img src={HomeLogo} alt="Logo" className="w-12" /></Link>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              Music
+              <Link to={'profile'}>Profile</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              Podcasts
+              <Link to={'/podcasts'}>Podcasts</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              Live
+              <Link to={'/genre'}>genre</Link>
             </span>
           </div>
 
           {/* Search Bar */}
-          <div className="flex items-center rounded-full bg-gray-800 px-3 py-1">
+          <div className="flex w-full items-center rounded-full bg-gray-800 px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 md:w-[25%] lg:w-[35%]">
             <input
               type="text"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Search for artists, songs, or podcasts..."
-              className="bg-transparent text-sm text-white outline-none"
+              className="w-full bg-transparent text-lg text-white transition-all duration-200 outline-none placeholder:text-gray-400 focus:ring-0 focus:outline-none"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5 text-gray-400"
+              className="h-6 w-6 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -146,33 +172,33 @@ const Navbar = () => {
               size={5}
             />
             <div className="relative" ref={profileMenuRef}>
-              <div 
-                className="h-8 w-8 overflow-hidden rounded-full cursor-pointer"
+              <div
+                className="h-8 w-8 cursor-pointer overflow-hidden rounded-full"
                 onClick={() => setProfileMenuOpen(!profileMenuOpen)}
               >
                 {isAuthenticated && user?.avatar ? (
-                  <img 
+                  <img
                     src={user.avatar}
                     alt={user.fullName}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
-                  <CgProfile className="text-2xl text-white" size={30}/>
+                  <CgProfile className="text-2xl text-white" size={30} />
                 )}
               </div>
               {profileMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg py-1 z-50">
+                <div className="absolute right-0 z-50 mt-2 w-48 rounded-md bg-gray-800 py-1 shadow-lg">
                   {isAuthenticated ? (
                     <>
-                      <div className="px-4 py-2 text-sm text-white border-b border-gray-700">
-                        {user?.fullName || user?.email}
+                      <div className="border-b border-gray-700 px-4 py-2 text-sm text-white">
+                        <Link to={'/profile'}> {user?.fullName || user?.email}</Link>
                       </div>
                       <button
                         onClick={() => {
                           logout();
                           setProfileMenuOpen(false);
                         }}
-                        className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+                        className="block w-full px-4 py-2 text-left text-sm text-white hover:bg-gray-700"
                       >
                         Logout
                       </button>
@@ -195,9 +221,15 @@ const Navbar = () => {
       {/* Mobile dropdown menu */}
       {menuOpen && (
         <div className="flex flex-col items-start gap-3 bg-gray-800 px-6 py-4 text-white md:hidden">
-          <span className="cursor-pointer hover:text-blue-400">Music</span>
-          <span className="cursor-pointer hover:text-blue-400">Podcasts</span>
-          <span className="cursor-pointer hover:text-blue-400">Live</span>
+          <span className="cursor-pointer hover:text-blue-400">
+            <Link to={'/profile'}>Profile</Link>
+          </span>
+          <span className="cursor-pointer hover:text-blue-400">
+            <Link to={'/podcasts'}>Podcasts</Link>
+          </span>
+          <span className="cursor-pointer hover:text-blue-400">
+            <Link to={'/genre'}>genre</Link>
+          </span>
         </div>
       )}
     </>

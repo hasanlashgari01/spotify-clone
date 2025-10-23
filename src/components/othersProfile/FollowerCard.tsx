@@ -1,17 +1,16 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { XIcon } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useFollow } from '../../context/UserFansContext';
+import { authService } from '../../services/authService';
 import {
-  getUserFollowers,
-  getUserFollowings,
   Followers,
   Followings,
+  getUserFollowers,
+  getUserFollowings,
   UserService,
 } from '../../services/userDetailsService';
-import { authService } from '../../services/authService';
 import FollowerSection from './FollowerSection';
-import { XIcon } from 'lucide-react';
-import { useFollow } from '../../context/UserFansContext';
-
 interface FollowersCardProps {
   open?: boolean;
   onClose?: () => void;
@@ -25,9 +24,9 @@ const isUserFollowing = (userId: number, followings: Followings[]): boolean =>
 const FollowersCard = ({ open, onClose, id }: FollowersCardProps) => {
   const { followings, setFollowings, setCount } = useFollow();
   const [ffollowers, setFFollowers] = useState<Followers[]>([]);
-  const [modal, setModal] = useState<boolean>(false);
+  const [modal, setModal] = useState<boolean | null>(null);
   const isControlled = typeof open === 'boolean';
-  const isOpen = isControlled ? !!open : modal;
+  const isOpen = isControlled ? !!open : !!modal;
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
@@ -36,15 +35,17 @@ const FollowersCard = ({ open, onClose, id }: FollowersCardProps) => {
 
   const fetchFollowers = useCallback(
     async (p: number) => {
-      if (p > totalPages || !id) return;
+      if (p > totalPages) return;
       setLoading(true);
       try {
         const res = await getUserFollowers(String(id), p, limit);
         setFFollowers((prev) => {
-          const combined = [...prev, ...(res?.followers ?? [])];
+          const prevArr = prev ?? [];
+          const combined = [...prevArr, ...(res?.followers ?? [])];
           const map = new Map<number, Followers>();
           combined.forEach((item) => {
-            const key = item.follower?.id ?? item.followerId;
+            const key =
+              item.follower?.id ?? item.followerId ?? item.follower?.id;
             if (typeof key === 'number') map.set(key, item);
           });
           return Array.from(map.values());
@@ -63,8 +64,8 @@ const FollowersCard = ({ open, onClose, id }: FollowersCardProps) => {
   );
 
   useEffect(() => {
-    if (isOpen) fetchFollowers(page);
-  }, [fetchFollowers, page, isOpen]);
+    fetchFollowers(page);
+  }, [fetchFollowers, page]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -76,10 +77,10 @@ const FollowersCard = ({ open, onClose, id }: FollowersCardProps) => {
       },
       { threshold: 1 }
     );
-    const el = loadMoreRef.current;
-    if (el) observer.observe(el);
+    const refCurrent = loadMoreRef.current;
+    if (refCurrent) observer.observe(refCurrent);
     return () => {
-      if (el) observer.unobserve(el);
+      if (refCurrent) observer.unobserve(refCurrent);
     };
   }, [isOpen, loading, page, totalPages]);
 
@@ -106,15 +107,17 @@ const FollowersCard = ({ open, onClose, id }: FollowersCardProps) => {
             setCount((prev) => ({
               ...prev,
               followings: Math.max(0, (prev?.followings ?? 0) - 1),
+              followers: prev?.followers ?? 0,
             }));
           } else {
             const me = await authService.getUser();
             if (!me?.id) return;
             const data = await getUserFollowings(`${me.id}`, 1, 1000000);
             setFollowings(data?.followings ?? []);
-            setCount((prev) => ({
+            setCount((prev: { followings: number; followers: number }) => ({
               ...prev,
               followings: (prev?.followings ?? 0) + 1,
+              followers: prev?.followers ?? 0,
             }));
           }
         }

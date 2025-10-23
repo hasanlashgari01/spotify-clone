@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
+
 import type {
   SongSortBy,
   SortOrder,
@@ -61,7 +62,7 @@ const SortMenu: React.FC<Props> = ({ sortBy, order, onChange }) => {
           <path d="M2 12.5a.5.5 0 0 1 .5-.5H10a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5H8a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5m0-3a.5.5 0 0 1 .5-.5H6a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5" />
           <path d="M12.354 14.354a.5.5 0 0 1-.708 0L9.5 12.207l.708-.708L11.5 12.79V2.5a.5.5 0 0 1 1 0v10.29l1.293-1.291.707.708z" />
         </svg>
-        <span className="text-sm text-nowrap">
+        <span className="text-sm text-nowrap max-sm:hidden">
           {OPTIONS.find((o) => o.key === sortBy)?.label} · {order.toUpperCase()}
         </span>
       </button>

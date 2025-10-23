@@ -1,12 +1,12 @@
-import { authService, User } from '../../services/authService';
-import { useEffect, useCallback, useState, useRef } from 'react';
-import defAvatar from '../../../public/default-avatar.webp';
-import LoadingCircle from '../loading/LoadingCircle';
-import { motion, AnimatePresence } from 'framer-motion';
 import '../../styles/userinfo.css';
-import { useFollow } from '../../context/UserFansContext';
 import FollowersCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
+import LoadingCircle from '../loading/LoadingCircle';
+import defAvatar from '../../../public/default-avatar.webp';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useFollow } from '../../context/UserFansContext';
+import { User, authService } from '../../services/authService';
 import { playlistService } from '../../services/playlistService';
 
 
@@ -47,7 +47,7 @@ const UserInfo = () => {
       setPlaylCount(res.playlists.length);
       setUserId(data?.id ? data?.id : "")
       setFullName(data?.fullName || '');
-      setBio(data?.bio || "bio must be placed here")
+      setBio(data?.bio || '');
       setUserData(data);
       setGender(
         data?.gender === 'male' ||
@@ -62,11 +62,13 @@ const UserInfo = () => {
     }
   }, []);
 
-
-
   useEffect(() => {
     fetchUserData();
-  }, [fetchUserData]);
+  }, []);
+
+  useEffect(() => {
+    if (!loading) fetchUserData();
+  }, [loading]);
 
   useEffect(() => {
     return () => {
@@ -103,7 +105,7 @@ const UserInfo = () => {
     userValue: string | undefined,
     fallback: string = ''
   ) => {
-    if (inputValue.trim() !== '') {
+    if (typeof inputValue === 'string' && inputValue.trim() !== '') {
       return inputValue;
     }
     if (typeof userValue === 'string' && userValue.trim() !== '') {
@@ -151,7 +153,7 @@ const UserInfo = () => {
         setTimeout(() => setSuccessMsg(''), 2500);
       }
     },
-    [userData, bio, userImage, gender]
+    [userData, fullName, bio, userImage, gender]
   );
 
   useEffect(() => {

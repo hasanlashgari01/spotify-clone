@@ -1,3 +1,53 @@
+import { Dispatch, SetStateAction } from 'react';
+import {
+  PlaylistSong,
+  SongSortBy,
+  SortOrder,
+} from '../services/playlistDetailsService';
+export interface PlSongsProps {
+  songs: PlaylistSong[];
+  setSortBy: React.Dispatch<SetStateAction<SongSortBy>>;
+  setOrder: React.Dispatch<SetStateAction<SortOrder>>;
+  sortBy: SongSortBy;
+  order: SortOrder;
+  isOwner: boolean | null;
+  deleteMusic: (songId: number) => void;
+  deletingId: number | null;
+  ref: boolean;
+}
+export interface Pagination {
+  page: number;
+  limit: number;
+  pageCount: number;
+  totalCount: number;
+}
+export interface AllSongs {
+  songs: Song[];
+  pagination: Pagination;
+}
+
+export type ApiResponse = {
+  songs: Song[];
+  pagination: {
+    page: number;
+    limit: number;
+    pageCount: number;
+    totalCount: number;
+  };
+};
+
+export type GenreInfo = {
+  id: string;
+  slug: string;
+  title: string;
+  cover: string;
+};
+export interface GenreDetailsResponse {
+  genre: GenreInfo;
+  songs: Song[];
+  pagination: Pagination;
+}
+
 export interface Song {
   id: number;
   title: string;
@@ -15,13 +65,29 @@ export interface Song {
   createdAt: string;
   updatedAt: string;
 }
-export interface Pagination {
-  page : number;
-  limit : number;
-  pageCount : number;
-  totalCount : number;
+export type GenreDetailsWrapperProps = {
+  genreDetails: GenreInfo | null;
+  songs: any[];
+  hours: number;
+  minutes: number;
+  seconds: number;
+  showSearch: boolean;
+  setShowSearch: Dispatch<SetStateAction<boolean>>;
+  setSearch: Dispatch<SetStateAction<string>>;
+  search: string;
+  totalSongsLength: any;
+};
+export interface UseGenreDetailsParams {
+  titleLowered: string | undefined;
+  sortBy: string;
+  order: string;
 }
-export interface AllSongs{
-  songs : Song[];
-  pagination : Pagination;
+
+export interface GenreDetailsResponse {
+  genre: GenreInfo;
+  songs: ApiResponse['songs'];
+  page: number;
+  limit: number;
+  pageCount: number;
+  totalCount: number;
 }

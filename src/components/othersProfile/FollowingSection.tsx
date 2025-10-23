@@ -8,8 +8,8 @@ import { useFollow } from '../../context/UserFansContext';
 interface FollowerProps {
   avatar: string;
   fullName: string;
+  username: string;
   userId: number;
-  username : string;
   onUnfollow?: (id: number) => void; 
   isFollowing?: boolean; // <-- add this prop to determine follow state
   onFollow?: (id: number) => void; // <-- optional follow handler
@@ -24,7 +24,6 @@ const FollowingSection: React.FC<FollowerProps> = ({
   onClose,
   onUnfollow,
   isFollowing: isFollowingProp,
-  
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<boolean>(!!isFollowingProp);
@@ -59,7 +58,7 @@ const FollowingSection: React.FC<FollowerProps> = ({
   };
 
   return (
-    <tbody className='z-100'>
+    <tbody className="z-100">
       <tr className="song-tableRow border-b border-gray-700 transition hover:bg-gray-800/40">
         <td className="w-16">
           <img
@@ -80,17 +79,19 @@ const FollowingSection: React.FC<FollowerProps> = ({
         </td>
 
         <td className="flex justify-end">
-          {meId !== userId && (<button
-            onClick={() => handleFollowToggle(userId)}
-            disabled={loading}
-            className={`cursor-pointer bg-black border border-blue-950 p-2 text-md rounded-xl transition-all hover:bg-gray-900 w-content disabled:opacity-60 disabled:cursor-not-allowed`}
-          >
-            {loading ? (
-              <LoadingCircle />
-            ) : (
-              <>{isFollowing ? 'Unfollow' : 'Follow'}</>
-            )}
-          </button>)}
+          {meId !== userId && (
+            <button
+              onClick={() => handleFollowToggle(userId)}
+              disabled={loading}
+              className={`text-md w-content min-w-20 cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60`}
+            >
+              {loading ? (
+                <LoadingCircle />
+              ) : (
+                <>{isFollowing ? 'Unfollow' : 'Follow'}</>
+              )}
+            </button>
+          )}
         </td>
       </tr>
     </tbody>

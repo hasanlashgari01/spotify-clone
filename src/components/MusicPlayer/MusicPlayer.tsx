@@ -10,7 +10,7 @@ import {
   VolumeX,
   Shuffle,
   Repeat,
-  ChevronUp,
+  Repeat1,
   ChevronDown,
 } from 'lucide-react';
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
@@ -56,7 +56,7 @@ const MusicPlayer: React.FC = () => {
     <>
       {/* 🟢 Desktop Player */}
       <motion.div
-        className="fixed bottom-4 left-1/2 z-10 hidden w-[95%] -translate-x-1/2 transform items-center justify-between rounded-2xl bg-gray-900/90 p-4 text-white shadow-xl backdrop-blur-md md:flex md:w-4/5"
+        className="fixed bottom-4 left-1/2 z-40 hidden w-[95%] -translate-x-1/2 transform items-center justify-between rounded-2xl bg-gray-900/90 p-4 text-white shadow-xl backdrop-blur-md md:flex md:w-4/5"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
       >
@@ -114,22 +114,26 @@ const MusicPlayer: React.FC = () => {
 
         {/* Seek Bar */}
         <div className="flex flex-1 flex-col items-center px-4">
-          <input
-            type="range"
-            min={0}
-            max={duration}
-            value={position}
-            onChange={(e) => onSeekChange(Number(e.target.value))}
-            className="h-1 w-[70%] cursor-pointer rounded-lg accent-green-500"
-          />
-          <div className="mt-1 flex w-full justify-between text-xs text-gray-400">
-            <span>{formatTime(position)}</span>
-            <span>{formatTime(duration)}</span>
+          <div className="flex w-full flex-1 flex-col items-center px-4">
+            <input
+              type="range"
+              min={0}
+              max={duration}
+              value={position}
+              onChange={(e) => onSeekChange(Number(e.target.value))}
+              className="h-1 w-[80%] cursor-pointer rounded-lg accent-green-500"
+            />
+
+            {/* Time Labels */}
+            <div className="mt-1 flex w-[80%] items-center justify-between text-xs text-gray-400">
+              <span>{formatTime(position)}</span>
+              <span>{formatTime(duration)}</span>
+            </div>
           </div>
 
           {/* Progress Bar Animation */}
           <motion.div
-            className="absolute bottom-4 left-0 mt-1 h-1 w-full rounded-full bg-gray-700"
+            className="absolute bottom-0 left-0 mt-1 h-1 w-full rounded-full bg-gray-700"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ type: 'spring', stiffness: 120, damping: 20 }}
@@ -151,7 +155,7 @@ const MusicPlayer: React.FC = () => {
             className={`rounded-full p-2 ${repeat !== 'off' ? 'bg-green-500/70' : 'hover:bg-gray-700'}`}
             whileHover={{ scale: 1.2 }}
           >
-            <Repeat size={20} />
+            {repeat === 'one' ? <Repeat1 size={20} /> : <Repeat size={20} />}
           </motion.button>
 
           <div className="flex items-center gap-2">
@@ -174,20 +178,12 @@ const MusicPlayer: React.FC = () => {
               className="h-1 w-16 cursor-pointer rounded-lg accent-green-500"
             />
           </div>
-
-          <motion.button
-            onClick={() => setExpanded(!expanded)}
-            className="rounded-full p-2 transition-colors hover:bg-gray-700"
-            whileHover={{ scale: 1.2 }}
-          >
-            {expanded ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
-          </motion.button>
         </div>
       </motion.div>
 
       {/* 🟢 Mobile Mini Player */}
       <motion.div
-        className="fixed right-0 bottom-0 left-0 z-3 flex cursor-pointer items-center justify-between rounded-t-2xl bg-gray-900/90 p-3 text-white shadow-xl backdrop-blur-md md:hidden"
+        className="fixed right-0 bottom-0 left-0 z-40 flex cursor-pointer items-center justify-between rounded-t-2xl bg-gray-900/90 p-3 text-white shadow-xl backdrop-blur-md md:hidden"
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         onClick={() => setExpanded(true)}
@@ -278,7 +274,7 @@ const MusicPlayer: React.FC = () => {
                 onChange={(e) => onSeekChange(Number(e.target.value))}
                 className="h-1 w-full cursor-pointer accent-green-500"
               />
-              <div className="mt-1 flex justify-between text-xs text-gray-400">
+              <div className="mt-1 flex items-center justify-between text-xs text-gray-400">
                 <span>{formatTime(position)}</span>
                 <span>{formatTime(duration)}</span>
               </div>
@@ -313,10 +309,14 @@ const MusicPlayer: React.FC = () => {
               </motion.button>
 
               <motion.button onClick={cycleRepeat} whileHover={{ scale: 1.2 }}>
-                <Repeat
-                  size={22}
-                  className={repeat !== 'off' ? 'text-green-500' : ''}
-                />
+                {repeat === 'one' ? (
+                  <Repeat1 size={22} className="text-green-500" />
+                ) : (
+                  <Repeat
+                    size={22}
+                    className={repeat !== 'off' ? 'text-green-500' : ''}
+                  />
+                )}
               </motion.button>
             </div>
 
