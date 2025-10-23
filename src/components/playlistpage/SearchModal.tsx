@@ -159,8 +159,8 @@ const SearchModal: React.FC<SearchModalProps> = ({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-70 flex items-center  justify-center bg-black/60">
-      <div className="relative w-full max-w-2xl rounded-2xl bg-[#181c24]  min-h-150 h-content p-6 shadow-lg">
+    <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/60">
+      <div className="relative w-full max-w-2xl rounded-2xl bg-[#181c24] p-6 shadow-lg">
         <button
           className="absolute top-4 right-4 text-2xl font-bold text-white hover:text-red-400"
           onClick={onClose}

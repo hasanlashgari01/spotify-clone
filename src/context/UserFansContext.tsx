@@ -1,9 +1,10 @@
-
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { Followings , Followers, getFollowingCount, getUserFollowings } from "../services/userDetailsService";
-import { getMe } from "../services/meService";
-
-
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { getMe } from '../services/meService';
+import {
+  Followers,
+  Followings,
+  getFollowingCount,
+} from '../services/userDetailsService';
 
 interface Count {
   followers: number;
@@ -16,18 +17,20 @@ interface FollowContextType {
   followers: Followers[];
   setFollowers: React.Dispatch<React.SetStateAction<Followers[]>>;
   count: Count;
-  setCount : React.Dispatch<React.SetStateAction<Count>>
+  setCount: React.Dispatch<React.SetStateAction<Count>>;
   meId: number;
   setMeId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const FollowContext = createContext<FollowContextType | undefined>(undefined);
 
-export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [followings, setFollowings] = useState<Followings[]>([]);
   const [followers, setFollowers] = useState<Followers[]>([]);
   const [meId, setMeId] = useState<number>(0);
-  const [count , setCount] = useState<Count>({
+  const [count, setCount] = useState<Count>({
     followers: 0,
     followings: 0,
   });
@@ -37,7 +40,10 @@ export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       if (!me) return;
       setMeId(me.sub);
       const followersCount = await getFollowingCount(`${me.sub}`, `followers`);
-      const followingsCount = await getFollowingCount(`${me.sub}`, `followings`);
+      const followingsCount = await getFollowingCount(
+        `${me.sub}`,
+        `followings`
+      );
       setCount({
         followers: Number(followersCount) || 0,
         followings: Number(followingsCount) || 0,
@@ -46,21 +52,31 @@ export const FollowProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       console.log('Error occurred:', e);
       setCount({ followers: 0, followings: 0 });
     }
-  }
+  };
   useEffect(() => {
     fetchData();
-  }, [])
-  
+  }, []);
+
   return (
-    <FollowContext.Provider value={{ followings, setFollowings, followers, setFollowers , count , setCount, meId, setMeId}}>
+    <FollowContext.Provider
+      value={{
+        followings,
+        setFollowings,
+        followers,
+        setFollowers,
+        count,
+        setCount,
+        meId,
+        setMeId,
+      }}
+    >
       {children}
     </FollowContext.Provider>
   );
 };
 
-
 export const useFollow = () => {
   const context = useContext(FollowContext);
-  if (!context) throw new Error("useFollow must be used within FollowProvider");
+  if (!context) throw new Error('useFollow must be used within FollowProvider');
   return context;
 };

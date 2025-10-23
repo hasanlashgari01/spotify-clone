@@ -5,7 +5,7 @@ import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { useMyPlaylists } from '../../hooks/useMyPlaylists';
 import Error from './ErrorMessage';
-import Loading from './loding';
+import Loading from './loading';
 import PlayListItem from './PlayListItem';
 import { SlArrowRight } from 'react-icons/sl';
 import CreatePlaylist from './CreatePlaylist';
@@ -13,12 +13,13 @@ import Modal from '../layout/modal';
 import CreatePlaylistForm from './CreatePlaylistForm';
 
 const MyPlaylist: React.FC = () => {
-  const { data, isLoading, error,refetch  } = useMyPlaylists();
-    const [open, setOpen] = useState(false);
-  if (error) return <Error {...error} />;
+  const { data, isLoading, error, refetch } = useMyPlaylists();
+  const [open, setOpen] = useState(false);
+
+  if (error) return <Error message={error.message || 'Unknown error'} />;
 
   return (
-    <div className='w-full flex justify-center items-center'>
+    <div className='w-full flex justify-center items-center mt-10'>
     <div className="h-[300px] sm:h-[400px] relative rounded-3xl border-4 border-blue-900 w-[93%]">
       <div className="mt-10 mb-[20px] flex items-center justify-between px-[20px] sm:mb-[40px] sm:pr-[77px]">
         <h2 className="text-lg font-bold text-white sm:text-2xl">

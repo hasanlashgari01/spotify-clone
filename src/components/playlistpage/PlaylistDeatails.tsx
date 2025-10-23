@@ -8,7 +8,7 @@ import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 import {
   getPlaylistDetails,
   Playlistinfo,
-  PlaylistSong,
+
 } from '../../services/playlistDetailsService';
 import PlaylistStatusControl from './PlaylistStatusControl';
 import {
@@ -17,7 +17,6 @@ import {
 } from '../../services/playlistDetailsService';
 import PlaylistMenu from './Playlistmenu';
 import { getMe, MeResponse } from '../../services/meService';
-import LoadingCircle from '../loading/LoadingCircle';
 import { playlistService } from '../../services/playlistService';
 import FloatingMusicIcons from './FloatingMusicIcons';
 const LuxeLoader = () => (
@@ -194,11 +193,7 @@ const PlaylistDetails = ({
                 
               </div>
               <div className="mt-2 flex items-center justify-center gap-2 text-sm opacity-90">
-                <span className="flex items-center gap-1 text-white">
-                  {hours > 0 && `${hours} hr `}
-                  {minutes > 0 && `${minutes} min `}
-                  {seconds > 0 && `${seconds} sec`}
-                </span>
+
               </div>
               <div className="mt-2 flex w-full items-center justify-center gap-4">
                 {!showSearch ? (
@@ -218,11 +213,7 @@ const PlaylistDetails = ({
                       aria-disabled={isLiking}
                       className={`group flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all hover:bg-black/60 ${isLiking ? 'cursor-not-allowed opacity-60' : ''}`}
                     >
-                      {isLiking ? (
-                        <div className="flex h-5 w-5 items-center justify-center">
-                          <LoadingCircle />
-                        </div>
-                      ) : isLiked ? (
+                      {isLiked ? (
                         <FaHeart className="text-lg text-red-500 transition-colors" />
                       ) : (
                         <FaRegHeart className="text-lg text-white transition-colors group-hover:text-red-400" />

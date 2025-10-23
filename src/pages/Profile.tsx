@@ -5,13 +5,10 @@ import { FollowProvider } from '../context/UserFansContext';
 const Profile = () => {
   return (
     <>
-      <div className="min-h-[100vh] w-full">
+      <div className="min-h-[100vh] w-full bg-[#101721]">
         <FollowProvider>
-          <div className="pb-15">
-            <UserInfo />
-          </div>
+          <UserInfo />
         </FollowProvider>
-
         <MyPlaylists />
       </div>
     </>

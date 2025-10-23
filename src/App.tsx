@@ -1,4 +1,7 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './styles/App.css';
+import GenreItems from './pages/Genres/GenreItems';
+import Genres from './pages/Genres/Genres';
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
 import MusicPlayers from './components/MusicPlayer/MusicPlayer';
 import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
 import { MusicPlayerProvider } from './context/MusicPlayerContext';
@@ -6,27 +9,29 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import PlaylistPage from './pages/PlaylistPage';
 import Profile from './pages/Profile';
-import RegisterPage from './pages/RegisterPage';
 import ReactQueryProvider from './providers/react-query-provider';
-import UsersProfile from './pages/UsersProfile';
+import RegisterPage from './pages/RegisterPage';
 import { Toaster } from 'react-hot-toast';
-import { MusicSB } from './components/music-sidebar/MusicSb';
-import { useState } from 'react';
- 
+import ArtistPanel from './pages/Artist-panel.tsx';
+import UsersProfile from './pages/UsersProfile';
+import SearchPage from './pages/SearchPage';
+import NotFound from './pages/NotFound';
+import { MusicSB } from './components/music-sidebar/MusicSb.tsx';
 
+const ConditionalMusicPlayer = () => {
+  const location = useLocation();
+  const shouldHidePlayer =
+    location.pathname === '/login' || location.pathname === '/register';
 
-
-
-
+  return !shouldHidePlayer ? <MusicPlayers /> : null;
+};
 
 function App() {
-  const [fullimize, setFullimize] = useState<boolean>(false);
-  const [dick , setdick] = useState<boolean>(false)
   return (
     <ReactQueryProvider>
       <BrowserRouter>
         <MusicPlayerProvider>
-          <div className="flex flex-row w-[100vw] h-[100vh] overflow-hidden">
+          <div className="flex h-[100vh] w-[100vw] flex-row overflow-hidden">
             <MusicSB />
 
             <div className="flex-1 overflow-auto bg-[#0c1218] text-white">
@@ -36,6 +41,10 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/playlist/:slug" element={<PlaylistPage />} />
                 <Route path="/profile/:username" element={<UsersProfile />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/genre" element={<Genres />} />
+                <Route path="/genre/:title" element={<GenreItems />} />
+                <Route path="/panel/" element={<ArtistPanel />} />
                 <Route
                   path="/profile"
                   element={
@@ -44,6 +53,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </div>
           </div>
@@ -55,12 +65,14 @@ function App() {
                 background: '#101720',
                 color: '#fff',
                 borderRadius: '20px',
-                padding: '5px',
+                padding: '10px',
               },
             }}
           />
 
           <MusicPlayers />
+
+          <ConditionalMusicPlayer />
         </MusicPlayerProvider>
       </BrowserRouter>
     </ReactQueryProvider>

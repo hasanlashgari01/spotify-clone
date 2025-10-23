@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import defAvatar from '../../../public/default-avatar.webp';
 import { Link } from 'react-router-dom';
-
-
 import LoadingCircle from '../loading/LoadingCircle';
 import { useFollow } from '../../context/UserFansContext';
-
 
 interface FollowerProps {
   avatar?: string;
@@ -60,7 +57,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
   };
 
   return (
-    <tbody className='z-1000'>
+    <tbody className="z-1000">
       <tr className="song-tableRow border-b border-gray-700 transition hover:bg-gray-800/40">
         <td className="w-16">
           <img
@@ -85,7 +82,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
             <button
               onClick={() => handleFollowToggle(userId)}
               disabled={loading}
-              className="text-md w-content  text-sm sm:text-lg cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="text-md w-content min-w-20 cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (
                 <LoadingCircle />

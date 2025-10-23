@@ -1,0 +1,124 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+
+.error-graphic {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  pointer-events: none;
+  padding-top: 0;
+  z-index: 5;
+}
+
+.error-row {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(20px, 3vw, 80px);
+}
+
+.notfound-4 {
+  font-family: 'Archivo Black', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: #1574f5;
+  font-weight: 900;
+  line-height: 2.2;
+  margin: 0;
+  font-size: clamp(220px, 12vw, 250px);
+  letter-spacing: -0.02em;
+}
+
+.headphone {
+  width: clamp(100px, 380vw, 280px);
+  height: auto;
+  object-fit: contain;
+  transform: translateY(clamp(-20px, -6vw, -80px));
+}
+
+.page-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  padding: 0 1rem;
+  margin-top: clamp(420px, 34vh, 520px);
+}
+
+@media (max-width: 1280px) {
+  .notfound-4 {
+    font-size: clamp(180px, 11vw, 140px);
+  }
+
+  .headphone {
+    width: clamp(250px, 9vw, 160px);
+    transform: translateY(clamp(-18px, -5vw, -60px));
+  }
+
+  .page-content {
+    margin-top: clamp(360px, 32vh, 440px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .notfound-4 {
+    font-size: clamp(150px, 10vw, 180px);
+  }
+
+  .headphone {
+    width: clamp(200px, 8vw, 140px);
+    transform: translateY(clamp(-15px, -4.5vw, -50px));
+  }
+
+  .page-content {
+    margin-top: clamp(310px, 30vh, 400px);
+  }
+}
+
+@media (max-width: 768px) {
+  .notfound-4 {
+    font-size: clamp(140px, 12vw, 150px);
+  }
+
+  .headphone {
+    width: clamp(180px, 10vw, 120px);
+    transform: translateY(clamp(-10px, -4vw, -40px));
+  }
+
+  .page-content {
+    margin-top: clamp(280px, 28vh, 320px);
+  }
+}
+
+@media (max-width: 480px) {
+  .error-row {
+    gap: clamp(8px, 4vw, 16px);
+  }
+
+  .notfound-4 {
+    font-size: clamp(110px, 14vw, 110px);
+  }
+
+  .headphone {
+    width: clamp(140px, 9vw, 100px);
+    transform: translateY(clamp(-6px, -5vw, -30px));
+  }
+
+  .page-content {
+    margin-top: clamp(220px, 16vh, 280px);
+  }
+}
+
+@media (max-width: 360px) {
+  .page-content {
+    margin-top: clamp(200px, 24vh, 250px);
+  }
+}
+
+/* html,
+body {
+  overflow: hidden;
+  height: 100vh;
+} */

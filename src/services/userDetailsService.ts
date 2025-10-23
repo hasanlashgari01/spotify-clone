@@ -12,7 +12,6 @@ export interface Follower {
   id: number;
   username : string;
   fullName: string;
-  
   role: string;
   avatar: string;
 }
@@ -70,12 +69,10 @@ export const getUserFollowings = async (
     return null;
   }
 };
-export const getOthersDetails = async (
-  username : string
-) : Promise<User> => {
-  const response = await httpService.get<User>(`/user/profile/${username}`)
-  return response.data
-}
+export const getOthersDetails = async (username: string): Promise<User> => {
+  const response = await httpService.get<User>(`/user/profile/${username}`);
+  return response.data;
+};
 export const getFollowingCount = async (
   id: string,
   action: string
@@ -93,11 +90,10 @@ export const UserService = {
     if (me.sub === id) return;
     try {
       const response = await httpService.get(`/follow/${id}`);
-    return response.status;
+      return response.status;
     } catch (error) {
       console.log('Error occurred:', error);
       return;
     }
   },
-  
 };

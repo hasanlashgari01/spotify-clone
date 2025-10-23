@@ -1,13 +1,14 @@
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
-import { FiEdit } from 'react-icons/fi';
-import { TbMusicHeart } from 'react-icons/tb';
-import { IoMdShare, IoMdCopy, IoMdTrash } from 'react-icons/io';
-import Modal from '../layout/modal';
-import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
-import { PiButterfly, PiMusicNotesPlusFill } from 'react-icons/pi';
-import SearchModal from './SearchModal';
 import { toast } from 'react-hot-toast';
+import { FiEdit } from 'react-icons/fi';
+import { IoMdCopy, IoMdShare, IoMdTrash } from 'react-icons/io';
+import { PiMusicNotesPlusFill } from 'react-icons/pi';
+import { TbMusicHeart } from 'react-icons/tb';
+import EditPlaylistForm from '../Edit playlist details/EditPlaylistForm';
+import Modal from '../layout/modal';
+import SearchModal from './SearchModal';
+import DeleteConfirmationModal from '../MyPlayLists/DeleteConfirmationModal';
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -15,7 +16,6 @@ interface Props {
   isPublic?: boolean;
   playlist?: any;
   onPlaylistUpdated?: () => void;
-
 }
 //شیشسیشسی
 const PlaylistMenu = ({
@@ -28,6 +28,16 @@ const PlaylistMenu = ({
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const handleDeleteSuccess = () => {
+    setDeleteModalOpen(false);
+    if (onPlaylistUpdated) {
+      onPlaylistUpdated();
+    }
+    // Redirect to profile page after successful deletion
+    window.location.href = '/profile';
+  };
   const menuItems = [
     {
       icon: IoMdShare,
@@ -56,7 +66,6 @@ const PlaylistMenu = ({
             icon: PiMusicNotesPlusFill,
             label: 'Add music',
             action: () => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               (setSearchModalOpen(true), onClose());
             },
             color: 'text-white hover:text-blue-400',
@@ -65,7 +74,6 @@ const PlaylistMenu = ({
             icon: FiEdit,
             label: 'Edit Details',
             action: () => {
-              // eslint-disable-next-line @typescript-eslint/no-unused-expressions
               (setEditModalOpen(true), onClose());
             },
             color: 'text-white hover:text-blue-400',
@@ -73,7 +81,10 @@ const PlaylistMenu = ({
           {
             icon: IoMdTrash,
             label: 'Delete Playlist',
-            action: () => console.log('Delete'),
+            action: () => {
+              setDeleteModalOpen(true);
+              onClose();
+            },
             color: 'text-white hover:text-red-500',
             danger: true,
           },
@@ -240,6 +251,20 @@ const PlaylistMenu = ({
   open={searchModalOpen}
   onClose={() => setSearchModalOpen(false)}
 />
+      
+      {/* Delete Confirmation Modal */}
+      {playlist && (
+        <DeleteConfirmationModal
+          open={deleteModalOpen}
+          onClose={() => setDeleteModalOpen(false)}
+          playlist={{
+            id: playlist.id,
+            title: playlist.title,
+            cover: playlist.cover
+          }}
+          onSuccess={handleDeleteSuccess}
+        />
+      )}
     </>
   );
 };
