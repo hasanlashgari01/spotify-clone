@@ -25,7 +25,7 @@ const DeleteConfirmationModal: React.FC<Props> = ({
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      const result = await playlistService.deletePlaylist(playlist.id);
+      const result = await playlistService.deletePlaylist(String(playlist.id));
 
       if (result?.stat === 'success') {
         onSuccess();
