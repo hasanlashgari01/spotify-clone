@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const baseURL =
-  import.meta.env.VITE_BASE_URL || 'https://spotify-music.liara.run';
+  import.meta.env.VITE_BASE_URL || 'https://api.navazino.com';
 
 export const httpService = axios.create({
   baseURL,
