@@ -18,6 +18,7 @@ interface SearchModalProps {
 
 const SearchModal: React.FC<SearchModalProps> = ({
   open,
+  //شسیشسیشسی
   onClose,
   refFetch,
 }) => {

@@ -75,6 +75,7 @@ const FollowerSection: React.FC<FollowerProps> = ({
               }}>{fullName}</h3>
             </Link>
           </div>
+          {/* شسیشسیشیسش */}
         </td>
         <td className="flex justify-end">
           {meId !== userId && (

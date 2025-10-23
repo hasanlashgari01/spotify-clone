@@ -12,7 +12,7 @@ export const useDeletePlaylist = () => {
       if (!user) {
         throw new Error('User must be authenticated to delete playlists');
       }
-      return playlistService.deletePlaylist(playlistId);
+      return playlistService.deletePlaylist(String(playlistId));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-playlists'] });

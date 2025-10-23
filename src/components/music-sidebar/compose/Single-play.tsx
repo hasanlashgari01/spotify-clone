@@ -1,24 +1,53 @@
-import DefaultPicture from "../../../../public/default-avatar.webp"
-type singleProps = {
-    playlistName : string;
-    playlistSongs : string;
-    fullimize : boolean;
-    cover : string;
-}
-const SinglePlaylist = ({playlistName , playlistSongs , cover , fullimize}:singleProps) => {
-  return (
-    <div className='p-3 w-full flex gap-2 hover:bg-gray-600/30 cursor-pointer transition-all'>
-        <img src={cover} alt="" className=' h-12 rounded-lg w-fit' />
-        {!fullimize && (<div className='w-full text-white'>
-          <div className='text-md'>
-              {playlistName}
-          </div>
-          <div className='text-sm text-gray-400'>
-            {playlistSongs}
-          </div>
-        </div>)}
-      </div>
-  )
-}
+import { motion } from "framer-motion";
+import DefaultPicture from "../../../../public/default-avatar.webp";
 
-export default SinglePlaylist
+type SingleProps = {
+  playlistName: string;
+  playlistSongs: string;
+  fullimize: boolean;
+  cover: string;
+  index: number;
+  hoverIndex: number | null;
+  setHoverIndex: React.Dispatch<React.SetStateAction<number | null>>;
+};
+
+const SinglePlaylist = ({
+  playlistName,
+                          cover,
+                          index,
+  hoverIndex,
+  setHoverIndex,
+}: SingleProps) => {
+  // فاصله آیتم نسبت به آیتم هاور شده
+  const distance = hoverIndex === null ? Infinity : Math.abs(index - hoverIndex);
+
+
+  const x =
+    distance === 0 ? 20 :
+    distance === 1 ? 12 :
+    0;
+
+  return (
+    <motion.div
+      onMouseEnter={() => setHoverIndex(index)}
+      onMouseLeave={() => setHoverIndex(null)}
+      animate={{ x }}
+      transition={{ type: "spring", stiffness: 380, damping:50 }}
+      className="w-full flex items-center justify-start px-2 cursor-pointer"
+      style={{ originX: 0 }} 
+    >
+      <motion.img
+        src={cover || DefaultPicture}
+        alt={playlistName}
+        className="h-12 w-12 object-cover rounded-lg shadow-sm"
+        whileHover={{ rotate: 2 }}
+        transition={{ duration: 0.18 }}
+      />
+
+      
+      
+    </motion.div>
+  );
+};
+
+export default SinglePlaylist;

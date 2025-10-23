@@ -1,8 +1,8 @@
-import '../../styles/scroll.css';
-import LoadingCircle from '../loading/LoadingCircle';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import defAvatar from '../../../public/default-avatar.webp';
 import { Link } from 'react-router-dom';
+import '../../styles/scroll.css';
+import LoadingCircle from '../loading/LoadingCircle';
 
 interface FollowerProps {
   avatar: string;
@@ -10,12 +10,12 @@ interface FollowerProps {
   username : string;
   onClose : (()=>void) | undefined;
   userId: number;
-  onUnfollow?: (id: number) => void;
+  onUnfollow?: (id: number) => void; 
 }
 
 const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, onUnfollow , username , onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
-
+// asdasd
   const fnunf = async (id: number) => {
     if (!id || loading) return;
     try {
@@ -32,7 +32,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, o
   };
 
   return (
-    <tbody className="z-100">
+    <tbody className='z-100'>
       <tr className="song-tableRow border-b border-gray-700 transition hover:bg-gray-800/40">
         <td className="w-16">
           <img
@@ -56,7 +56,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, o
           <button
             onClick={() => fnunf(userId)}
             disabled={loading}
-            className="text-md w-content min-w-20 cursor-pointer rounded-xl border border-blue-950 bg-black p-2 transition-all hover:bg-gray-900 disabled:cursor-not-allowed disabled:opacity-60"
+            className="cursor-pointer bg-black border border-blue-950 p-2 text-md rounded-xl transition-all hover:bg-gray-900  w-content disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? <LoadingCircle /> : <>Unfollow</>}
           </button>

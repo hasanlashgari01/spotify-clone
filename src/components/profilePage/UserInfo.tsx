@@ -1,12 +1,12 @@
+import { authService, User } from '../../services/authService';
+import { useEffect, useCallback, useState, useRef } from 'react';
+import defAvatar from '../../../public/default-avatar.webp';
+import LoadingCircle from '../loading/LoadingCircle';
+import { motion, AnimatePresence } from 'framer-motion';
 import '../../styles/userinfo.css';
+import { useFollow } from '../../context/UserFansContext';
 import FollowersCard from './FollowerCard';
 import FollowingCard from './FollowingCard';
-import LoadingCircle from '../loading/LoadingCircle';
-import defAvatar from '../../../public/default-avatar.webp';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useFollow } from '../../context/UserFansContext';
-import { User, authService } from '../../services/authService';
 import { playlistService } from '../../services/playlistService';
 
 
@@ -47,7 +47,7 @@ const UserInfo = () => {
       setPlaylCount(res.playlists.length);
       setUserId(data?.id ? data?.id : "")
       setFullName(data?.fullName || '');
-      setBio(data?.bio || '');
+      setBio(data?.bio || "bio must be placed here")
       setUserData(data);
       setGender(
         data?.gender === 'male' ||
@@ -62,13 +62,11 @@ const UserInfo = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
+
 
   useEffect(() => {
-    if (!loading) fetchUserData();
-  }, [loading]);
+    fetchUserData();
+  }, [fetchUserData]);
 
   useEffect(() => {
     return () => {
@@ -105,7 +103,7 @@ const UserInfo = () => {
     userValue: string | undefined,
     fallback: string = ''
   ) => {
-    if (typeof inputValue === 'string' && inputValue.trim() !== '') {
+    if (inputValue.trim() !== '') {
       return inputValue;
     }
     if (typeof userValue === 'string' && userValue.trim() !== '') {
@@ -153,7 +151,7 @@ const UserInfo = () => {
         setTimeout(() => setSuccessMsg(''), 2500);
       }
     },
-    [userData, fullName, bio, userImage, gender]
+    [userData, bio, userImage, gender]
   );
 
   useEffect(() => {
@@ -509,6 +507,7 @@ const UserInfo = () => {
         </div>
         
       </div>
+      {/* asdnhabsd */}
       
       <div className="fixed">
         <FollowersCard

@@ -14,7 +14,7 @@ interface FollowingCardProps {
   onClose?: () => void;
   id: string | undefined;
 }
-
+//شسیشسیشسیشسیشسی
 const isUserFollowing = (userId: number, followings: Followings[]): boolean =>
   followings.some((f) => f.following?.id === userId);
 
