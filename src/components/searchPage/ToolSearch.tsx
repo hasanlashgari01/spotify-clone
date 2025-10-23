@@ -3,8 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import {
   FaMusic,
   FaUser,
-  FaPodcast,
-  FaCompactDisc,
+
   FaList,
 } from 'react-icons/fa';
 
