@@ -12,11 +12,13 @@ import Profile from './pages/Profile';
 import ReactQueryProvider from './providers/react-query-provider';
 import RegisterPage from './pages/RegisterPage';
 import { Toaster } from 'react-hot-toast';
+import { ArtistProtector } from './components/Protect Route/ArtistProtector.tsx';
 import ArtistPanel from './pages/Artist-panel.tsx';
 import UsersProfile from './pages/UsersProfile';
 import SearchPage from './pages/SearchPage';
 import NotFound from './pages/NotFound';
 import { MusicSB } from './components/music-sidebar/MusicSb.tsx';
+import ArtistsProfile from './pages/ArtistsProfile.tsx';
 
 const ConditionalMusicPlayer = () => {
   const location = useLocation();
@@ -27,6 +29,8 @@ const ConditionalMusicPlayer = () => {
 };
 
 function App() {
+  // @ts-ignore
+  // @ts-ignore
   return (
     <ReactQueryProvider>
       <BrowserRouter>
@@ -44,6 +48,15 @@ function App() {
                 <Route path="/search" element={<SearchPage />} />
                 <Route path="/genre" element={<Genres />} />
                 <Route path="/genre/:title" element={<GenreItems />} />
+                <Route
+                  path="/artist/:username"
+                  element={
+                    <ArtistProtector>
+                      <ArtistsProfile />
+                    </ArtistProtector>
+                  }
+                />
+
                 <Route path="/panel/" element={<ArtistPanel />} />
                 <Route
                   path="/profile"
@@ -70,7 +83,7 @@ function App() {
             }}
           />
 
-          <MusicPlayers />
+
 
           <ConditionalMusicPlayer />
         </MusicPlayerProvider>
