@@ -14,6 +14,7 @@ import RegisterPage from './pages/RegisterPage';
 import { Toaster } from 'react-hot-toast';
 import UsersProfile from './pages/UsersProfile';
 import SearchPage from './pages/SearchPage';
+import NotFound from './pages/NotFound';
 
 const ConditionalMusicPlayer = () => {
   const location = useLocation();
@@ -33,11 +34,10 @@ function App() {
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/playlist/:slug" element={<PlaylistPage />} />
-            <Route path="/profile/:username" element={<UsersProfile />}></Route>
-            <Route path="/search" element={<SearchPage />}></Route>
+            <Route path="/profile/:username" element={<UsersProfile />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route path="/genre" element={<Genres />} />
             <Route path="/genre/:title" element={<GenreItems />} />
-            <Route path="/profile/:username" element={<UsersProfile />}></Route>
             <Route
               path="/profile"
               element={
@@ -46,6 +46,8 @@ function App() {
                 </ProtectedRoute>
               }
             />
+
+            <Route path="*" element={<NotFound />} />
           </Routes>
 
           <Toaster
