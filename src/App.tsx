@@ -17,7 +17,7 @@ import ArtistPanel from './pages/Artist-panel.tsx';
 import UsersProfile from './pages/UsersProfile';
 import SearchPage from './pages/SearchPage';
 import NotFound from './pages/NotFound';
-import { MusicSB } from './components/music-sidebar/MusicSb.tsx';
+
 import ArtistsProfile from './pages/ArtistsProfile.tsx';
 
 const ConditionalMusicPlayer = () => {
@@ -29,8 +29,7 @@ const ConditionalMusicPlayer = () => {
 };
 
 function App() {
-  // @ts-ignore
-  // @ts-ignore
+
   return (
     <ReactQueryProvider>
       <BrowserRouter>

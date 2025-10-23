@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { PlayIcon, PauseIcon } from 'lucide-react';
 import { searchService, SearchSong } from '../../services/searchService';
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
-import FloatingMusicIcons from '../playlistpage/FloatingMusicIcons';
 
 type TopResultProps = {
   query: string;
