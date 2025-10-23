@@ -10,25 +10,26 @@ import RegisterPage from './pages/RegisterPage';
 import ReactQueryProvider from './providers/react-query-provider';
 import UsersProfile from './pages/UsersProfile';
 import { Toaster } from 'react-hot-toast';
+import { MusicSB } from './components/music-sidebar/MusicSb';
+import { useState } from 'react';
+
 function App() {
+  const [fullimize, setFullimize] = useState<boolean>(false);
+
   return (
     <ReactQueryProvider>
       <BrowserRouter>
         <MusicPlayerProvider>
-          {/* <div className='flex flex-row w-[100vw]'>
-            <div className='w-[20%]'>
-              <MusicSB/>
-            </div> */}
-            {/* <div className='w-[80%]'> */}
+          <div className="flex flex-row w-[100vw] h-[100vh] overflow-hidden">
+            <MusicSB setFullimize={setFullimize} />
+
+            <div className="flex-1 overflow-auto bg-[#0c1218] text-white">
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/playlist/:slug" element={<PlaylistPage />} />
-                <Route
-                  path="/profile/:username"
-                  element={<UsersProfile />}
-                ></Route>
+                <Route path="/profile/:username" element={<UsersProfile />} />
                 <Route
                   path="/profile"
                   element={
@@ -38,8 +39,9 @@ function App() {
                   }
                 />
               </Routes>
-            {/* </div>
-          </div> */}
+            </div>
+          </div>
+
           <Toaster
             position="top-right"
             toastOptions={{
@@ -51,6 +53,7 @@ function App() {
               },
             }}
           />
+
           <MusicPlayers />
         </MusicPlayerProvider>
       </BrowserRouter>
