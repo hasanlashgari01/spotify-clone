@@ -12,10 +12,16 @@ import UsersProfile from './pages/UsersProfile';
 import { Toaster } from 'react-hot-toast';
 import { MusicSB } from './components/music-sidebar/MusicSb';
 import { useState } from 'react';
+ 
+
+
+
+
+
 
 function App() {
   const [fullimize, setFullimize] = useState<boolean>(false);
-
+  const [dick , setdick] = useState<boolean>(false)
   return (
     <ReactQueryProvider>
       <BrowserRouter>

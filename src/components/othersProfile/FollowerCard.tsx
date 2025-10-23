@@ -152,6 +152,7 @@ const FollowersCard = ({ open, onClose, id }: FollowersCardProps) => {
             transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
             style={{ cursor: 'pointer' }}
           >
+            {/* asdasdasdada */}
             <motion.div
               className="relative mb-20 flex w-full max-w-120 flex-col gap-4 rounded-2xl bg-gradient-to-b from-[#101721] to-[#101721e6] p-6 text-white shadow-2xl"
               onClick={(e) => e.stopPropagation()}

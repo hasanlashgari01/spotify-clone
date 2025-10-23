@@ -15,7 +15,7 @@ interface FollowerProps {
   onFollow?: (id: number) => void; // <-- optional follow handler
   onClose : (() => void) | undefined;
 }
-
+//شسیشسیشسیسشی
 const FollowingSection: React.FC<FollowerProps> = ({
   avatar,
   fullName,

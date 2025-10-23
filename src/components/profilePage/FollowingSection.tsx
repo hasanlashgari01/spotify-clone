@@ -15,7 +15,7 @@ interface FollowerProps {
 
 const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, onUnfollow , username , onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
-
+// asdasd
   const fnunf = async (id: number) => {
     if (!id || loading) return;
     try {
