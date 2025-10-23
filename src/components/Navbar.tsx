@@ -51,7 +51,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="relative flex w-full items-center justify-between bg-gray-900 px-4 py-3">
+      <nav className="relative flex w-full items-center justify-between bg-gray-900 px-4 py-2 ">
         {/* Left side (Mobile: Menu + Crown) */}
         <div className="flex items-center gap-3 md:hidden">
           {menuOpen ? (
@@ -70,7 +70,7 @@ const Navbar = () => {
 
         {/* Center: Logo */}
         <div className="flex flex-1 items-center justify-center">
-          <Link to={'/'}><img src={HomeLogo} alt="Logo" className="h-6 w-auto md:h-8" /></Link>
+          <Link to={'/'}><img src={HomeLogo} alt="Logo" className="h-6 w-auto md:h-15" /></Link>
         </div>
 
         {/* Right side (Mobile: Bell + Profile) */}
@@ -125,7 +125,7 @@ const Navbar = () => {
         <div className="hidden w-full items-center justify-between md:flex">
           {/* Left: Logo + Menu Items */}
           <div className="flex items-center gap-6">
-            <Link to={'/'}><img src={HomeLogo} alt="Logo" className="w-12" /></Link>
+            <Link to={'/'}><img src={HomeLogo} alt="Logo" className="w-10" /></Link>
             <span className="cursor-pointer text-white hover:text-blue-400">
               <Link to={'profile'}>Profile</Link>
             </span>
@@ -138,12 +138,12 @@ const Navbar = () => {
           </div>
 
           {/* Search Bar */}
-          <div className="flex w-full items-center rounded-full bg-gray-800 px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 md:w-[25%] lg:w-[35%]">
+          <div className="flex w-full items-center rounded-full bg-gray-800 px-4 py-2 focus-within:ring-2 focus-within:ring-blue-500 md:w-[35%] lg:w-[35%]">
             <input
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
-              placeholder="Search for artists, songs, or podcasts..."
+              placeholder="What do you want to play?"
               className="w-full bg-transparent text-lg text-white transition-all duration-200 outline-none placeholder:text-gray-400 focus:ring-0 focus:outline-none"
             />
             <svg
@@ -164,8 +164,8 @@ const Navbar = () => {
 
           {/* Right: Premium + Bell + Profile */}
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-1 rounded-full bg-blue-500 px-4 py-1 text-white hover:bg-blue-600">
-              Go to Premium <FaCrown className="text-yellow-300" />
+            <button className="flex  items-center gap-1 h-9 w-9 justify-center cursor-pointer bg-blue-500 rounded-full text-white hover:bg-blue-600">
+               <FaCrown className="text-yellow-300" />
             </button>
             <FaBell
               className="h-9 w-9 cursor-pointer rounded-full bg-white p-2 text-xl text-black"

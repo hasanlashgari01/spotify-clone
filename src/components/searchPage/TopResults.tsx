@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PlayIcon, PauseIcon } from 'lucide-react';
 import { searchService, SearchSong } from '../../services/searchService';
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
+import FloatingMusicIcons from '../playlistpage/FloatingMusicIcons';
 
 type TopResultProps = {
   query: string;
@@ -71,10 +72,12 @@ const TopResults: React.FC<TopResultProps> = ({ query }) => {
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="text-base leading-tight font-bold text-nowrap text-white sm:text-lg md:text-xl lg:text-2xl xl:text-3xl">
-          {topSong.title}
+        <div className="text-base leading-tight font-bold text-nowrap text-white  -nowrap sm:text-lg md:text-sm lg:text-2xl xl:text-3xl">
+          {topSong.title.length > 15
+            ? topSong.title.slice(0, 15) + '...'
+            : topSong.title}
         </div>
-        <div className="text-sm text-nowrap text-gray-300 sm:text-base md:text-lg lg:text-xl">
+        <div className="text-sm text-nowrap text-gray-300 sm:text-base md:text-sm lg:text-xl">
           {topSong.artist.fullName}
         </div>
         <div className="mt-2 flex items-center gap-2">

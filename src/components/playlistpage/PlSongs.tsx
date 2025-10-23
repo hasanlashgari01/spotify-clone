@@ -29,7 +29,6 @@ const PlSongs = forwardRef<HTMLTableRowElement, PlSongsProps>(
     const [DateAdded, setDateAdded] = useState(true);
     const [HoveredRow, setHoveredRow] = useState<number | null>(null);
     const isTablet = useMediaQuery({ maxWidth: 1280 });
-    const isMobile = useMediaQuery({ maxWidth: 767 });
 
     const handlePlayClick = (ts: PlaylistSong, e: React.MouseEvent) => {
       e.preventDefault();
@@ -76,7 +75,7 @@ const PlSongs = forwardRef<HTMLTableRowElement, PlSongsProps>(
                 </th>
                 {Album && (
                   <th className="hidden pl-3 md:table-cell md:w-[16vw] lg:w-[14vw]">
-                    Status
+                    Plays
                   </th>
                 )}
                 {DateAdded && (
@@ -102,7 +101,7 @@ const PlSongs = forwardRef<HTMLTableRowElement, PlSongsProps>(
                   </th>
                 )}
                 <th className="w-[1%] pr-2 pl-2 text-right sm:pr-4">
-                  {!isMobile && (
+               
                     <SortMenu
                       sortBy={sortBy}
                       order={order}
@@ -111,7 +110,7 @@ const PlSongs = forwardRef<HTMLTableRowElement, PlSongsProps>(
                         setOrder(o);
                       }}
                     />
-                  )}
+                
                 </th>
               </tr>
             </thead>
@@ -180,17 +179,12 @@ const PlSongs = forwardRef<HTMLTableRowElement, PlSongsProps>(
                       </div>
                     </td>
 
-                    {/* Status */}
+                    {/* plays */}
                     {Album && (
-                      <td className="hidden md:table-cell">
+                      <td className="hidden text-white sm:table-cell">
                         <h6
-                          className={
-                            ts.song.status === 'PUBLISHED'
-                              ? 'text-green-500'
-                              : 'text-red-600'
-                          }
-                        >
-                          {ts.song.status}
+                          className=" font-bold pl-2 text-right  md:text-left text-white/60 ">
+                          {ts.song.plays}
                         </h6>
                       </td>
                     )}
