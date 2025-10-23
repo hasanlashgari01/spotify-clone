@@ -31,7 +31,7 @@ const ConditionalMusicPlayer = () => {
 
 
     return (
-      <ReactQueryProvider>
+      <ReactQueryProvider>+
         <BrowserRouter>
           <MusicPlayerProvider>
             <div className="flex h-[100vh] w-[100vw] flex-row overflow-hidden">

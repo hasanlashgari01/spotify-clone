@@ -13,10 +13,8 @@ type SingleProps = {
 
 const SinglePlaylist = ({
   playlistName,
-  playlistSongs,
-  cover,
-  fullimize,
-  index,
+                          cover,
+                          index,
   hoverIndex,
   setHoverIndex,
 }: SingleProps) => {

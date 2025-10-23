@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { TbMusicHeart } from 'react-icons/tb';
 import { IoMdShare, IoMdCopy, IoMdTrash } from 'react-icons/io';

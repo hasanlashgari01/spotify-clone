@@ -55,6 +55,7 @@ export const playlistService = {
       console.error(error);
     }
   },
+
   async Deletemusic(playlistId: string, songId: string) {
     try {
       const { data } = await httpService.delete<DeleteResponse>(
@@ -75,6 +76,19 @@ export const playlistService = {
       return data;
     } catch (error) {
       console.error(error);
+    }
+  },
+  async deletePlaylist(playlistId: string) {
+    try {
+      const { data } = await httpService.delete<DeleteResponse>(
+        `/playlists/${playlistId}`
+      );
+      if (data.statusCode) data.stat = 'error';
+      if (!data.statusCode) data.stat = 'success';
+      return data;
+    } catch (error) {
+      console.error(error);
+      return { message: 'Failed to delete playlist', stat: 'error' };
     }
   },
   async Search(playlistId : string , q : string) {

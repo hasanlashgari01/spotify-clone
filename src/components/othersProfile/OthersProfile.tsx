@@ -9,6 +9,7 @@ import {
   getOthersDetails,
 } from '../../services/userDetailsService';
 import { useParams } from 'react-router-dom';
+import TripleDotMenu from './modal/TripleDotMenu.tsx';
 
 interface Count {
   followings: number;
@@ -21,6 +22,7 @@ const OthersProfile = () => {
   const [count, setCount] = useState<Count>({ followers: 0, followings: 0 });
   const [followersOpen, setFollowersOpen] = useState(false);
   const [followingsOpen, setFollowingsOpen] = useState(false);
+  const [menuOpen , setMenuOpen] = useState(false);
 
   const fetchUserData = useCallback(async () => {
     try {
@@ -55,6 +57,7 @@ const OthersProfile = () => {
       }
     };
   }, [previewImage]);
+
 
   return (
     <div className="relative z-1000 flex h-[220px] flex-col items-start justify-end overflow-hidden rounded-b border-b-1 border-gray-300 bg-cover bg-center sm:h-[300px] md:h-[340px] lg:h-[390px]">
