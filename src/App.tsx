@@ -35,10 +35,10 @@ function App() {
     <ReactQueryProvider>
       <BrowserRouter>
         <MusicPlayerProvider>
-          <div className="flex h-[100vh] w-[100vw] flex-row overflow-hidden">
-            <MusicSB />
+       
+            
 
-            <div className="flex-1 overflow-auto bg-[#0c1218] text-white">
+            
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/register" element={<RegisterPage />} />
@@ -68,8 +68,8 @@ function App() {
                 />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </div>
-          </div>
+            
+         
 
           <Toaster
             position="top-right"

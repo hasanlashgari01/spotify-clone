@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { searchService, SearchPlaylist } from '../../services/searchService';
+import { Link } from 'react-router-dom';
 
 type AlbumProps = {
   query: string;
@@ -24,13 +25,14 @@ const Album = ({ query }: AlbumProps) => {
         setLoading(false);
       }
     };
+
     fetchAlbums();
   }, [query]);
 
   if (loading)
     return (
       <section className="w-full p-8 text-white">
-        <h2 className="mb-4 px-6 text-2xl font-bold">Albums</h2>
+        <h2 className="mb-4 px-6 text-2xl font-bold">Playlists</h2>
         <p className="px-6 text-gray-400">Loading...</p>
       </section>
     );
@@ -38,14 +40,14 @@ const Album = ({ query }: AlbumProps) => {
   if (!albums.length)
     return (
       <section className="w-full p-8 text-white">
-        <h2 className="mb-4 px-6 text-2xl font-bold">Albums</h2>
-        <p className="px-6 text-gray-500">No albums found.</p>
+        <h2 className="mb-4 px-6 text-2xl font-bold">Playlists</h2>
+        <p className="px-6 text-gray-500">No Playlists found.</p>
       </section>
     );
 
   return (
     <section className="w-full p-8 text-white">
-      <h2 className="mb-4 px-6 text-2xl font-bold">Albums</h2>
+      <h2 className="mb-4 px-6 text-2xl font-bold">Playlists</h2>
 
       <Swiper
         spaceBetween={20}
@@ -59,9 +61,10 @@ const Album = ({ query }: AlbumProps) => {
       >
         {albums.map((album) => (
           <SwiperSlide key={album.id} className="!w-auto">
+            <Link to={`/playlist/${album.slug}`}>
             <div className="group relative h-56 w-48 cursor-pointer rounded-lg bg-black/40 px-8 py-4 transition-all duration-300 hover:bg-gray-700 hover:shadow-xl">
               <img
-                src={album.cover}
+                src={album.cover || '/default.webp'}
                 alt={album.title}
                 className="mx-auto h-36 w-36 rounded-md object-cover"
               />
@@ -72,6 +75,7 @@ const Album = ({ query }: AlbumProps) => {
                 {album.owner?.fullName || 'Album'}
               </h4>
             </div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>

@@ -8,7 +8,6 @@ import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 import {
   getPlaylistDetails,
   Playlistinfo,
-
 } from '../../services/playlistDetailsService';
 import PlaylistStatusControl from './PlaylistStatusControl';
 import {
@@ -189,7 +188,7 @@ const PlaylistDetails = ({
                 />
                 <span>{playlist.owner.username}</span>
                 <span>•</span>
-                <span>{playlist.songs.length} songs</span>
+                <span>{playlist.pagination.totalCount} songs</span>
                 
               </div>
               <div className="mt-2 flex items-center justify-center gap-2 text-sm opacity-90">
@@ -353,7 +352,7 @@ const PlaylistDetails = ({
             <span>{playlist.owner.username}</span>
           </span>
           <span className="flex items-center gap-1 text-[#ffffff86]">
-            {playlist.songs.length} songs,
+            {playlist.pagination.totalCount} songs,
           </span>
           <span className="flex items-center gap-1 text-[#ffffff86]">
             {hours > 0 && `${hours} hr `}

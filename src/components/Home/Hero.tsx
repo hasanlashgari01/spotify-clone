@@ -1,16 +1,16 @@
-import CenterArtist from '../../../public/home/hero4.png'; // تصویر وسط
+import CenterArtist from '../../../public/home/hero4.webp'; // تصویر وسط
 
 // شش آرتیست دور گرامافون
-import Artist1 from '../../../public/home/hero1.png'; // بالا-چپ
-import Artist2 from '../../../public/home/hero2.png'; // میانه-چپ
-import Artist4 from '../../../public/home/hero3.png'; // بالا-راست
-import Artist5 from '../../../public/home/hero5.png'; // میانه-راست
-import Artist6 from '../../../public/home/hero6.png'; // پایین-راست
-import Artist3 from '../../../public/home/hero7.png'; // پایین-چپ
+import Artist1 from '../../../public/home/hero1.webp'; // بالا-چپ
+import Artist2 from '../../../public/home/hero2.webp'; // میانه-چپ
+import Artist4 from '../../../public/home/hero3.webp'; // بالا-راست
+import Artist5 from '../../../public/home/hero5.webp'; // میانه-راست
+import Artist6 from '../../../public/home/hero6.webp'; // پایین-راست
+import Artist3 from '../../../public/home/hero7.webp'; // پایین-چپ
 
 // بک‌گراندها
-import HeroBgMobile from '../../../public/home/hero-bg-mobile.png';
-import HeroBgDesktop from '../../../public/home/hero-bg.png';
+import HeroBgMobile from '../../../public/home/hero-bg-mobile.webp';
+import HeroBgDesktop from '../../../public/home/hero-bg.webp';
 
 // استایل پایه‌ی آواتارها
 const baseAvatar =

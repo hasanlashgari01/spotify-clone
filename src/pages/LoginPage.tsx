@@ -45,7 +45,7 @@ const LoginPage = () => {
   return (
     <section className="relative flex min-h-svh w-full items-center justify-evenly bg-[#101720] p-2 sm:p-3">
       {/* Backgrounds */}
-      <div className="pointer-events-none absolute inset-0 bg-[url('/login/login-image.png')] bg-cover bg-center opacity-25 sm:opacity-30 lg:hidden" />
+      <div className="pointer-events-none absolute inset-0 bg-[url('/login/login-image.webp')] bg-cover bg-center opacity-25 sm:opacity-30 lg:hidden" />
 
       {/* Form Card */}
       <div className="relative z-10 w-full max-w-[420px] rounded-2xl bg-black/50 p-3 sm:p-4 backdrop-blur-md shadow-2xl shadow-black/40 lg:bg-[#282e36] lg:backdrop-blur-0">
@@ -66,7 +66,7 @@ const LoginPage = () => {
           {/* Logo */}
           <div className="mx-auto flex flex-col items-center gap-1.5">
             <img
-              src="/login/login-logo.png"
+              src="/login/login-logo.webp"
               alt="Login Logo"
               className="h-8 w-auto sm:h-10"
             />
@@ -157,7 +157,7 @@ const LoginPage = () => {
       {/* Desktop Image */}
       <div className="hidden lg:block">
         <img
-          src="/login/login-image.png"
+          src="/login/login-image.webp"
           alt="Login Illustration"
           className="h-[540px] w-[560px] object-contain"
         />

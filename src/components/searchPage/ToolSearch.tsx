@@ -27,11 +27,8 @@ const ToolSearch = () => {
   const categories = [
     { name: 'All', icon: <FaList size={18} /> },
     { name: 'Songs', icon: <FaMusic size={18} /> },
-    { name: 'Profiles', icon: <FaUser size={18} /> },
     { name: 'Artists', icon: <FaUser size={18} /> },
-    { name: 'Albums', icon: <FaCompactDisc size={18} /> },
     { name: 'Playlists', icon: <FaList size={18} /> },
-    { name: 'Podcasts', icon: <FaPodcast size={18} /> },
   ];
 
   return (

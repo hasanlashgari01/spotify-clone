@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { searchService, SearchArtist } from '../../services/searchService';
+import { Link } from 'react-router-dom';
 
 type ArtistProps = {
   query: string;
@@ -59,9 +60,10 @@ const Artist = ({ query }: ArtistProps) => {
       >
         {artists.map((artist, i) => (
           <SwiperSlide key={i} className="!w-auto">
+            <Link to={`/profile/${artist.username}`}>
             <div className="group relative h-60 w-48 transform cursor-pointer rounded-xl bg-black/40 p-4 shadow-lg transition-all duration-300 hover:bg-gray-700">
               <img
-                src={artist.avatar}
+                src={artist.avatar|| "/default-avatar.webp"}
                 alt={artist.fullName}
                 className="mx-auto mb-4 h-36 w-36 rounded-full object-cover"
               />
@@ -70,6 +72,7 @@ const Artist = ({ query }: ArtistProps) => {
               </h3>
               <p className="text-center text-xs text-gray-400">Artist</p>
             </div>
+            </Link>
           </SwiperSlide>
         ))}
       </Swiper>
