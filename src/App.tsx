@@ -21,7 +21,7 @@ function App() {
       <BrowserRouter>
         <MusicPlayerProvider>
           <div className="flex flex-row w-[100vw] h-[100vh] overflow-hidden">
-            <MusicSB setFullimize={setFullimize} />
+            <MusicSB />
 
             <div className="flex-1 overflow-auto bg-[#0c1218] text-white">
               <Routes>
