@@ -12,9 +12,11 @@ import Profile from './pages/Profile';
 import ReactQueryProvider from './providers/react-query-provider';
 import RegisterPage from './pages/RegisterPage';
 import { Toaster } from 'react-hot-toast';
+import ArtistPanel from './pages/Artist-panel.tsx';
 import UsersProfile from './pages/UsersProfile';
 import SearchPage from './pages/SearchPage';
 import { MusicSB } from './components/music-sidebar/MusicSb.tsx';
+
 const ConditionalMusicPlayer = () => {
   const location = useLocation();
   const shouldHidePlayer =
@@ -54,6 +56,7 @@ const ConditionalMusicPlayer = () => {
                     path="/profile/:username"
                     element={<UsersProfile />}
                   ></Route>
+                  <Route path="/panel/" element={<ArtistPanel/>}/>
                   <Route
                     path="/profile"
                     element={
