@@ -74,11 +74,11 @@ const Info = ({ setLoading , setBio , setPicture }: InfoProps) => {
     setIsFollowed(followedState);
     setBio(userData.bio);
     setPicture(userData.avatar);
-  }, [userData, followings]);
+  }, [userData, followings, setBio, setPicture]);
   useEffect(() => {
     // triggers when user data or fetching state changes
     setLoading(isUserLoading);
-  }, [isUserLoading]);
+  }, [isUserLoading, setLoading]);
   // --- Mutation: Follow / Unfollow با optimistic update ---
   const followMutation = useMutation({
     mutationFn: async () => {
