@@ -30,7 +30,7 @@ export const SingleArtMusic = ({artist , title} : Props) => {
   };
   return (
     <div className="hover:bg-gray-800 p-2 cursor-pointer  transition-all rounded-2xl flex w-full">
-      <div className="flex items-center justify-start gap-3 w-[50%]">
+      <div className="flex items-center justify-start gap-3 w-[80%]">
         <div >
           <img
             src={DefaultAvatar}
@@ -43,7 +43,7 @@ export const SingleArtMusic = ({artist , title} : Props) => {
           <h4 className="text-gray-500 text-sm">{artist}</h4>
         </div>
       </div>
-      <div className="flex items-center justify-end gap-3 w-[50%]">
+      <div className="flex items-center justify-end gap-3 w-[20%]">
         <button
           onClick={handleHeartClick}
           disabled={isLiking}

@@ -79,3 +79,30 @@ body {
     #101721 100%
   );
 }
+/* === 💠 Luxury Blue Text Shine Effect === */
+.shineIt {
+    font-weight: bold;
+    background: linear-gradient(
+            to right,
+            #3b82f6 0%,
+            #93c5fd 10%,
+            #3b82f6 20%
+    );
+    background-size: 200% auto;
+    color: transparent;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: text-shine 11s linear infinite;
+}
+
+/* ⚡ Shine movement */
+@keyframes text-shine {
+    0% {
+        background-position: -100% 0;
+    }
+
+    100% {
+        background-position: 100% 0;
+    }
+}
+
