@@ -22,7 +22,7 @@
 }
 
 html {
-  font-family: var(--font-roboto), var(--font-vazir);
+    font-family: var(--font-roboto), var(--font-vazir), serif;
 
 }
 

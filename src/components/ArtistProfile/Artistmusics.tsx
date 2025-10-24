@@ -24,7 +24,7 @@ export const ArtistMusics = ({ loading }: Props) => {
       </h2>
 
       {/* background ثابت */}
-      <div className="rounded-2xl bg-gradient-to-br from-[#0a1a3a]/70 to-[#001229]/80 p-6 shadow-inner shadow-[0_0_20px_rgba(0,40,255,0.2)] backdrop-blur-md max-h-[500px] overflow-y-auto scrollbar-hide hover:scrollbar-thumb-blue-500 transition-all">
+      <div className="rounded-2xl bg-gradient-to-br from-[#0a1a3a]/70 to-[#001229]/80 p-6 shadow-[0_0_20px_rgba(0,40,255,0.2)] backdrop-blur-md max-h-[500px] overflow-y-auto scrollbar-hide hover:scrollbar-thumb-blue-500 transition-all">
         {musics.map((music, index) => (
           <div
             key={index}
