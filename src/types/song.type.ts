@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from "react";
+
 import {
   PlaylistSong,
   SongSortBy,
@@ -68,14 +69,10 @@ export interface Song {
 export type GenreDetailsWrapperProps = {
   genreDetails: GenreInfo | null;
   songs: any[];
-  hours: number;
-  minutes: number;
-  seconds: number;
   showSearch: boolean;
   setShowSearch: Dispatch<SetStateAction<boolean>>;
   setSearch: Dispatch<SetStateAction<string>>;
   search: string;
-  totalSongsLength: any;
 };
 export interface UseGenreDetailsParams {
   titleLowered: string | undefined;

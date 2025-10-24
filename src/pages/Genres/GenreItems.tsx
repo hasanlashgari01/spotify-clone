@@ -1,13 +1,13 @@
-import ErrorMessage from '../../components/error/ErrorMessage';
-import GenreDetailsWrapper from './GenreDetailsWrapper';
-import Loading from '../../components/MyPlayLists/loding';
-import PlSongs from '../../components/playlistpage/PlSongs';
-import { useMemo, useState } from 'react';
-import { useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { useGenreDetails } from '../../hooks/useFechSongs';
-import { SongSortBy, SortOrder } from '../../services/playlistDetailsService';
-import { Song } from '../../types/song.type';
+import ErrorMessage from "../../components/error/ErrorMessage";
+import GenreDetailsWrapper from "./GenreDetailsWrapper";
+import Loading from "../../components/MyPlayLists/loding";
+import PlSongs from "../../components/playlistpage/PlSongs";
+import { useMemo, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { useGenreDetails } from "../../hooks/useFechSongs";
+import { SongSortBy, SortOrder } from "../../services/playlistDetailsService";
+import { Song } from "../../types/song.type";
 
 const GenreItems = () => {
   const { title = '' } = useParams<{ title: string }>();
@@ -53,10 +53,7 @@ const GenreItems = () => {
       observer.disconnect();
     };
   }, [hasNextPage, isFetchingNextPage, pages]);
-  const totalSongsLength = useMemo(
-    () => pages.reduce((acc, page) => acc + page.songs.length, 0),
-    [pages]
-  );
+ 
   const playlistSongs = useMemo(
     () =>
       songs.map((song: Song) => ({
@@ -71,10 +68,6 @@ const GenreItems = () => {
     [songs]
   );
 
-  const totalSeconds = songs.reduce((acc: any, s: any) => acc + s.duration, 0);
-  const hours = Math.floor(totalSeconds / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
 
   const deleteMusicById = () => {};
 
@@ -90,14 +83,10 @@ const GenreItems = () => {
           <GenreDetailsWrapper
             genreDetails={genreDetails}
             songs={songs}
-            hours={hours}
-            minutes={minutes}
-            seconds={seconds}
             showSearch={showSearch}
             setShowSearch={setShowSearch}
             setSearch={setSearch}
             search={search}
-            totalSongsLength={totalSongsLength}
           />
           <PlSongs
             songs={playlistSongs}
