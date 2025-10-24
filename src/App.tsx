@@ -19,6 +19,7 @@ import SearchPage from './pages/SearchPage';
 import NotFound from './pages/NotFound';
 
 import ArtistsProfile from './pages/ArtistsProfile.tsx';
+import { ScrollToTop } from './components/scrolltoTop.tsx';
 
 const ConditionalMusicPlayer = () => {
   const location = useLocation();
@@ -33,6 +34,7 @@ function App() {
   return (
     <ReactQueryProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <MusicPlayerProvider>
        
             
