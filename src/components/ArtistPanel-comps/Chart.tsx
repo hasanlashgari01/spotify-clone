@@ -1,4 +1,3 @@
-/* ---------- Audience Growth Chart (Stable) ---------- */
 import {
   LineChart,
   Line,
@@ -8,25 +7,34 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
-import { useMemo } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
-// داده‌ها رو بیرون از render نگه نداریم، ولی از useMemo استفاده می‌کنیم تا React فکر نکنه هر دفعه جدیده
 export const AudienceChart = () => {
-  const audienceData = useMemo(
-    () => [
-      { month: 'Apr', followers: 10200 },
-      { month: 'May', followers: 12500 },
-      { month: 'Jun', followers: 14900 },
-      { month: 'Jul', followers: 16200 },
-      { month: 'Aug', followers: 18000 },
-      { month: 'Sep', followers: 19600 },
-      { month: 'Oct', followers: 21100 },
-    ],
-    []
-  );
+  const [animate, setAnimate] = useState(true);
+  const mounted = useRef(false);
+
+  const audienceData = [
+    { month: 'Apr', followers: 10200 },
+    { month: 'May', followers: 12500 },
+    { month: 'Jun', followers: 14900 },
+    { month: 'Jul', followers: 16200 },
+    { month: 'Aug', followers: 18000 },
+    { month: 'Sep', followers: 19600 },
+    { month: 'Oct', followers: 21100 },
+  ];
+
+  useEffect(() => {
+    // فقط بار اول انیمیت کن
+    if (!mounted.current) {
+      mounted.current = true;
+      setAnimate(true);
+      const timeout = setTimeout(() => setAnimate(false), 1200); // بعد از انیمیشن اولیه خاموشش کن
+      return () => clearTimeout(timeout);
+    }
+  }, []);
 
   return (
-    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 mb-10 shadow-xl w-full h-[380px]">
+    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 mb-10 shadow-xl w-full h-[380px] overflow-hidden">
       <h3 className="text-xl font-semibold mb-4 text-sky-300">
         Audience Growth
       </h3>
@@ -93,10 +101,10 @@ export const AudienceChart = () => {
               stroke: '#1e3a8a',
               strokeWidth: 3,
             }}
-            isAnimationActive={true}
+            isAnimationActive={animate}
             animationBegin={0}
-            animationDuration={1200}
-            animationEasing="ease-in-out"
+            animationDuration={1000}
+            animationEasing="ease-out"
           />
         </LineChart>
       </ResponsiveContainer>
