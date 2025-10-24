@@ -21,54 +21,48 @@ import NotFound from './pages/NotFound';
 import ArtistsProfile from './pages/ArtistsProfile.tsx';
 
 const ConditionalMusicPlayer = () => {
-  const location = useLocation();
-  const shouldHidePlayer =
-    location.pathname === '/login' || location.pathname === '/register';
+  const hiddenPaths = ['/login', '/register', '/panel'];
+  const shouldHidePlayer = hiddenPaths.some((path) =>
+    location.pathname.startsWith(path)
+  );
 
   return !shouldHidePlayer ? <MusicPlayers /> : null;
 };
 
 function App() {
-
   return (
     <ReactQueryProvider>
       <BrowserRouter>
         <MusicPlayerProvider>
-       
-            
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/playlist/:slug" element={<PlaylistPage />} />
+            <Route path="/profile/:username" element={<UsersProfile />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/genre" element={<Genres />} />
+            <Route path="/genre/:title" element={<GenreItems />} />
+            <Route
+              path="/artist/:username"
+              element={
+                <ArtistProtector>
+                  <ArtistsProfile />
+                </ArtistProtector>
+              }
+            />
 
-            
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/register" element={<RegisterPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/playlist/:slug" element={<PlaylistPage />} />
-                <Route path="/profile/:username" element={<UsersProfile />} />
-                <Route path="/search" element={<SearchPage />} />
-                <Route path="/genre" element={<Genres />} />
-                <Route path="/genre/:title" element={<GenreItems />} />
-                <Route
-                  path="/artist/:username"
-                  element={
-                    <ArtistProtector>
-                      <ArtistsProfile />
-                    </ArtistProtector>
-                  }
-                />
-
-                <Route path="/panel/" element={<ArtistPanel />} />
-                <Route
-                  path="/profile"
-                  element={
-                    <ProtectedRoute>
-                      <Profile />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            
-         
+            <Route path="/panel/" element={<ArtistPanel />} />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
 
           <Toaster
             position="top-right"
@@ -81,8 +75,6 @@ function App() {
               },
             }}
           />
-
-
 
           <ConditionalMusicPlayer />
         </MusicPlayerProvider>

@@ -6,6 +6,7 @@ import Artist from '../components/searchPage/Artist';
 import ToolSearch from '../components/searchPage/ToolSearch';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import Filltersongslist from '../components/searchPage/Filltersongslist';
 
 const categories = ['All','Songs','Profiles','Artists','Albums','Playlists','Podcasts'] as const;
 type Category = typeof categories[number];
@@ -40,7 +41,7 @@ const SearchPage = () => {
         </style>
         <ToolSearch /* controlled via URL params */ />
 
-        {(activeCategory === 'All' || activeCategory === 'Songs') && (
+        {(activeCategory === 'All') && (
           <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2">
             <section>
               <TopResults query={query} />
@@ -49,6 +50,13 @@ const SearchPage = () => {
               <SongsList query={query} />
             </section>
           </div>
+        )}
+        {(activeCategory === 'Songs') && (
+
+            <section>
+              <Filltersongslist query={query} />
+            </section>
+
         )}
 
         {(activeCategory === 'All' || activeCategory === 'Artists') && (
