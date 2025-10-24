@@ -1,113 +1,118 @@
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from 'recharts';
-import { useEffect, useState, useRef } from 'react';
+/* ---------- Modern Audience Growth Chart (ECharts — Liquid Neon Glass Blue Edition) ---------- */
+import * as echarts from 'echarts';
+import ReactECharts from 'echarts-for-react';
+import { useMemo } from 'react';
 
 export const AudienceChart = () => {
-  const [animate, setAnimate] = useState(true);
-  const mounted = useRef(false);
-
-  const audienceData = [
-    { month: 'Apr', followers: 10200 },
-    { month: 'May', followers: 12500 },
-    { month: 'Jun', followers: 14900 },
-    { month: 'Jul', followers: 16200 },
-    { month: 'Aug', followers: 18000 },
-    { month: 'Sep', followers: 19600 },
-    { month: 'Oct', followers: 21100 },
-  ];
-
-  useEffect(() => {
-    // فقط بار اول انیمیت کن
-    if (!mounted.current) {
-      mounted.current = true;
-      setAnimate(true);
-      const timeout = setTimeout(() => setAnimate(false), 1200); // بعد از انیمیشن اولیه خاموشش کن
-      return () => clearTimeout(timeout);
-    }
-  }, []);
+  const option = useMemo(() => ({
+    backgroundColor: 'transparent',
+    grid: { top: 20, left: 40, right: 40, bottom: 20 },
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: 'rgba(8,15,35,0.9)',
+      borderColor: 'rgba(56,189,248,0.5)',
+      borderWidth: 1.2,
+      textStyle: { color: '#e0f2fe', fontSize: 13 },
+      shadowBlur: 20,
+      shadowColor: 'rgba(56,189,248,0.4)',
+      axisPointer: {
+        type: 'line',
+        lineStyle: { color: '#7dd3fc', width: 2 },
+      },
+    },
+    xAxis: {
+      type: 'category',
+      data: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+      axisLine: { lineStyle: { color: 'rgba(125,211,252,0.6)' } },
+      axisLabel: { color: '#bae6fd', fontWeight: 500, fontSize: 13 },
+      axisTick: { show: false },
+    },
+    yAxis: {
+      type: 'value',
+      axisLine: { lineStyle: { color: 'rgba(125,211,252,0.5)' } },
+      axisLabel: {
+        color: '#a5f3fc',
+        formatter: (value: number) => `${(value / 1000).toFixed(0)}k`,
+      },
+      splitLine: {
+        lineStyle: {
+          color: 'rgba(56,189,248,0.08)',
+          type: 'dashed',
+        },
+      },
+    },
+    series: [
+      {
+        name: 'Followers',
+        data: [10200, 12500, 14900, 16200, 18000, 19600, 21100],
+        type: 'line',
+        smooth: true,
+        symbol: 'circle',
+        symbolSize: 9,
+        showSymbol: true,
+        itemStyle: {
+          color: '#38bdf8',
+          borderColor: '#0f172a',
+          borderWidth: 2,
+          shadowBlur: 20,
+          shadowColor: '#38bdf8',
+        },
+        lineStyle: {
+          width: 2,
+          shadowBlur: 35,
+          shadowColor: 'rgba(56,189,248,0.6)',
+          color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+            { offset: 0, color: '#60a5fa' },
+            { offset: 0.5, color: '#3b82f6' },
+            { offset: 1, color: '#0ea5e9' },
+          ]),
+        },
+        areaStyle: {
+          opacity: 0.45,
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(56,189,248,0.45)' },
+            { offset: 0.7, color: 'rgba(56,189,248,0.08)' },
+            { offset: 1, color: 'rgba(15,23,42,0)' },
+          ]),
+        },
+        emphasis: {
+          scale: true,
+          itemStyle: {
+            color: '#7dd3fc',
+            borderColor: '#1e3a8a',
+            borderWidth: 4,
+            shadowBlur: 25,
+            shadowColor: '#38bdf8',
+          },
+        },
+        animationDuration: 1800,
+        animationEasing: 'cubicIn',
+      },
+    ],
+  }), []);
 
   return (
-    <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 mb-10 shadow-xl w-full h-[380px] overflow-hidden">
-      <h3 className="text-xl font-semibold mb-4 text-sky-300">
+    <div className="relative bg-gradient-to-br from-slate-950/80 via-blue-950/40 to-slate-900/80
+                    border border-cyan-400/30 backdrop-blur-3xl rounded-[2rem]
+                    shadow-[0_0_45px_rgba(56,189,248,0.25)] p-6 mb-10
+                    w-full h-[400px] overflow-hidden">
+
+      {/* Glass glow overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-sky-500/20 via-transparent to-transparent blur-3xl" />
+
+      {/* Title */}
+      <h3 className="text-2xl font-semibold mb-5 text-sky-300 drop-shadow-[0_0_10px_#38bdf8]">
         Audience Growth
       </h3>
 
-      <ResponsiveContainer width="100%" height="85%">
-        <LineChart
-          data={audienceData}
-          margin={{ top: 10, right: 20, bottom: 10, left: 0 }}
-        >
-          <defs>
-            <linearGradient id="colorFollowers" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#38bdf8" stopOpacity={0.8} />
-              <stop offset="100%" stopColor="#312e81" stopOpacity={0.05} />
-            </linearGradient>
-          </defs>
-
-          <CartesianGrid
-            strokeDasharray="3 3"
-            stroke="rgba(255,255,255,0.08)"
-            vertical={false}
-          />
-
-          <XAxis
-            dataKey="month"
-            stroke="#7dd3fc"
-            tickLine={false}
-            axisLine={true}
-            tickMargin={10}
-          />
-
-          <YAxis
-            stroke="#7dd3fc"
-            tickLine={false}
-            axisLine={true}
-            tickFormatter={(val) => `${val / 1000}k`}
-            tickMargin={10}
-          />
-
-          <Tooltip
-            contentStyle={{
-              background: 'rgba(15,23,42,0.8)',
-              border: '1px solid rgba(56,189,248,0.3)',
-              borderRadius: '10px',
-              backdropFilter: 'blur(8px)',
-            }}
-            labelStyle={{ color: '#7dd3fc' }}
-            itemStyle={{ color: '#bae6fd' }}
-          />
-
-          <Line
-            type="monotone"
-            dataKey="followers"
-            stroke="url(#colorFollowers)"
-            strokeWidth={3}
-            dot={{
-              r: 5,
-              fill: '#38bdf8',
-              strokeWidth: 2,
-              stroke: '#0f172a',
-            }}
-            activeDot={{
-              r: 7,
-              fill: '#38bdf8',
-              stroke: '#1e3a8a',
-              strokeWidth: 3,
-            }}
-            isAnimationActive={animate}
-            animationBegin={0}
-            animationDuration={1000}
-            animationEasing="ease-out"
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      {/* Chart */}
+      <ReactECharts
+        option={option}
+        style={{ width: '100%', height: '85%' }}
+        opts={{ renderer: 'canvas' }}
+        notMerge={true}
+        lazyUpdate={true}
+      />
     </div>
   );
 };

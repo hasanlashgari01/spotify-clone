@@ -24,7 +24,7 @@ import { ScrollToTop } from './components/scrolltoTop.tsx';
 const ConditionalMusicPlayer = () => {
   const location = useLocation();
   const shouldHidePlayer =
-    location.pathname === '/login' || location.pathname === '/register';
+    location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/panel';
 
   return !shouldHidePlayer ? <MusicPlayers /> : null;
 };
