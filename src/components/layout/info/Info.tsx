@@ -22,9 +22,11 @@ interface Count {
 }
 type InfoProps = {
   setLoading: Dispatch<SetStateAction<boolean>>;
+  setBio : Dispatch<SetStateAction<string>>;
+  setPicture : Dispatch<SetStateAction<string>>;
 };
 
-const Info = ({ setLoading }: InfoProps) => {
+const Info = ({ setLoading , setBio , setPicture }: InfoProps) => {
   const { username } = useParams<{ username: string }>();
   const { followings } = useFollow();
   const queryClient = useQueryClient();
@@ -70,6 +72,8 @@ const Info = ({ setLoading }: InfoProps) => {
       (f) => f.following.id === Number(userData.id)
     );
     setIsFollowed(followedState);
+    setBio(userData.bio);
+    setPicture(userData.avatar);
   }, [userData, followings]);
   useEffect(() => {
     // triggers when user data or fetching state changes

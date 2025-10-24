@@ -1,7 +1,7 @@
 import './styles/App.css';
 import GenreItems from './pages/Genres/GenreItems';
 import Genres from './pages/Genres/Genres';
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MusicPlayers from './components/MusicPlayer/MusicPlayer';
 import { ProtectedRoute } from './components/Protect Route/ProtectedRoute';
 import { MusicPlayerProvider } from './context/MusicPlayerContext';
