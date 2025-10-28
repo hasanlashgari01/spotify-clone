@@ -35,7 +35,7 @@ const MadeForYou: React.FC = () => {
 
 <button
   className="
-    trending-prev
+    made-prev
     absolute top-[150px] left-2 z-10
     hidden md:flex items-center justify-center
     h-[36px] w-[36px] sm:h-[48px] sm:w-[48px]
@@ -50,7 +50,7 @@ const MadeForYou: React.FC = () => {
 
 <button
   className="
-    trending-next
+    made-next
     absolute top-[150px] right-2 z-10
     hidden md:flex items-center justify-center
     h-[36px] w-[36px] sm:h-[48px] sm:w-[48px]
