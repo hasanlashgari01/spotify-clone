@@ -88,3 +88,61 @@ export interface GenreDetailsResponse {
   pageCount: number;
   totalCount: number;
 }
+
+// Artist Song Types
+export interface ArtistSong extends Song {
+  id: number;
+  title: string;
+  audioUrl: string;
+  cover: string;
+  duration: number;
+  status: string;
+  plays: number;
+  artist: {
+    id: number;
+    username: string;
+    fullName: string;
+  };
+  artistId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UploadSongPayload {
+  title: string;
+  audioFile: File;
+  coverFile: File;
+  duration?: number;
+}
+
+export interface UpdateSongPayload {
+  id: string;
+  updates: {
+    title?: string;
+    cover?: File;
+    audio?: File;
+  };
+}
+
+export interface SongResponse {
+  id: number;
+  title: string;
+  audioUrl: string;
+  cover: string;
+  duration: number;
+  status: string;
+  plays: number;
+  artist: {
+    id: number;
+    username: string;
+    fullName: string;
+  };
+  artistId: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DeleteResponse {
+  message: string;
+  statusCode: number;
+}

@@ -109,12 +109,12 @@ const Navbar = () => {
                     </button>
                   </>
                 ) : (
-                  <a
-                    href="/login"
+                  <Link
+                    to="/login"
                     className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
                   >
                     Login
-                  </a>
+                  </Link>
                 )}
               </div>
             )}
@@ -127,13 +127,13 @@ const Navbar = () => {
           <div className="flex items-center gap-6">
             <Link to={'/'}><img src={HomeLogo} alt="Logo" className="w-10" /></Link>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              <Link to={'/profile'}>Profile</Link>
+              <Link to={'profile'}>Profile</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
               <Link to={'/podcasts'}>Podcasts</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              <Link to={'/genre'}>Genres</Link>
+              <Link to={'/genre'}>genre</Link>
             </span>
           </div>
 
@@ -204,7 +204,12 @@ const Navbar = () => {
                       </button>
                     </>
                   ) : (
-                    <Link className="block px-4 py-2 text-sm text-white hover:bg-gray-700" to="/login">Login</Link>
+                    <Link
+                      to="/login"
+                      className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
+                    >
+                      Login
+                    </Link>
                   )}
                 </div>
               )}

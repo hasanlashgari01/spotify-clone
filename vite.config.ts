@@ -6,15 +6,29 @@ import tailwindcss from '@tailwindcss/vite';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  // 👇 Add this "server" block
-  server: {
-    proxy: {
-      // Requests to /api will be proxied
-      '/api': {
-        target: 'https://spotify-music.liara.run', // The real API server
-        changeOrigin: true, // Needed for virtual hosted sites
-        rewrite: (path) => path.replace(/^\/api/, ''), // Remove /api from the request path
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['framer-motion', 'swiper', 'lucide-react', 'react-icons'],
+          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'yup'],
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-charts': ['recharts'],
+          'vendor-utils': ['axios', 'flexsearch', 'fuse.js'],
+        },
       },
     },
+    // Optimize build output
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
+    // Increase chunk size warning limit
+    chunkSizeWarningLimit: 1000,
   },
 });
