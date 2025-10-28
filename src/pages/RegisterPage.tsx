@@ -1,6 +1,7 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 import FormInput from "../components/auth/FormInput";
 import PasswordInput from "../components/auth/PasswordInput";
@@ -13,6 +14,7 @@ const RegisterPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const { signup, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -32,7 +34,7 @@ const RegisterPage = () => {
       setSuccess("Register successful! Redirecting...");
       reset();
       setTimeout(() => {
-        window.location.href = "/login";
+        navigate("/login");
       }, 1500);
     } catch (err: unknown) {
       if (err instanceof Error) {

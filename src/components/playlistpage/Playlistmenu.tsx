@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { FiEdit } from 'react-icons/fi';
 import { IoMdCopy, IoMdShare, IoMdTrash } from 'react-icons/io';
@@ -26,6 +27,7 @@ const PlaylistMenu = ({
   onPlaylistUpdated,
 }: Props) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -36,7 +38,7 @@ const PlaylistMenu = ({
       onPlaylistUpdated();
     }
     // Redirect to profile page after successful deletion
-    window.location.href = '/profile';
+    navigate('/profile');
   };
   const menuItems = [
     {
