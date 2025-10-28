@@ -127,13 +127,13 @@ const Navbar = () => {
           <div className="flex items-center gap-6">
             <Link to={'/'}><img src={HomeLogo} alt="Logo" className="w-10" /></Link>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              <Link to={'profile'}>Profile</Link>
+              <Link to={'/profile'}>Profile</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
               <Link to={'/podcasts'}>Podcasts</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              <Link to={'/genre'}>genre</Link>
+              <Link to={'/genre'}>Genres</Link>
             </span>
           </div>
 
@@ -204,12 +204,7 @@ const Navbar = () => {
                       </button>
                     </>
                   ) : (
-                    <a
-                      href="/login"
-                      className="block px-4 py-2 text-sm text-white hover:bg-gray-700"
-                    >
-                      Login
-                    </a>
+                    <Link className="block px-4 py-2 text-sm text-white hover:bg-gray-700" to="/login">Login</Link>
                   )}
                 </div>
               )}
