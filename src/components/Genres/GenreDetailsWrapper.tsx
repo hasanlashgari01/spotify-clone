@@ -1,5 +1,5 @@
-import ErrorMessage from '../../components/error/ErrorMessage';
-import FloatingMusicIcons from '../../components/playlistpage/FloatingMusicIcons';
+import ErrorMessage from '../error/ErrorMessage';
+import FloatingMusicIcons from '../playlistpage/FloatingMusicIcons';
 import { Search, X } from 'lucide-react';
 import { FC } from 'react';
 import { IoMdShare } from 'react-icons/io';

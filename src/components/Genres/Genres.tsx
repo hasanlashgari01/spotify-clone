@@ -1,8 +1,8 @@
-import ErrorMessage from "../../components/error/ErrorMessage";
-import Loading from "../../components/loading/Loading";
-import { Link } from "react-router-dom";
-import { useGenres } from "../../hooks/useFechSongs";
-import { GenreItemsColors } from "../../services/ColorPalette";
+import ErrorMessage from '../error/ErrorMessage';
+import Loading from '../loading/Loading';
+import { Link } from 'react-router-dom';
+import { useGenres } from '../../hooks/useFechSongs';
+import { GenreItemsColors } from '../../services/ColorPalette';
 
 const Genres = () => {
   const { data: genres, isLoading, error } = useGenres();

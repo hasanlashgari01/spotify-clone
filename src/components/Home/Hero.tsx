@@ -79,10 +79,10 @@ const Hero = () => {
         className={`${baseAvatar} top-[75%] left-[78%] sm:top-[67%] sm:left-[66%] md:top-[67%] md:left-[67%] lg:top-[68%] lg:left-[68%] xl:top-[70%] xl:left-[68%]`}
       />
 
-      {/* متن پایین */}
-      <p className="absolute bottom-4 px-4 text-center text-xs text-white sm:text-sm md:text-base lg:bottom-6">
-        These artists are trending globally on Soundflow right now
-      </p>
+        {/* متن پایین
+        <p className="absolute bottom-4 px-4 text-center text-xs text-white sm:text-sm md:text-base lg:bottom-6">
+          These artists are trending globally on Soundflow right now
+        </p> */}
     </section>
   );
 };
