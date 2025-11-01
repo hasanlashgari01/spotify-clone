@@ -15,7 +15,7 @@ const TrendingSongs: React.FC = () => {
   if (error) return <Error error={error} />;
 
   return (
-    <div className="relative mx-[20px] h-[340px] bg-[#101720] sm:mx-[64px] sm:h-[373px]">
+    <div id='gohere' className="relative mx-[20px] h-[340px] bg-[#101720] sm:mx-[64px] sm:h-[373px]">
       <div className="mb-[20px] flex items-center justify-between px-[20px] pt-6 sm:mb-[40px] sm:pr-[77px] sm:pl-[85px]">
         <h2 className="text-lg font-bold text-white sm:text-2xl">
           Trending songs

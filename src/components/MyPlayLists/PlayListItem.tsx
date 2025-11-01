@@ -9,7 +9,7 @@ const PlayListItem: React.FC<Playlist> = ({ cover, title, slug }) => {
       whileHover={{ scale: 1.02 }}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
-      <Link to={`/playlist/${slug}`}>
+      <Link to={`/playlists/${slug}/details`}>
         <div className="relative h-[120px] w-[120px] rounded-xl p-[2px] sm:h-[150px] sm:w-[150px] md:h-[210px] md:w-[210px]">
           <div className="h-full w-full overflow-hidden rounded-xl">
             <img

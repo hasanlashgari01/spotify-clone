@@ -48,24 +48,14 @@ const PlaylistPage = () => {
 
       if (!query) {
         if (playlistSongsRef.current) {
-          
           await playlistSongsRef.current();
-         
         }
         return;
       }
 
       try {
         const res = await playlistService.Search(playlistId.toString(), query);
-
-        let normalized: PlaylistSong[] = [];
-
-        if (!res) normalized = [];
-        else if (Array.isArray(res)) normalized = res;
-        else if (Array.isArray(res.song)) normalized = res.song;
-        else if (Array.isArray((res as any).data)) normalized = (res as any).data;
-
-        setSongs(normalized);
+        setSongs(Array.isArray(res?.songs) ? res!.songs : []);
       } catch (err) {
         console.error('Search error:', err);
       }
@@ -88,12 +78,11 @@ const PlaylistPage = () => {
 
       {ready && (
         <PlaylistSongs
-  playlistSongsRef={playlistSongsRef}
-  isOwner={isOwner}
-  search={searchText}
-  songs={songs}
-/>
-
+          playlistSongsRef={playlistSongsRef}
+          isOwner={isOwner}
+          search={searchText}
+          songs={songs}
+        />
       )}
     </div>
   );

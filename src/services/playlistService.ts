@@ -1,11 +1,12 @@
+// services/playlistService.ts
 import { httpService } from '../config/axios';
-import { PlaylistSong } from './playlistDetailsService';
+import { PlaylistSong, SongSortBy, SortOrder } from './playlistDetailsService';
 
 export interface Playlist {
   id: number;
   title: string;
   slug: string;
-  description: string;
+  description: string | null;
   cover: string;
   status: 'public' | 'private';
   ownerId: number;
@@ -24,27 +25,35 @@ export interface PlaylistResponse {
   playlists: Playlist[];
   pagination: Pagination;
 }
+
 export interface AddResponse {
   message: string;
   error?: string;
   statusCode?: number;
 }
+
 export interface DeleteResponse {
   message: string;
   error?: string;
   statusCode?: number;
-  stat: string;
+  stat: 'success' | 'error';
+}
+
+export interface PlaylistSongsResponse {
+  songs: PlaylistSong[];
+  pagination: Pagination;
 }
 
 export const playlistService = {
+  // لیست پلی‌لیست‌های من
   async getMyPlaylists(page = 1, limit = 10): Promise<PlaylistResponse> {
     const { data } = await httpService.get<PlaylistResponse>('/playlists/my', {
       params: { page, limit },
     });
-    
     return data;
-    
   },
+
+  // افزودن آهنگ به پلی‌لیست
   async Addmusic(playlistId: string, songId: string) {
     try {
       const { data } = await httpService.patch<AddResponse>(
@@ -56,18 +65,21 @@ export const playlistService = {
     }
   },
 
+  // حذف آهنگ از پلی‌لیست
   async Deletemusic(playlistId: string, songId: string) {
     try {
       const { data } = await httpService.delete<DeleteResponse>(
         `/playlists/${playlistId}/song/${songId}`
       );
-      if (data.statusCode) data.stat = 'error';
-      if (!data.statusCode) data.stat = 'success';
-      return data;
+      // نرمال‌سازی stat
+      const stat: DeleteResponse['stat'] = data.statusCode ? 'error' : 'success';
+      return { ...data, stat };
     } catch (error) {
       console.error(error);
     }
   },
+
+  // لایک/آنلایک پلی‌لیست
   async LikeorUnlike(playlistId: string) {
     try {
       const { data } = await httpService.get<AddResponse>(
@@ -78,30 +90,58 @@ export const playlistService = {
       console.error(error);
     }
   },
+
+  // حذف پلی‌لیست
   async deletePlaylist(playlistId: string) {
     try {
       const { data } = await httpService.delete<DeleteResponse>(
         `/playlists/${playlistId}`
       );
-      if (data.statusCode) data.stat = 'error';
-      if (!data.statusCode) data.stat = 'success';
-      return data;
+      const stat: DeleteResponse['stat'] = data.statusCode ? 'error' : 'success';
+      return { ...data, stat };
     } catch (error) {
       console.error(error);
-      return { message: 'Failed to delete playlist', stat: 'error' };
+      return { message: 'Failed to delete playlist', stat: 'error' as const };
     }
   },
-  async Search(playlistId : string , q : string) {
-    if (!playlistId || !q ) return;
+
+  // لیست آهنگ‌های یک پلی‌لیست با صفحه‌بندی و سورت
+  async getPlaylistSongs(
+    slug: string,
+    opts: { page?: number; limit?: number; sortBy?: SongSortBy; order?: SortOrder } = {}
+  ): Promise<PlaylistSongsResponse> {
+    const { data } = await httpService.get<PlaylistSongsResponse>(`/playlists/${slug}`, {
+      params: {
+        page: opts.page ?? 1,
+        limit: opts.limit ?? 10,
+        sortBy: opts.sortBy,
+        order: opts.order,
+      },
+    });
+    // گارد امن
+    return {
+      songs: Array.isArray((data as any)?.songs) ? data.songs : [],
+      pagination: data?.pagination ?? { page: 1, limit: 0, pageCount: 0, totalCount: 0 },
+    };
+  },
+
+  // جستجو داخل یک پلی‌لیست
+  async Search(playlistId: string, q: string) {
+    if (!playlistId || !q) {
+      return { songs: [] as PlaylistSong[], pagination: { page: 1, limit: 0, pageCount: 0, totalCount: 0 } };
+    }
     try {
-      const { data } = await httpService.get<PlaylistSong>("playlists/search" , {params : {
-        playlistId : playlistId,
-        q : q
-      }})
-      return data;
+      const { data } = await httpService.get<{ songs: PlaylistSong[]; pagination?: Pagination }>(
+        '/playlists/search',
+        { params: { playlistId, q } }
+      );
+      return {
+        songs: Array.isArray(data?.songs) ? data.songs : [],
+        pagination: data?.pagination ?? { page: 1, limit: 0, pageCount: 0, totalCount: 0 },
+      };
     } catch (error) {
-        console.error(error)
+      console.error(error);
+      return { songs: [] as PlaylistSong[], pagination: { page: 1, limit: 0, pageCount: 0, totalCount: 0 } };
     }
   },
-  
 };

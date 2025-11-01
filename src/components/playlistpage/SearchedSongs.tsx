@@ -1,26 +1,29 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Song } from '../../types/song.type';
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
 import { useParams } from 'react-router-dom';
 import {
-  PlaylistSong,
-  getPlaylistDetails,
+  getPlaylistDetails, // فقط متادیتا می‌دهد
+  PlaylistSong,      // برای نوع‌دهی لیست پلی‌لیست (در این فایل فقط state تایپی)
 } from '../../services/playlistDetailsService';
 import { playlistService } from '../../services/playlistService';
 import LoadingCircle from '../loading/LoadingCircle';
 import { PlayIcon, PauseIcon } from 'lucide-react';
 import { useMediaQuery } from 'react-responsive';
+
 interface Props {
-  songs: Song[];
+  songs: Song[]; // نتایج سرچ که قرار است نمایش بدهی
   refFetch?: React.MutableRefObject<() => void>;
 }
 
 const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
   const { slug } = useParams<{ slug: string }>();
-  const { currentTrack, isPlaying, playSong, handlePlayPause } =
-    useMusicPlayer();
+  const { currentTrack, isPlaying, playSong, handlePlayPause } = useMusicPlayer();
 
+  // اگر بخواهی از نوع PlaylistSong استفاده کنی، نگه داشتنش اختیاریه
   const [, setPlaysongs] = useState<PlaylistSong[]>([]);
+
+  // این آرایه صرفاً Song است برای چک inPlaylist
   const [songsInPlaylist, setSongsInPlaylist] = useState<Song[]>([]);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [playlistId, setPlaylistId] = useState<number>();
@@ -38,10 +41,17 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
     if (!slug) return;
     const fetchData = async () => {
       try {
-        const data = await getPlaylistDetails(slug);
-        setPlaylistId(data.id);
-        setPlaysongs(data.songs);
-        setSongsInPlaylist(data.songs.map((ps) => ps.song));
+        // details فقط متادیتا را می‌دهد
+        const meta = await getPlaylistDetails(slug);
+        setPlaylistId(meta.id);
+
+        // برای چک inPlaylist باید آهنگ‌های پلی‌لیست را جدا بگیریم
+        // از سرویس جدید getPlaylistSongs استفاده کن؛ اگر نداری، داخل playlistService اضافه کن
+        const listResp = await playlistService.getPlaylistSongs(slug, { page: 1, limit: 50 });
+        const safePlaylistSongs: PlaylistSong[] = Array.isArray(listResp?.songs) ? listResp!.songs : [];
+
+        setPlaysongs(safePlaylistSongs);
+        setSongsInPlaylist(safePlaylistSongs.map((ps) => ps.song));
       } catch (err) {
         console.error(err);
       }
@@ -50,14 +60,15 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
   }, [slug]);
 
   const handleAddToPlaylist = async (song: Song) => {
+    if (!playlistId) return;
     setLoadingSongId(song.id);
     try {
-      await playlistService.Addmusic(`${playlistId}`, `${song.id}`);
-      setSongsInPlaylist((prev) =>
-        prev.some((s) => s.id === song.id) ? prev : [...prev, song]
-      );
+      await playlistService.Addmusic(String(playlistId), String(song.id));
 
-      if (refFetch && refFetch.current) refFetch.current();
+      // اگر از قبل وجود ندارد، اضافه‌اش کن
+      setSongsInPlaylist((prev) => (prev.some((s) => s.id === song.id) ? prev : [...prev, song]));
+
+      if (refFetch?.current) refFetch.current();
     } catch (err) {
       console.error(err);
     } finally {
@@ -69,7 +80,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
     <div className="flex w-full justify-start pt-3 pb-3">
       <table className="text-left">
         <tbody>
-          {songs.map((song, i) => {
+          {(songs ?? []).map((song, i) => {
             const isActive = currentTrack?.id === song.id;
             const inPlaylist = songsInPlaylist.some((s) => s.id === song.id);
 
@@ -82,9 +93,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
               >
                 <td className="relative w-5 text-center">
                   <span
-                    className={
-                      hoveredRow === i ? '-z-10 opacity-0' : 'z-10 opacity-100'
-                    }
+                    className={hoveredRow === i ? '-z-10 opacity-0' : 'z-10 opacity-100'}
                     style={{ color: 'white' }}
                   >
                     {i + 1}
@@ -92,9 +101,7 @@ const SearchcedSongs: React.FC<Props> = ({ songs, refFetch }) => {
                   <div
                     onClick={(e) => handlePlayClick(song, e)}
                     className={`playBTN absolute top-1/2 left-1/2 ml-1 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-green-600 p-1 text-white ${
-                      hoveredRow === i || isTablet
-                        ? 'z-10 opacity-100'
-                        : '-z-10 opacity-0'
+                      hoveredRow === i || isTablet ? 'z-10 opacity-100' : '-z-10 opacity-0'
                     }`}
                   >
                     {isActive && isPlaying ? <PauseIcon /> : <PlayIcon />}

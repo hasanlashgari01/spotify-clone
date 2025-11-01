@@ -1,13 +1,13 @@
-import ErrorMessage from "../../components/error/ErrorMessage";
-import GenreDetailsWrapper from "./GenreDetailsWrapper";
-import Loading from "../../components/MyPlayLists/loding";
-import PlSongs from "../../components/playlistpage/PlSongs";
-import { useMemo, useState } from "react";
-import { useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
-import { useGenreDetails } from "../../hooks/useFechSongs";
-import { SongSortBy, SortOrder } from "../../services/playlistDetailsService";
-import { Song } from "../../types/song.type";
+import ErrorMessage from '../error/ErrorMessage';
+import GenreDetailsWrapper from './GenreDetailsWrapper';
+import Loading from '../MyPlayLists/loding';
+import PlSongs from '../playlistpage/PlSongs';
+import { useMemo, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import { useGenreDetails } from '../../hooks/useFechSongs';
+import { SongSortBy, SortOrder } from '../../services/playlistDetailsService';
+import { Song } from '../../types/song.type';
 
 const GenreItems = () => {
   const { title = '' } = useParams<{ title: string }>();
@@ -53,7 +53,7 @@ const GenreItems = () => {
       observer.disconnect();
     };
   }, [hasNextPage, isFetchingNextPage, pages]);
- 
+
   const playlistSongs = useMemo(
     () =>
       songs.map((song: Song) => ({
@@ -67,7 +67,6 @@ const GenreItems = () => {
       })),
     [songs]
   );
-
 
   const deleteMusicById = () => {};
 
