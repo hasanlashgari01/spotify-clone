@@ -1,52 +1,81 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Music, TrendingUp, Users, UploadCloud } from 'lucide-react';
 import { AudienceChart } from './Chart.tsx';
-import { User} from '../../services/authService.ts'
+import { User } from '../../services/authService.ts';
+import { useQuery } from '@tanstack/react-query';
+import { Song } from '../../types/song.type.ts';
+import { songService } from '../../services/songService.ts';
+import { useFollow } from '../../context/UserFansContext.tsx';
 type Props = {
-  me : User | null
-}
-export const PanelHome = ({me} : Props) => {
+  me: User | null;
+};
+export const PanelHome = ({ me }: Props) => {
+  const {count} = useFollow();
+  const { data: songs = [], isLoading } = useQuery<Song[], Error>({
+    queryKey: ["mysongs"],
+    queryFn: async () => await songService.getMySongs()
+  });
+
+
+  const latests = useMemo(() => {
+    return songs.slice(0, 3);
+  }, [songs]);
+  const totalUniquePlays = useMemo(() => {
+    const unique = new Map<string, number>();
+
+    songs.forEach(song => {
+      if (!unique.has(song.title)) {
+        unique.set(song.title, song.plays);
+      }
+    });
+
+    // جمع کل plays یکتا
+    return Array.from(unique.values()).reduce((sum, val) => sum + val, 0);
+  }, [songs]);
   const [artistname, setArtistname] = useState<string>('Your name');
   useEffect(() => {
     setArtistname(me?.fullName ? me.fullName : '');
-  } , [me])
+  }, [me]);
+  if (isLoading) return <p className="text-sky-300">Loading Songs...</p>;
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-slate-950 via-sky-950 to-indigo-900 text-slate-100 p-10 font-[Poppins]">
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-950 via-sky-950 to-indigo-900 p-10 font-[Poppins] text-slate-100">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-center mb-10">
+      <div className="mb-10 flex flex-col items-center justify-between md:flex-row">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">
             Welcome back, <span className="text-sky-400">{artistname}</span>
           </h2>
-          <h4 className="text-slate-400">Quickly check your account overview</h4>
+          <h4 className="text-slate-400">
+            Quickly check your account overview
+          </h4>
         </div>
-        <div className="flex items-center gap-3 mt-5 md:mt-0">
-          <span className="text-sm bg-sky-400/10 border border-sky-500/30 text-sky-300 px-4 py-2 rounded-xl backdrop-blur-sm">
+        <div className="mt-5 flex items-center gap-3 md:mt-0">
+          <span className="rounded-xl border border-sky-500/30 bg-sky-400/10 px-4 py-2 text-sm text-sky-300 backdrop-blur-sm">
             ● Online
           </span>
-          <button className="flex items-center gap-2 text-sm bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2 rounded-xl font-semibold shadow-lg hover:opacity-90 transition">
-            <UploadCloud className="w-4 h-4" /> Upload
+          <button className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-2 text-sm font-semibold shadow-lg transition hover:opacity-90">
+            <UploadCloud className="h-4 w-4" /> Upload
           </button>
         </div>
       </div>
 
       {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-3">
         <StatCard
           title="Releases"
-          value="12"
+          value={`${songs.length}`}
           desc="Total tracks & artworks"
           icon={<Music className="text-sky-300" />}
         />
         <StatCard
-          title="Plays (7d)"
-          value="8,742"
+          title="Plays (Lifetime)"
+          value={`${totalUniquePlays}`}
           desc="Recent traction"
           icon={<TrendingUp className="text-sky-300" />}
         />
         <StatCard
           title="Followers"
-          value="14.6k"
+          value={`${count.followers}`}
           desc="Your growing fanbase"
           icon={<Users className="text-sky-300" />}
         />
@@ -54,19 +83,21 @@ export const PanelHome = ({me} : Props) => {
 
       <AudienceChart />
       {/* Latest Releases */}
-      <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6 mb-10 shadow-xl">
-        <h3 className="text-xl font-semibold mb-4 text-sky-300">
+      <div className="mb-10 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl backdrop-blur-md">
+        <h3 className="mb-4 text-xl font-semibold text-sky-300">
           Latest Releases
         </h3>
         <div className="space-y-4">
-          <ReleaseRow title="Midnight Sky" plays="2.1k" date="Oct 12, 2025" />
-          <ReleaseRow title="Deep Night" plays="1.8k" date="Sep 28, 2025" />
-          <ReleaseRow title="Echoes" plays="3.6k" date="Aug 01, 2025" />
+          {latests.map((item, i) => (
+            <div key={i} className="cursor-pointer">
+              <ReleaseRow title={item.title} plays={`${item.plays}`} date={item.createdAt} src={item.cover}></ReleaseRow>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Motivation Quote */}
-      <div className="text-center text-sky-300/70 italic text-sm mt-16">
+      <div className="mt-16 text-center text-sm text-sky-300/70 italic">
         “Art isn’t finished until someone feels it.” — Reza Pishro
       </div>
     </div>
@@ -75,49 +106,51 @@ export const PanelHome = ({me} : Props) => {
 
 /* ---------- Subcomponents ---------- */
 function StatCard({
-                    title,
-                    value,
-                    desc,
-                    icon,
-                  }: {
+  title,
+  value,
+  desc,
+  icon,
+}: {
   title: string;
   value: string;
   desc: string;
   icon: React.ReactNode;
 }) {
   return (
-    <div className="p-6 rounded-3xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 shadow-lg hover:shadow-sky-900/50 transition-all duration-300 hover:-translate-y-1">
-      <div className="flex items-center gap-3 mb-2">
-        <div className="p-2 rounded-xl bg-sky-500/20">{icon}</div>
-        <h3 className="text-sky-200 font-semibold">{title}</h3>
+    <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-sky-900/50">
+      <div className="mb-2 flex items-center gap-3">
+        <div className="rounded-xl bg-sky-500/20 p-2">{icon}</div>
+        <h3 className="font-semibold text-sky-200">{title}</h3>
       </div>
       <div className="text-3xl font-extrabold text-white">{value}</div>
-      <div className="text-slate-400 text-sm mt-1">{desc}</div>
+      <div className="mt-1 text-sm text-slate-400">{desc}</div>
     </div>
   );
 }
 
 function ReleaseRow({
-                      title,
-                      plays,
-                      date,
-                    }: {
+  src,
+  title,
+  plays,
+  date,
+}: {
+  src : string;
   title: string;
   plays: string;
   date: string;
 }) {
   return (
-    <div className="flex items-center justify-between bg-white/5 hover:bg-white/10 p-4 rounded-2xl transition-all duration-300">
+    <div className="flex items-center justify-between rounded-2xl bg-white/5 p-4 transition-all duration-300 hover:bg-white/10">
       <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-600 to-indigo-600 flex items-center justify-center font-semibold shadow-inner">
-          🎵
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-600 to-indigo-600 font-semibold shadow-inner">
+          <img src={src} alt="Music Picture" className="rounded-xl"/>
         </div>
         <div>
           <div className="font-semibold text-white">{title}</div>
-          <div className="text-xs text-slate-400">{date}</div>
+          <div className="text-sm text-slate-400">{date.split("T").shift()}</div>
         </div>
       </div>
-      <div className="text-sky-300 text-sm">{plays} plays</div>
+      <div className="text-sm text-sky-300">{plays} plays</div>
     </div>
   );
 }

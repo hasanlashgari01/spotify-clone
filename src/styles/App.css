@@ -30,7 +30,9 @@ html {
 body {
   @apply mb-28 bg-[#131a22];
 }
-
+body.no-mb{
+    @apply mb-0 bg-[#131a22];
+}
 .swiper-button-next,
 .swiper-button-prev {
   color: #1574f5 !important;
