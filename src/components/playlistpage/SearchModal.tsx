@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Song, AllSongs } from '../../types/song.type';
 import { songService } from '../../services/songService';
 import Fuse from 'fuse.js';
@@ -16,31 +16,27 @@ interface SearchModalProps {
   refFetch?: React.MutableRefObject<() => void>;
 }
 
-const SearchModal: React.FC<SearchModalProps> = ({
-  open,
-  //شسیشسیشسی
-  onClose,
-  refFetch,
-}) => {
+const SearchModal: React.FC<SearchModalProps> = ({ open, onClose, refFetch }) => {
   const [query, setQuery] = useState('');
   const [allResults, setAllResults] = useState<Song[]>([]);
   const [visibleResults, setVisibleResults] = useState<Song[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
-  const [cachedPages, setCachedPages] = useState<{ [page: number]: Song[] }>(
-    {}
-  );
+  const [cachedPages, setCachedPages] = useState<{ [page: number]: Song[] }>({});
   const [songsInPlaylist, setSongsInPlaylist] = useState<Song[]>([]);
   const [playlistId, setPlaylistId] = useState<number>();
   const [loadingSongId, setLoadingSongId] = useState<number | null>(null);
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
+
   const { slug } = useParams<{ slug: string }>();
-  const { currentTrack, isPlaying, playSong, handlePlayPause } =
-    useMusicPlayer();
+  const { currentTrack, isPlaying, playSong, handlePlayPause } = useMusicPlayer();
   const isTablet = useMediaQuery({ maxWidth: 1280 });
+
   const resultsPerPage = 8;
   const showMoreCount = 10;
+  const lastQueryRef = useRef('');
 
+  // ریست کامل هنگام باز شدن مودال
   useEffect(() => {
     if (!open) return;
     setQuery('');
@@ -52,15 +48,25 @@ const SearchModal: React.FC<SearchModalProps> = ({
     setPlaylistId(undefined);
     setLoadingSongId(null);
     setHoveredRow(null);
-    // Fetch playlist songs for add-to-playlist logic
-    if (slug) {
-      getPlaylistDetails(slug).then((data) => {
-        setPlaylistId(data.id);
-        setSongsInPlaylist(data.songs.map((ps) => ps.song));
-      });
-    }
+
+    // گرفتن متای پلی‌لیست و سپس آهنگ‌های داخل پلی‌لیست برای تشخیص inPlaylist
+    const boot = async () => {
+      try {
+        if (!slug) return;
+        const meta = await getPlaylistDetails(slug); // فقط متادیتا
+        setPlaylistId(meta.id);
+
+        const listResp = await playlistService.getPlaylistSongs(slug, { page: 1, limit: 100 });
+        const safeSongs = Array.isArray(listResp?.songs) ? listResp!.songs.map(ps => ps.song) : [];
+        setSongsInPlaylist(safeSongs);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    boot();
   }, [open, slug]);
 
+  // debounce برای سرچ
   useEffect(() => {
     if (!open) return;
     const handler = setTimeout(() => {
@@ -71,21 +77,27 @@ const SearchModal: React.FC<SearchModalProps> = ({
   }, [query]);
 
   const handleSearch = useCallback(async () => {
-    if (!query.trim()) {
+    const q = query.trim();
+    lastQueryRef.current = q;
+
+    if (!q) {
       setAllResults([]);
       setVisibleResults([]);
       setMessage(null);
       return;
     }
+
     setLoading(true);
     setAllResults([]);
     setVisibleResults([]);
     setMessage(null);
+
     let page = 1;
     const limit = 40;
     let lastPage = false;
     let foundSongs: Song[] = [];
     let allFetchedSongs: Song[] = [];
+
     try {
       while (!lastPage) {
         let songsPage: Song[] = [];
@@ -93,23 +105,31 @@ const SearchModal: React.FC<SearchModalProps> = ({
           songsPage = cachedPages[page];
         } else {
           const data: AllSongs = await songService.getAllSongs(page, limit);
-          songsPage = data.songs;
+          songsPage = Array.isArray(data?.songs) ? data.songs : [];
           setCachedPages((prev) => ({ ...prev, [page]: songsPage }));
-          lastPage = page >= data.pagination.pageCount;
+          lastPage = page >= (data?.pagination?.pageCount ?? page);
         }
+
         allFetchedSongs = [...allFetchedSongs, ...songsPage];
+
         const fuse = new Fuse(allFetchedSongs, {
           keys: ['title', 'artist.fullName'],
           threshold: 0.4,
         });
-        const results = fuse.search(query);
+
+        const results = fuse.search(q);
         if (results.length > 0) {
           foundSongs = results.map((r) => r.item);
           break;
         }
+
         page++;
         if (!cachedPages[page] && lastPage) break;
       }
+
+      // جلوگیری از race-condition: اگر در حین fetch کاربر query را عوض کرد
+      if (q !== lastQueryRef.current) return;
+
       if (foundSongs.length > 0) {
         setAllResults(foundSongs);
         setVisibleResults(foundSongs.slice(0, resultsPerPage));
@@ -120,16 +140,14 @@ const SearchModal: React.FC<SearchModalProps> = ({
       setMessage('Error occurred');
       console.log(err);
     } finally {
-      setLoading(false);
+      // دوباره چک race
+      if (q === lastQueryRef.current) setLoading(false);
     }
-  }, [query, cachedPages]);
+  }, [query, cachedPages, resultsPerPage]);
 
   const handleShowMore = () => {
     const currentCount = visibleResults.length;
-    const nextResults = allResults.slice(
-      currentCount,
-      currentCount + showMoreCount
-    );
+    const nextResults = allResults.slice(currentCount, currentCount + showMoreCount);
     setVisibleResults([...visibleResults, ...nextResults]);
   };
 
@@ -141,14 +159,12 @@ const SearchModal: React.FC<SearchModalProps> = ({
   };
 
   const handleAddToPlaylist = async (song: Song) => {
+    if (!playlistId) return;
     setLoadingSongId(song.id);
     try {
-      if (!playlistId) return;
-      await playlistService.Addmusic(`${playlistId}`, `${song.id}`);
-      setSongsInPlaylist((prev) =>
-        prev.some((s) => s.id === song.id) ? prev : [...prev, song]
-      );
-      if (refFetch && refFetch.current) refFetch.current();
+      await playlistService.Addmusic(String(playlistId), String(song.id));
+      setSongsInPlaylist((prev) => (prev.some((s) => s.id === song.id) ? prev : [...prev, song]));
+      if (refFetch?.current) refFetch.current();
     } catch (err) {
       console.log(err);
     } finally {
@@ -167,6 +183,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
         >
           ×
         </button>
+
         <div className="flex flex-col items-center md:items-start">
           <h2 className="ml-3 p-2 text-2xl font-bold text-white">
             Let's find something for your playlist
@@ -182,8 +199,10 @@ const SearchModal: React.FC<SearchModalProps> = ({
             />
           </div>
         </div>
+
         <div className="playlist-container mt-4 flex flex-col flex-wrap items-center gap-4 md:items-start">
           {loading && <p className="text-white">Loading...</p>}
+
           {query.trim() && visibleResults.length > 0 && (
             <div className="flex w-full justify-center pt-3 pb-3">
               <div className="w-full max-w-[600px]">
@@ -197,9 +216,8 @@ const SearchModal: React.FC<SearchModalProps> = ({
                     <tbody>
                       {visibleResults.map((song, i) => {
                         const isActive = currentTrack?.id === song.id;
-                        const inPlaylist = songsInPlaylist.some(
-                          (s) => s.id === song.id
-                        );
+                        const inPlaylist = songsInPlaylist.some((s) => s.id === song.id);
+
                         return (
                           <tr
                             key={song.id}
@@ -210,11 +228,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                             {/* شماره */}
                             <td className="relative w-5 max-w-[40px] overflow-hidden text-center align-middle">
                               <span
-                                className={
-                                  hoveredRow === i
-                                    ? '-z-10 opacity-0'
-                                    : 'z-10 opacity-100'
-                                }
+                                className={hoveredRow === i ? '-z-10 opacity-0' : 'z-10 opacity-100'}
                                 style={{ color: 'white' }}
                               >
                                 {i + 1}
@@ -222,18 +236,13 @@ const SearchModal: React.FC<SearchModalProps> = ({
                               <div
                                 onClick={(e) => handlePlayClick(song, e)}
                                 className={`playBTN absolute top-1/2 left-1/2 ml-1 flex h-5 w-5 -translate-x-1/2 -translate-y-1/2 transform items-center justify-center rounded-full bg-green-600 p-1 text-white ${
-                                  hoveredRow === i || isTablet
-                                    ? 'z-10 opacity-100'
-                                    : '-z-10 opacity-0'
+                                  hoveredRow === i || isTablet ? 'z-10 opacity-100' : '-z-10 opacity-0'
                                 }`}
                               >
-                                {isActive && isPlaying ? (
-                                  <PauseIcon />
-                                ) : (
-                                  <PlayIcon />
-                                )}
+                                {isActive && isPlaying ? <PauseIcon /> : <PlayIcon />}
                               </div>
                             </td>
+
                             {/* اطلاعات آهنگ */}
                             <td className="pr-2 pl-0 align-middle">
                               <div className="flex items-center gap-3">
@@ -252,6 +261,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                                 </div>
                               </div>
                             </td>
+
                             {/* آیکون add/check */}
                             <td className="w-10 text-center align-middle">
                               {inPlaylist ? (
@@ -294,7 +304,9 @@ const SearchModal: React.FC<SearchModalProps> = ({
               </div>
             </div>
           )}
+
           {query.trim() && message && <p className="text-white">{message}</p>}
+
           {visibleResults.length < allResults.length && !loading && (
             <button
               onClick={handleShowMore}

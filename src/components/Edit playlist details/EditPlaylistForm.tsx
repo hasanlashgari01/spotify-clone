@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { httpService } from '../../config/axios';
-import { Playlistinfo } from '../../services/playlistDetailsService';
+import { PlaylistMeta } from '../../services/playlistDetailsService';
 
 interface Props {
-  playlist: Playlistinfo;
+  playlist: PlaylistMeta;
   onCancel: () => void;
   onSuccess: () => void;
 }

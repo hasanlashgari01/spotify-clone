@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { IoMdShare } from 'react-icons/io';
 import { FaRegHeart, FaHeart } from 'react-icons/fa';
 import { X, Search } from 'lucide-react';
 import { PiDotsThreeOutlineVerticalFill } from 'react-icons/pi';
 import {
   getPlaylistDetails,
-  Playlistinfo,
+  PlaylistMeta,
 } from '../../services/playlistDetailsService';
 import PlaylistStatusControl from './PlaylistStatusControl';
 import {
@@ -63,7 +63,7 @@ const PlaylistDetails = ({
   const isTablet = useMediaQuery({ minWidth: 767 });
 
   const { slug } = useParams<{ slug: string }>();
-  const [playlist, setPlaylist] = useState<Playlistinfo | null>(null);
+  const [playlist, setPlaylist] = useState<PlaylistMeta | null>(null);
   const [loading, setLoading] = useState(true);
   const [showSearch, setShowSearch] = useState<boolean>(false);
   const [, setMe] = useState<MeResponse | null>(null);
@@ -132,19 +132,18 @@ const PlaylistDetails = ({
     return <div className="p-5 text-red-500">Playlist not found</div>;
   }
 
-  const totalSeconds = playlist.songs.reduce(
-    (acc, s) => acc + s.song.duration,
-    0
-  );
+const formatHM = (totalSeconds: number) => {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
+  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+};
 
   return (
     <div className="relative flex w-full flex-col md:flex-row">
       <div className="pointer-events-none absolute inset-0 hidden overflow-hidden md:block">
         <FloatingMusicIcons />
       </div>
+      
 
       <div className="block md:hidden">
         <div
@@ -188,7 +187,7 @@ const PlaylistDetails = ({
                 />
                 <span>{playlist.owner.username}</span>
                 <span>•</span>
-                <span>{playlist.pagination.totalCount} songs</span>
+                <span>{playlist.count} songs</span>
                 
               </div>
               <div className="mt-2 flex items-center justify-center gap-2 text-sm opacity-90">
@@ -349,15 +348,16 @@ const PlaylistDetails = ({
               alt={playlist.owner.fullName}
               className="h-8 w-8 rounded-full"
             />
-            <span>{playlist.owner.username}</span>
+            <Link to={`/user/profile/${playlist.owner.username}`}> <span>{playlist.owner.username}</span></Link>
+           
+            
+            
           </span>
           <span className="flex items-center gap-1 text-[#ffffff86]">
-            {playlist.pagination.totalCount} songs,
+            {playlist.count} songs,
           </span>
           <span className="flex items-center gap-1 text-[#ffffff86]">
-            {hours > 0 && `${hours} hr `}
-            {minutes > 0 && `${minutes} min `}
-            {seconds > 0 && `${seconds} sec`}
+        {formatHM(playlist.totalDuration)}
           </span>
         </span>
       </div>

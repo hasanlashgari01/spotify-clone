@@ -41,7 +41,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/playlist/:slug" element={<PlaylistPage />} />
+            <Route path="/playlists/:slug/details" element={<PlaylistPage />} />
             <Route path="/profile/:username" element={<UsersProfile />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/genre" element={<Genres />} />
