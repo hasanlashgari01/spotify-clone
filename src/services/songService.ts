@@ -47,4 +47,16 @@ export const songService = {
       );
     }
   },
+  async getMySongs(): Promise<Song[]> {
+    try {
+      const response = await publicService<Song[]>('/song/my');
+      return response.data;
+    }
+    catch (error: unknown) {
+      const apiError = error as ApiError;
+      throw new Error(
+        apiError.response?.data?.message || 'Failed to fetch made for you songs'
+      );
+    }
+  }
 };
