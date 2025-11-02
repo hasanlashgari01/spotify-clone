@@ -1,11 +1,22 @@
+import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { UpdateSongPayload, UploadSongPayload } from "../types/song.type";
+
+import {
+  CallbackResponse,
+  UpdateSongPayload,
+  UploadSongPayload,
+  UserInfo,
+  UserProfile,
+} from '../types/song.type';
 
 import {
   fetchSongByArtist,
   uploadSongByArtist,
   updateSongByArtist,
   deleteSongByArtist,
+  updateUserProfileInfo,
+  fetchUserProfile,
+  toggleUserStatus,
 } from '../services/ArtistServicesApi';
 
 // #1 fetch artist's songs
@@ -24,9 +35,10 @@ export const useUploadSongs = () => {
       await uploadSongByArtist(songData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['artistSongs'] });
+      toast.success(`Upload successful`);
     },
     onError: (error: any) => {
-      console.error('Upload failed ❌', error);
+      toast.error(`Upload song failed ❌ ${error?.message || ''}`);
     },
   });
 };
@@ -40,9 +52,10 @@ export const useUpdateSongs = () => {
       await updateSongByArtist(payload.id, payload.updates),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['artistSongs'] });
+      toast.success(`Update successful`);
     },
     onError: (error: any) => {
-      console.error('Update failed ❌', error);
+      toast.error(`update song failed ❌ ${error?.message || ''}`);
     },
   });
 };
@@ -52,12 +65,52 @@ export const useDeleteSongs = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => await deleteSongByArtist(id),
+    mutationFn: async (id: number) => await deleteSongByArtist(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['artistSongs'] });
+      toast.success(`delete successful`);
     },
     onError: (error: any) => {
-      console.error('Delete failed ❌', error);
+      toast.error(`delete song failed ❌ ${error?.message || ''}`);
+    },
+  });
+};
+
+// #5 update user Profile Info
+export const useUpdateUserInfo = () => {
+  const queryClient = useQueryClient();
+  return useMutation<CallbackResponse, Error, UserInfo>({
+    mutationFn: async (payload: UserInfo) =>
+      await updateUserProfileInfo(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      toast.success(`update successful`);
+    },
+    onError: (error) => {
+      toast.error(`update User Info failed ❌ ${error?.message || ''}`);
+    },
+  });
+};
+
+// #6 fetch user Profile
+export const useFetchUserProfileInfo = () => {
+  return useQuery<UserProfile>({
+    queryKey: ['userProfile'],
+    queryFn: fetchUserProfile,
+  });
+};
+
+// #7 fetch user status
+export const useToggleUserStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: toggleUserStatus,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userProfile'] });
+      toast.success(`status Updated successfully`);
+    },
+    onError: (error: any) => {
+      toast.error(`update status failed ❌ ${error?.message || ''}`);
     },
   });
 };

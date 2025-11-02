@@ -5,48 +5,25 @@ import {
   SongSortBy,
   SortOrder,
 } from '../services/playlistDetailsService';
-export interface PlSongsProps {
-  songs: PlaylistSong[];
-  setSortBy: React.Dispatch<SetStateAction<SongSortBy>>;
-  setOrder: React.Dispatch<SetStateAction<SortOrder>>;
-  sortBy: SongSortBy;
-  order: SortOrder;
-  isOwner: boolean | null;
-  deleteMusic: (songId: number) => void;
-  deletingId: number | null;
-  ref: boolean;
-}
+
 export interface Pagination {
   page: number;
   limit: number;
   pageCount: number;
   totalCount: number;
 }
-export interface AllSongs {
-  songs: Song[];
-  pagination: Pagination;
+
+export interface ArtistInfo {
+  id?: number;
+  username: string;
+  fullName: string;
+  avatar?: string | null;
 }
 
-export type ApiResponse = {
-  songs: Song[];
-  pagination: {
-    page: number;
-    limit: number;
-    pageCount: number;
-    totalCount: number;
-  };
-};
-
-export type GenreInfo = {
-  id: string;
-  slug: string;
-  title: string;
-  cover: string;
-};
-export interface GenreDetailsResponse {
-  genre: GenreInfo;
-  songs: Song[];
-  pagination: Pagination;
+export interface SongGenre {
+  id: number;
+  genreId: number;
+  songId: number;
 }
 
 export interface Song {
@@ -55,94 +32,98 @@ export interface Song {
   audioUrl: string;
   cover: string;
   duration: number;
-  status: string;
+  status: 'PUBLISHED' | 'DRAFT' | 'PRIVATE' | string;
   plays: number;
-  artist: {
-    id: number;
-    username: string;
-    fullName: string;
-  };
+  artist: ArtistInfo;
   artistId: number;
+  genres: SongGenre[];
   createdAt: string;
   updatedAt: string;
 }
-export type GenreDetailsWrapperProps = {
-  genreDetails: GenreInfo | null;
-  songs: any[];
-  showSearch: boolean;
-  setShowSearch: Dispatch<SetStateAction<boolean>>;
-  setSearch: Dispatch<SetStateAction<string>>;
-  search: string;
-};
-export interface UseGenreDetailsParams {
-  titleLowered: string | undefined;
-  sortBy: string;
-  order: string;
+
+export interface ArtistSong extends Song {
+  genres: SongGenre[];
+  artist: ArtistInfo;
+}
+
+export interface GenreInfo {
+  id: number;
+  slug: string;
+  title: string;
+  cover: string;
 }
 
 export interface GenreDetailsResponse {
   genre: GenreInfo;
-  songs: ApiResponse['songs'];
-  page: number;
-  limit: number;
-  pageCount: number;
-  totalCount: number;
+  songs: Song[];
+  pagination: Pagination;
 }
 
-// Artist Song Types
-export interface ArtistSong extends Song {
-  id: number;
-  title: string;
-  audioUrl: string;
-  cover: string;
-  duration: number;
-  status: string;
-  plays: number;
-  artist: {
-    id: number;
-    username: string;
-    fullName: string;
-  };
-  artistId: number;
-  createdAt: string;
-  updatedAt: string;
+export interface UseGenreDetailsParams {
+  titleLowered?: string;
+  sortBy: string;
+  order: string;
+}
+
+export interface GenreDetailsWrapperProps {
+  genreDetails: GenreInfo | null;
+  songs: Song[];
+  showSearch: boolean;
+  setShowSearch: Dispatch<SetStateAction<boolean>>;
+  setSearch: Dispatch<SetStateAction<string>>;
+  search: string;
+}
+
+export interface PlSongsProps {
+  songs: PlaylistSong[];
+  sortBy: SongSortBy;
+  order: SortOrder;
+  setSortBy: Dispatch<SetStateAction<SongSortBy>>;
+  setOrder: Dispatch<SetStateAction<SortOrder>>;
+  isOwner: boolean | null;
+  deleteMusic: (songId: number) => void;
+  deletingId: number | null;
+  ref: boolean;
 }
 
 export interface UploadSongPayload {
   title: string;
-  audioFile: File;
-  coverFile: File;
-  duration?: number;
+  genreId: number;
+  status?: 'PUBLISHED' | 'DRAFT' | 'PRIVATE' | string;
+  cover?: File | null;
+  audio?: File | null;
 }
 
 export interface UpdateSongPayload {
-  id: string;
-  updates: {
-    title?: string;
-    cover?: File;
-    audio?: File;
-  };
+  id: number;
+  updates: Partial<UploadSongPayload>;
 }
 
-export interface SongResponse {
+export interface CallbackResponse {
+  message: string;
+}
+
+export interface UserInfo {
+  fullName: string;
+  bio?: string | null;
+  avatar?: File | null;
+  gender: 'male' | 'female' | 'other';
+}
+
+export interface UserProfile {
   id: number;
-  title: string;
-  audioUrl: string;
-  cover: string;
-  duration: number;
-  status: string;
-  plays: number;
-  artist: {
-    id: number;
-    username: string;
-    fullName: string;
-  };
-  artistId: number;
+  email: string;
+  username: string;
+  fullName: string;
+  avatar: string | null;
+  bio: string | null;
+  gender: 'male' | 'female' | 'other' | null;
+  status: 'public' | 'private';
   createdAt: string;
   updatedAt: string;
 }
 
-export interface DeleteResponse {
-  message: string;
-  statusCode: number;
+export interface ApiResponse<T> {
+  data: T;
+  pagination?: Pagination;
 }
