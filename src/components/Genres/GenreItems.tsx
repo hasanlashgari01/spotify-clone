@@ -1,6 +1,5 @@
 import ErrorMessage from '../error/ErrorMessage';
 import GenreDetailsWrapper from './GenreDetailsWrapper';
-import Loading from '../MyPlayLists/loding';
 import PlSongs from '../playlistpage/PlSongs';
 import { useMemo, useState } from 'react';
 import { useEffect, useRef } from 'react';
@@ -8,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import { useGenreDetails } from '../../hooks/useFechSongs';
 import { SongSortBy, SortOrder } from '../../services/playlistDetailsService';
 import { Song } from '../../types/song.type';
+import LuxeLoader from '../loading/LuxeLoader';
 
 const GenreItems = () => {
   const { title = '' } = useParams<{ title: string }>();
@@ -70,7 +70,12 @@ const GenreItems = () => {
 
   const deleteMusicById = () => {};
 
-  if (isLoading) return <Loading />;
+  if (isLoading)
+    return (
+      <div className="flex min-h-[100vh] w-full items-center justify-center bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)]">
+        <LuxeLoader />
+      </div>
+    );
   if (error) return <ErrorMessage error={error} />;
 
   return (

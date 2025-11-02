@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { PlayIcon, PauseIcon } from 'lucide-react';
 import { searchService, SearchSong } from '../../services/searchService';
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
-
+import Skeleton from 'react-loading-skeleton';
 type SongsListProps = {
   query: string;
 };
@@ -11,6 +11,7 @@ const Filltersongslist: React.FC<SongsListProps> = ({ query }) => {
   const [songs, setSongs] = useState<SearchSong[]>([]);
   const [hovered, setHovered] = useState<number | null>(null);
   const [active, setActive] = useState<number | null>(null);
+    const [loading, setLoading] = useState(false);
   const {
     playSong,
     currentTrack,
@@ -18,10 +19,17 @@ const Filltersongslist: React.FC<SongsListProps> = ({ query }) => {
   } = useMusicPlayer();
 
   useEffect(() => {
+    if (!query) return;
     const fetchSongs = async () => {
-      if (!query) return;
-      const res = await searchService.search(query);
-      setSongs(res.songs);
+      try {
+        setLoading(true);
+        const res = await searchService.search(query);
+        setSongs(res.songs);
+      } catch (error) {
+        console.error('Error fetching artists:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchSongs();
   }, [query]);
@@ -70,7 +78,45 @@ const Filltersongslist: React.FC<SongsListProps> = ({ query }) => {
 
     setActive(idx);
   };
+if (loading) {
+    return (
+      <div className="w-full rounded-xl bg-black/40 p-4 md:p-6 lg:p-8">
+        <h3 className="mb-3 text-lg font-semibold text-white">Songs</h3>
+        <div className="divide-y divide-gray-800">
+          <div
+            className={`group divide-y divide-gray-800 relative flex flex-col justify-between gap-3 rounded-lg px-2 py-2 transition-all`}
+          >
+              {Array.from({ length: 15 }).map((_, i) => (
+            <div key={i} className="flex min-w-0 flex-1 items-center gap-3 pb-1 ">
+              <Skeleton
+                height="40px"
+                width="40px"
+                borderRadius={12}
+                baseColor="#121d31"
+                highlightColor="#101721"
+              />
 
+              <div className="min-w-0">
+                <Skeleton
+                  height={12}
+                  width={180}
+                  baseColor="#121d31"
+                  highlightColor="#101721"
+                />
+                <Skeleton
+                  height={12}
+                  width={80}
+                  baseColor="#121d31"
+                  highlightColor="#101721"
+                />
+              </div>
+            </div>
+                ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (songs.length === 0) return null;
 
   return (

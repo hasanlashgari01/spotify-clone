@@ -1,13 +1,18 @@
 import ErrorMessage from '../error/ErrorMessage';
-import Loading from '../loading/Loading';
 import { Link } from 'react-router-dom';
 import { useGenres } from '../../hooks/useFechSongs';
 import { GenreItemsColors } from '../../services/ColorPalette';
+import LuxeLoader from '../loading/LuxeLoader';
 
 const Genres = () => {
   const { data: genres, isLoading, error } = useGenres();
 
-  if (isLoading) return <Loading />;
+  if (isLoading)
+    return (
+      <div className="flex min-h-[100vh] w-full items-center justify-center bg-[linear-gradient(180deg,#1574F5_0%,#1453AB_16%,#13458A_35%,#112745_55%,#101721_75%,#101721_100%)]">
+        <LuxeLoader />
+      </div>
+    );
   if (error) return <ErrorMessage error={error} />;
   return (
     <div className="bgColor h-[100dvh]">
