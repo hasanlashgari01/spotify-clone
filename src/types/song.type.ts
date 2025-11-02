@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from 'react';
 
 import {
   PlaylistSong,
@@ -76,6 +76,13 @@ export interface UseGenreDetailsParams {
   sortBy: string;
   order: string;
 }
+export interface AllSongs {
+
+  songs: Song[];
+
+  pagination: Pagination;
+
+}
 
 export interface GenreDetailsWrapperProps {
   genreDetails: GenreInfo | null;
@@ -136,11 +143,9 @@ export interface UserProfile {
 }
 
 export type ApiResponse = {
-
   songs: Song[];
 
   pagination: {
-
     page: number;
 
     limit: number;
@@ -148,7 +153,5 @@ export type ApiResponse = {
     pageCount: number;
 
     totalCount: number;
-
   };
-
 };

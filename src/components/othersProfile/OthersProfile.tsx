@@ -15,6 +15,8 @@ import { useFollow } from '../../context/UserFansContext.tsx';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
+import { Artist} from '../../services/authService';
+
 //شسیشسیشیشسیش
 
 interface Count {
@@ -35,11 +37,12 @@ const OthersProfile = () => {
   const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined);
 
   // --- Query: دریافت اطلاعات کاربر ---
-  const { data: userData, isLoading: isUserLoading } = useQuery<User | null>({
+  const { data: userData, isLoading: isUserLoading } = useQuery<User | Artist | null>({
     queryKey: ['user', username],
     queryFn: async () => {
       if (!username) return null;
-      return await getOthersDetails(username);
+      const isArtist = false;
+      return await getOthersDetails(username , isArtist);
     },
     staleTime: 60 * 1000,
   });
