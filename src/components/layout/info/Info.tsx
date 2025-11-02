@@ -15,7 +15,7 @@ import { useFollow } from '../../../context/UserFansContext.tsx';
 import { useParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-
+import { Artist } from '../../../services/authService.ts'
 interface Count {
   followings: number;
   followers: number;
@@ -24,9 +24,12 @@ type InfoProps = {
   setLoading: Dispatch<SetStateAction<boolean>>;
   setBio : Dispatch<SetStateAction<string>>;
   setPicture : Dispatch<SetStateAction<string>>;
+  setId:Dispatch<SetStateAction<number>>;
+  setName:Dispatch<SetStateAction<string>>;
+  isArtist : boolean;
 };
 
-const Info = ({ setLoading , setBio , setPicture }: InfoProps) => {
+const Info = ({ setLoading , setBio , setPicture , setId , setName , isArtist}: InfoProps) => {
   const { username } = useParams<{ username: string }>();
   const { followings } = useFollow();
   const queryClient = useQueryClient();
@@ -39,11 +42,11 @@ const Info = ({ setLoading , setBio , setPicture }: InfoProps) => {
   const [isFollowed, setIsFollowed] = useState<boolean | undefined>(undefined);
 
   // --- Query: دریافت اطلاعات کاربر ---
-  const { data: userData, isLoading: isUserLoading } = useQuery<User | null>({
+  const { data: userData, isLoading: isUserLoading } = useQuery<User | Artist | null>({
     queryKey: ['user', username],
     queryFn: async () => {
       if (!username) return null;
-      return await getOthersDetails(username);
+      return await getOthersDetails(username , isArtist);
     },
     staleTime: 60 * 1000,
   });
@@ -74,6 +77,8 @@ const Info = ({ setLoading , setBio , setPicture }: InfoProps) => {
     setIsFollowed(followedState);
     setBio(userData.bio);
     setPicture(userData.avatar);
+    setId(Number(userData.id));
+    setName(userData.fullName);
   }, [userData, followings, setBio, setPicture]);
   useEffect(() => {
     // triggers when user data or fetching state changes

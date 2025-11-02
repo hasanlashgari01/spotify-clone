@@ -21,6 +21,15 @@ export interface User {
   gender : string;
   
 }
+export interface Artist{
+  id: string;
+  avatar: string;
+  username: string;
+  fullName : string;
+  bio : string;
+  status : ["public" , "private"];
+  createdAt: string;
+}
 
 export interface LoginResponse {
   accessToken: string;

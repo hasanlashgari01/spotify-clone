@@ -2,28 +2,27 @@ import { useEffect, useMemo, useState } from 'react';
 import { Music, TrendingUp, Users, UploadCloud } from 'lucide-react';
 import { AudienceChart } from './Chart.tsx';
 import { User } from '../../services/authService.ts';
-import { useQuery } from '@tanstack/react-query';
-import { Song } from '../../types/song.type.ts';
-import { songService } from '../../services/songService.ts';
+
+import {useFetchArtistSongs} from '../../hooks/useArtistSongs.ts';
 import { useFollow } from '../../context/UserFansContext.tsx';
+
+import {DNA} from 'react-loader-spinner'
 type Props = {
   me: User | null;
 };
 export const PanelHome = ({ me }: Props) => {
   const {count} = useFollow();
-  const { data: songs = [], isLoading } = useQuery<Song[], Error>({
-    queryKey: ["mysongs"],
-    queryFn: async () => await songService.getMySongs()
-  });
+  const {data , isLoading} = useFetchArtistSongs();
 
+;
 
   const latests = useMemo(() => {
-    return songs.slice(0, 3);
-  }, [songs]);
+    return data?.slice(0, 3);
+  }, [data]);
   const totalUniquePlays = useMemo(() => {
     const unique = new Map<string, number>();
 
-    songs.forEach(song => {
+    data?.forEach(song => {
       if (!unique.has(song.title)) {
         unique.set(song.title, song.plays);
       }
@@ -31,12 +30,14 @@ export const PanelHome = ({ me }: Props) => {
 
     // جمع کل plays یکتا
     return Array.from(unique.values()).reduce((sum, val) => sum + val, 0);
-  }, [songs]);
+  }, [data]);
   const [artistname, setArtistname] = useState<string>('Your name');
   useEffect(() => {
     setArtistname(me?.fullName ? me.fullName : '');
   }, [me]);
-  if (isLoading) return <p className="text-sky-300">Loading Songs...</p>;
+  if (isLoading) return <div className="h-full w-full flex flex-col justify-center items-center">
+    <DNA dnaColorOne={"#05339C"} dnaColorTwo={"#1055C9"} ></DNA>
+  </div>;
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-950 via-sky-950 to-indigo-900 p-10 font-[Poppins] text-slate-100">
       {/* Header */}
@@ -63,7 +64,7 @@ export const PanelHome = ({ me }: Props) => {
       <div className="mb-10 grid grid-cols-1 gap-6 md:grid-cols-3">
         <StatCard
           title="Releases"
-          value={`${songs.length}`}
+          value={`${data?.length}`}
           desc="Total tracks & artworks"
           icon={<Music className="text-sky-300" />}
         />
@@ -88,7 +89,7 @@ export const PanelHome = ({ me }: Props) => {
           Latest Releases
         </h3>
         <div className="space-y-4">
-          {latests.map((item, i) => (
+          {latests?.map((item, i) => (
             <div key={i} className="cursor-pointer">
               <ReleaseRow title={item.title} plays={`${item.plays}`} date={item.createdAt} src={item.cover}></ReleaseRow>
             </div>

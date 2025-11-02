@@ -6,8 +6,9 @@ import { useState } from 'react';
 type Props = {
   artist: string;
   title: string;
+  cover: string;
 }
-export const SingleArtMusic = ({artist , title} : Props) => {
+export const SingleArtMusic = ({artist , title , cover} : Props) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const handleHeartClick = async () => {
@@ -33,7 +34,7 @@ export const SingleArtMusic = ({artist , title} : Props) => {
       <div className="flex items-center justify-start gap-3 w-[80%]">
         <div >
           <img
-            src={DefaultAvatar}
+            src={cover || DefaultAvatar}
             alt=""
             className="h-18 w-18 rounded-2xl"
           />

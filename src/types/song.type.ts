@@ -40,6 +40,18 @@ export interface Song {
   createdAt: string;
   updatedAt: string;
 }
+export interface ArtistPopular {
+  id: number;
+  title: string;
+  audioUrl: string;
+  cover: string;
+  duration: number;
+  status: 'PUBLISHED' | 'DRAFT' | 'PRIVATE' | string;
+  plays: number;
+  artistId: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface ArtistSong extends Song {
   genres: SongGenre[];
@@ -123,7 +135,20 @@ export interface UserProfile {
   updatedAt: string;
 }
 
-export interface ApiResponse<T> {
-  data: T;
-  pagination?: Pagination;
-}
+export type ApiResponse = {
+
+  songs: Song[];
+
+  pagination: {
+
+    page: number;
+
+    limit: number;
+
+    pageCount: number;
+
+    totalCount: number;
+
+  };
+
+};

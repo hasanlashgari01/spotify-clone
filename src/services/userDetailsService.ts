@@ -1,5 +1,5 @@
 import { httpService } from '../config/axios';
-import { User } from './authService';
+import { Artist, User } from './authService';
 import { getMe } from './meService';
 
 export interface Pagination {
@@ -69,8 +69,8 @@ export const getUserFollowings = async (
     return null;
   }
 };
-export const getOthersDetails = async (username: string): Promise<User> => {
-  const response = await httpService.get<User>(`/user/profile/${username}`);
+export const getOthersDetails = async (username: string , isArtist : boolean): Promise<User | Artist> => {
+  const response = !isArtist ? await httpService.get<User>(`/user/profile/${username}`) : await httpService.get<Artist>(`/artist/profile/${username}`);
   return response.data;
 };
 export const getFollowingCount = async (

@@ -2,16 +2,18 @@ import { httpService } from '../config/axios';
 import { createFormData } from './formData';
 
 import {
+  Song,
   ArtistSong,
   UploadSongPayload,
   UserProfile,
   CallbackResponse,
-  UserInfo,
+  UserInfo, ArtistPopular,
 } from '../types/song.type';
+import { songService } from './songService.ts';
 
 // #1 fetch music list
-export const fetchSongByArtist = async (): Promise<ArtistSong[]> => {
-  const { data } = await httpService.get<ArtistSong[]>('/song/my');
+export const fetchSongByArtist = async (): Promise<Song[]> => {
+  const data = await songService.getMySongs();
   return data;
 };
 
@@ -95,3 +97,13 @@ export const toggleUserStatus = async (): Promise<{ message: string }> => {
     throw new Error(error.response?.data?.message || 'update failed');
   }
 };
+  export const fetchTopTeen = async (id : number): Promise<ArtistPopular[]> => {
+    try {
+
+      const data = await httpService.get<ArtistPopular[]>(`/artist/popular/${id}`);
+      return data.data
+    }
+    catch (err: any) {
+      throw new Error(err);
+    }
+}

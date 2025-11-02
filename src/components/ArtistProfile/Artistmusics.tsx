@@ -1,20 +1,16 @@
 import { SingleArtMusic } from './compose/Single-artist.tsx';
+import { useArtistPopularSongs } from '../../hooks/useArtistSongs.ts';
 
 type Props = {
   loading: boolean;
+  Id : number;
+  name : string;
 };
 
-const musics = [
-  { title: 'hello', artist: 'Reza Pishro' },
-  { title: 'e=mc^2', artist: 'Reza Pishro' },
-  { title: 'hello', artist: 'Reza Pishro' },
-  { title: 'hello', artist: 'Reza Pishro' },
-  { title: 'hello', artist: 'Reza Pishro' },
-  { title: 'extra track 1', artist: 'Reza Pishro' },
-  { title: 'extra track 2', artist: 'Reza Pishro' },
-];
 
-export const ArtistMusics = ({ loading }: Props) => {
+export const ArtistMusics = ({ loading , Id , name}: Props) => {
+  const { data, isLoading } = useArtistPopularSongs(Id, !!Id && !loading);
+
   if (loading) return <></>;
 
   return (
@@ -25,14 +21,16 @@ export const ArtistMusics = ({ loading }: Props) => {
 
       {/* background ثابت */}
       <div className="rounded-2xl bg-gradient-to-br from-[#0a1a3a]/70 to-[#001229]/80 p-6 shadow-[0_0_20px_rgba(0,40,255,0.2)] backdrop-blur-md max-h-[500px] overflow-y-auto scrollbar-hide hover:scrollbar-thumb-blue-500 transition-all">
-        {musics.map((music, index) => (
-          <div
-            key={index}
-            className="mb-4 rounded-xl p-4 transition-transform duration-300 hover:scale-[1.015]"
-          >
-            <SingleArtMusic title={music.title} artist={music.artist} />
-          </div>
-        ))}
+        {!isLoading ? (
+          data?.map((music, index) => (
+            <div
+              key={index}
+              className="mb-4 rounded-xl p-4 transition-transform duration-300 hover:scale-[1.015]"
+            >
+              <SingleArtMusic title={music.title} artist={name} cover={music.cover} />
+            </div>
+          ))
+        ) : null}
       </div>
     </div>
   );

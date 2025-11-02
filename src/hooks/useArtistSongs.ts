@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
+
   CallbackResponse,
   UpdateSongPayload,
   UploadSongPayload,
@@ -17,14 +18,18 @@ import {
   updateUserProfileInfo,
   fetchUserProfile,
   toggleUserStatus,
+  fetchTopTeen,
 } from '../services/ArtistServicesApi';
 
 // #1 fetch artist's songs
-export const useFetchArtistSongs = () =>
-  useQuery({
+export const useFetchArtistSongs = () => {
+  const { data, isLoading } = useQuery({
     queryKey: ['artistSongs'],
     queryFn: fetchSongByArtist,
   });
+
+  return { data, isLoading };
+};
 
 // #2 uplaod new song
 export const useUploadSongs = () => {
@@ -114,3 +119,13 @@ export const useToggleUserStatus = () => {
     },
   });
 };
+export const useArtistPopularSongs  = ( id : number , enabled : boolean) => {
+  const { data  , isLoading } = useQuery({
+    queryKey: ['topteen'],
+    queryFn:() =>  fetchTopTeen(id),
+    enabled,
+  })
+  console.log(id)
+
+  return {data, isLoading}
+}

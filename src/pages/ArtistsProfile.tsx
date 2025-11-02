@@ -10,12 +10,14 @@ const ArtistsProfile = () => {
   const [loading, setLoading] = useState(true);
   const [bio, setBio] = useState<string>('');
   const [picture, setPicture] = useState<string>('');
+  const [Id , setId] = useState<number>(0)
+  const [name, setName] = useState<string>('')
   return (
     <FollowProvider>
 
         <div className="min-h-screen w-full">
-          <Info setLoading={setLoading} setBio={setBio} setPicture={setPicture} />
-          <ArtistMusics loading={loading}/>
+          <Info setLoading={setLoading} setBio={setBio} setPicture={setPicture} setId={setId} setName={setName} isArtist={true}/>
+          <ArtistMusics loading={loading} Id={Id} name={name}/>
           <DiscoContainer/>
           <AboutArtist bio={bio} picture={picture} />
         </div>
