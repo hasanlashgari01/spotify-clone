@@ -3,7 +3,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { searchService, SearchArtist } from '../../services/searchService';
 import { Link } from 'react-router-dom';
-
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 type ArtistProps = {
   query: string;
 };
@@ -32,7 +33,50 @@ const Artist = ({ query }: ArtistProps) => {
     return (
       <section className="w-full p-8 text-white">
         <h2 className="mb-4 px-6 text-2xl font-bold">Artists</h2>
-        <p className="px-6 text-gray-400">Loading...</p>
+
+        <Swiper
+          spaceBetween={20}
+          slidesPerView="auto"
+          breakpoints={{
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 5 },
+          }}
+          className="px-6"
+        >
+          {Array.from({ length: 15 }).map((_, i) => (
+            <SwiperSlide key={i} className="!w-auto">
+              <div
+                key={i}
+                className="group relative h-56 w-48 cursor-pointer rounded-lg bg-black/40 px-6 py-4 transition-all duration-300 hover:bg-gray-700 hover:shadow-xl"
+              >
+                <Skeleton
+                  height="9rem"
+                  width="9rem"
+                  borderRadius={12}
+                  baseColor="#121d31"
+                  highlightColor="#101721"
+                  circle={true}
+                />
+                <h3 className="mt-2 flex justify-center">
+                  <Skeleton
+                    height={12}
+                    width={100}
+                    baseColor="#121d31"
+                    highlightColor="#101721"
+                  />
+                </h3>
+                <h4>
+                  <Skeleton
+                    height={10}
+                    baseColor="#121d31"
+                    highlightColor="#101721"
+                  />
+                </h4>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </section>
     );
 
@@ -61,17 +105,17 @@ const Artist = ({ query }: ArtistProps) => {
         {artists.map((artist, i) => (
           <SwiperSlide key={i} className="!w-auto">
             <Link to={`/profile/${artist.username}`}>
-            <div className="group relative h-60 w-48 transform cursor-pointer rounded-xl bg-black/40 p-4 shadow-lg transition-all duration-300 hover:bg-gray-700">
-              <img
-                src={artist.avatar|| "/default-avatar.webp"}
-                alt={artist.fullName}
-                className="mx-auto mb-4 h-36 w-36 rounded-full object-cover"
-              />
-              <h3 className="truncate text-center text-sm font-semibold">
-                {artist.fullName}
-              </h3>
-              <p className="text-center text-xs text-gray-400">Artist</p>
-            </div>
+              <div className="group relative h-60 w-48 transform cursor-pointer rounded-xl bg-black/40 p-4 shadow-lg transition-all duration-300 hover:bg-gray-700">
+                <img
+                  src={artist.avatar || '/default-avatar.webp'}
+                  alt={artist.fullName}
+                  className="mx-auto mb-4 h-36 w-36 rounded-full object-cover"
+                />
+                <h3 className="truncate text-center text-sm font-semibold">
+                  {artist.fullName}
+                </h3>
+                <p className="text-center text-xs text-gray-400">Artist</p>
+              </div>
             </Link>
           </SwiperSlide>
         ))}

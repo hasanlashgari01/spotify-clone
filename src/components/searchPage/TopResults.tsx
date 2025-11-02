@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PlayIcon, PauseIcon } from 'lucide-react';
 import { searchService, SearchSong } from '../../services/searchService';
 import { useMusicPlayer } from '../../context/MusicPlayerContext';
-
+import Skeleton from 'react-loading-skeleton';
 type TopResultProps = {
   query: string;
 };
@@ -10,6 +10,7 @@ type TopResultProps = {
 const TopResults: React.FC<TopResultProps> = ({ query }) => {
   const [hovered, setHovered] = useState(false);
   const [topSong, setTopSong] = useState<SearchSong | null>(null);
+  const [loading, setLoading] = useState(false);
   const {
     playSong,
     currentTrack,
@@ -17,12 +18,19 @@ const TopResults: React.FC<TopResultProps> = ({ query }) => {
   } = useMusicPlayer();
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!query) return;
-      const res = await searchService.search(query);
-      if (res.songs.length > 0) setTopSong(res.songs[0]);
+    if (!query) return;
+    const fetchTopres = async () => {
+      try {
+        setLoading(true);
+        const res = await searchService.search(query);
+        setTopSong(res.songs[0]);
+      } catch (error) {
+        console.error('Error fetching artists:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchData();
+    fetchTopres();
   }, [query]);
 
   const handlePlayClick = (e: React.MouseEvent) => {
@@ -49,7 +57,52 @@ const TopResults: React.FC<TopResultProps> = ({ query }) => {
     // Play the song
     playSong(songForPlayer);
   };
+  if (loading) {
+    return (
+      <div
+        className={`relative flex items-center gap-5 rounded-2xl bg-gradient-to-br from-black/80 to-gray-900/80 p-6 shadow-lg transition-all md:h-86 md:p-8`}
+      >
+        <div className="relative">
+          <div className="h-24 w-24 rounded-lg object-cover shadow-xl sm:h-36 sm:w-36 md:h-52 md:w-52 lg:h-64 lg:w-64">
+            <Skeleton
+              height="100%"
+              width="100%"
+              borderRadius={12}
+              baseColor="#121d31"
+              highlightColor="#101721"
+            />
+          </div>
+        </div>
 
+        <div className="min-w-0 flex-1">
+          <div className="-nowrap text-base leading-tight font-bold text-nowrap text-white sm:text-lg md:text-sm lg:text-2xl xl:text-3xl">
+            <Skeleton
+              height="100%"
+              width="50%"
+              baseColor="#121d31"
+              highlightColor="#101721"
+            />
+          </div>
+          <div className="mt-2 text-sm text-nowrap text-gray-300 sm:text-base md:text-sm lg:text-xl">
+            <Skeleton
+              height={16}
+              width="30%"
+              baseColor="#121d31"
+              highlightColor="#101721"
+            />
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <Skeleton
+              height={20}
+              width={50}
+              baseColor="#121d31"
+              highlightColor="#101721"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (!topSong) return null;
 
   return (
@@ -71,7 +124,7 @@ const TopResults: React.FC<TopResultProps> = ({ query }) => {
       </div>
 
       <div className="min-w-0 flex-1">
-        <div className="text-base leading-tight font-bold text-nowrap text-white  -nowrap sm:text-lg md:text-sm lg:text-2xl xl:text-3xl">
+        <div className="-nowrap text-base leading-tight font-bold text-nowrap text-white sm:text-lg md:text-sm lg:text-2xl xl:text-3xl">
           {topSong.title.length > 15
             ? topSong.title.slice(0, 15) + '...'
             : topSong.title}

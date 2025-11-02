@@ -9,12 +9,12 @@ const Loading = () => {
           height="100%"
           width="100%"
           borderRadius={12}
-          baseColor="#1574f5"
+          baseColor="#121d31"
           highlightColor="#101721"
         />
       </div>
       <div className="mt-2 w-[100px] sm:w-[130px] md:w-[150px]">
-        <Skeleton height={16} baseColor="#1574f5" highlightColor="#101721" />
+        <Skeleton height={16} baseColor="#121d31" highlightColor="#101721" />
       </div>
     </div>
   );
