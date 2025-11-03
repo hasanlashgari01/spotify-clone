@@ -36,7 +36,7 @@ export interface Song {
   plays: number;
   artist: ArtistInfo;
   artistId: number;
-  genres: SongGenre[];
+  genres?: SongGenre[];
   createdAt: string;
   updatedAt: string;
 }

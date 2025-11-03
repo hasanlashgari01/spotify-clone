@@ -100,7 +100,7 @@ const Album = ({ query }: AlbumProps) => {
       >
         {albums.map((album) => (
           <SwiperSlide key={album.id} className="!w-auto">
-            <Link to={`/playlist/${album.slug}`}>
+            <Link to={`/playlists/${album.slug}/details`}>
               <div className="group relative h-56 w-48 cursor-pointer rounded-lg bg-black/40 px-8 py-4 transition-all duration-300 hover:bg-gray-700 hover:shadow-xl">
                 <img
                   src={album.cover || '/default.webp'}
