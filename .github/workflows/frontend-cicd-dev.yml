@@ -298,9 +298,39 @@ jobs:
 
       # ============================================================
       # DEPLOYMENT: Upload new build files
-      # Uses rsync for efficient transfer
+      # Uses SCP action (handles GitHub Actions networking better than manual rsync)
       # ============================================================
       - name: Deploy to Staging Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.STAGING_SERVER_HOST }}
+          username: ${{ secrets.STAGING_SERVER_USER }}
+          key: ${{ secrets.STAGING_SERVER_SSH_KEY }}
+          port: ${{ secrets.STAGING_SERVER_PORT || 22 }}
+          source: "dist/*"
+          target: "/var/www/Navazino/staging/dist/"
+          strip_components: 1
+          rm: false
+          
+      - name: Verify Deployment (DEBUG)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_SERVER_HOST }}
+          username: ${{ secrets.STAGING_SERVER_USER }}
+          key: ${{ secrets.STAGING_SERVER_SSH_KEY }}
+          port: ${{ secrets.STAGING_SERVER_PORT || 22 }}
+          script: |
+            echo "🔍 Verifying deployment..."
+            ls -lah /var/www/Navazino/staging/dist/ | head -20
+            echo ""
+            echo "📊 Statistics:"
+            echo "  Files: $(find /var/www/Navazino/staging/dist -type f | wc -l)"
+            echo "  Size: $(du -sh /var/www/Navazino/staging/dist | awk '{print $1}')"
+            echo ""
+            echo "✅ Deployment verification complete!"
+      
+      - name: OLD_MANUAL_DEPLOYMENT_DISABLED
+        if: false
         run: |
           set -x  # Enable verbose debug output for EVERYTHING
           set +e  # DISABLE exit on error - we handle errors manually
