@@ -302,17 +302,26 @@ jobs:
       # ============================================================
       - name: Deploy to Staging Server
         run: |
-          # Setup SSH key
+          # Setup SSH key (preserve newlines with printf)
           mkdir -p ~/.ssh
-          echo "${{ secrets.STAGING_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          printf '%s\n' "${{ secrets.STAGING_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          
+          # Debug: Show key format (first/last line only, no sensitive data)
+          echo "SSH Key - First line: $(head -n 1 ~/.ssh/id_rsa)"
+          echo "SSH Key - Last line: $(tail -n 1 ~/.ssh/id_rsa)"
+          echo "SSH Key - Line count: $(wc -l < ~/.ssh/id_rsa)"
           
           # Validate SSH key format
           if ! ssh-keygen -l -f ~/.ssh/id_rsa > /dev/null 2>&1; then
             echo "❌ ERROR: Invalid SSH key format!"
             echo "Please ensure STAGING_SERVER_SSH_KEY contains a valid private key"
+            echo "The key should start with '-----BEGIN OPENSSH PRIVATE KEY-----'"
+            echo "and end with '-----END OPENSSH PRIVATE KEY-----'"
             exit 1
           fi
+          
+          echo "✅ SSH key format is valid"
           
           # Add server to known hosts
           ssh-keyscan -H ${{ secrets.STAGING_SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
@@ -450,17 +459,26 @@ jobs:
       # ============================================================
       - name: Deploy to Production Server
         run: |
-          # Setup SSH
+          # Setup SSH (preserve newlines with printf)
           mkdir -p ~/.ssh
-          echo "${{ secrets.PROD_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          printf '%s\n' "${{ secrets.PROD_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          
+          # Debug: Show key format (first/last line only, no sensitive data)
+          echo "SSH Key - First line: $(head -n 1 ~/.ssh/id_rsa)"
+          echo "SSH Key - Last line: $(tail -n 1 ~/.ssh/id_rsa)"
+          echo "SSH Key - Line count: $(wc -l < ~/.ssh/id_rsa)"
           
           # Validate SSH key format
           if ! ssh-keygen -l -f ~/.ssh/id_rsa > /dev/null 2>&1; then
             echo "❌ ERROR: Invalid SSH key format!"
             echo "Please ensure PROD_SERVER_SSH_KEY contains a valid private key"
+            echo "The key should start with '-----BEGIN OPENSSH PRIVATE KEY-----'"
+            echo "and end with '-----END OPENSSH PRIVATE KEY-----'"
             exit 1
           fi
+          
+          echo "✅ SSH key format is valid"
           
           ssh-keyscan -H ${{ secrets.PROD_SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
           
