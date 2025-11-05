@@ -208,10 +208,10 @@ jobs:
           fi
 
       - name: Upload Build Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: spotify-clone/dist/
+          path: dist/
           retention-days: 1
 
       - name: Send Telegram - Build successful
@@ -516,3 +516,76 @@ jobs:
               \"text\": \"🚨 **PRODUCTION Deployment FAILED & ROLLED BACK**\n\n❌ Automatic rollback initiated\n✅ Previous version restored\n⚠️ Users are safe (old version running)\n\n👤 Attempted by: ${{ github.actor }}\n📝 Commit: ${{ github.event.head_commit.message }}\n\n🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n👥 @DevOps Please investigate immediately!\",
               \"parse_mode\": \"Markdown\"
             }"
+
+  # ====================================================================
+  # FINAL: Workflow Status Notification (ALWAYS RUNS)
+  # Catches silent failures that happen before job execution
+  # ====================================================================
+  workflow-status:
+    name: Workflow Status Notification
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [essential-checks, build, deploy-staging, deploy-production]
+    steps:
+      - name: Check workflow status
+        id: status
+        run: |
+          # Determine overall workflow status
+          if [[ "${{ needs.essential-checks.result }}" == "failure" ]] || \
+             [[ "${{ needs.build.result }}" == "failure" ]] || \
+             [[ "${{ needs.deploy-staging.result }}" == "failure" ]] || \
+             [[ "${{ needs.deploy-production.result }}" == "failure" ]]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+          elif [[ "${{ needs.essential-checks.result }}" == "cancelled" ]] || \
+               [[ "${{ needs.build.result }}" == "cancelled" ]] || \
+               [[ "${{ needs.deploy-staging.result }}" == "cancelled" ]] || \
+               [[ "${{ needs.deploy-production.result }}" == "cancelled" ]]; then
+            echo "status=cancelled" >> $GITHUB_OUTPUT
+          elif [[ "${{ needs.essential-checks.result }}" == "skipped" ]] && \
+               [[ "${{ needs.build.result }}" == "skipped" ]] && \
+               [[ "${{ needs.deploy-staging.result }}" == "skipped" ]] && \
+               [[ "${{ needs.deploy-production.result }}" == "skipped" ]]; then
+            echo "status=skipped" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send final status to Telegram
+        if: env.TELEGRAM_BOT_TOKEN != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ secrets.TELEGRAM_TOPIC_ID }}
+        run: |
+          STATUS="${{ steps.status.outputs.status }}"
+          
+          if [[ "$STATUS" == "failed" ]]; then
+            MESSAGE="❌ **Workflow FAILED**\n\n"
+            MESSAGE+="🚫 Checks: ${{ needs.essential-checks.result }}\n"
+            MESSAGE+="🔨 Build: ${{ needs.build.result }}\n"
+            MESSAGE+="🚀 Staging: ${{ needs.deploy-staging.result }}\n"
+            MESSAGE+="🎯 Production: ${{ needs.deploy-production.result }}\n\n"
+            MESSAGE+="👤 Author: ${{ github.actor }}\n"
+            MESSAGE+="🌿 Branch: ${{ github.ref_name }}\n\n"
+            MESSAGE+="🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          elif [[ "$STATUS" == "cancelled" ]]; then
+            MESSAGE="⚠️ **Workflow CANCELLED**\n\n"
+            MESSAGE+="👤 Cancelled by: ${{ github.actor }}\n"
+            MESSAGE+="🌿 Branch: ${{ github.ref_name }}"
+          elif [[ "$STATUS" == "skipped" ]]; then
+            # Don't send notification for skipped workflows
+            exit 0
+          else
+            # Success notifications are already sent by individual jobs
+            exit 0
+          fi
+          
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"${MESSAGE}\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
