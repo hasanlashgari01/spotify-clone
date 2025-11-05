@@ -1,16 +1,10 @@
 import ErrorMessage from '../error/ErrorMessage';
 import FloatingMusicIcons from '../playlistpage/FloatingMusicIcons';
-import { Search, X } from 'lucide-react';
 import { FC } from 'react';
-import { IoMdShare } from 'react-icons/io';
 import { GenreDetailsWrapperProps } from '../../types/song.type';
 
 const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
   genreDetails,
-  showSearch,
-  setShowSearch,
-  setSearch,
-  search,
 }) => {
   if (!genreDetails) {
     return <ErrorMessage error={'Genre Not Found'} />;
