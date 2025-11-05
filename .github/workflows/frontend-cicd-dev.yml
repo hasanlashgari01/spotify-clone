@@ -258,7 +258,7 @@ jobs:
           name: frontend-build
           path: dist
 
-      - name: Send Telegram - Deploying to staging
+      - name: Send Telegram - Deploying to staging (DEBUG MODE)
         if: env.TELEGRAM_BOT_TOKEN != ''
         run: |
           curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
@@ -266,7 +266,7 @@ jobs:
             -d "{
               \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
               \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
-              \"text\": \"🚀 **Deploying to STAGING**\n\n⏳ Uploading to staging server...\n📦 Commit: ${{ github.event.head_commit.message }}\",
+              \"text\": \"🚀 **Deploying to STAGING (DEBUG MODE)**\n\n📋 Connection Details:\n• Host: \`${{ secrets.STAGING_SERVER_HOST }}\`\n• User: \`${{ secrets.STAGING_SERVER_USER }}\`\n• Port: \`${{ secrets.STAGING_SERVER_PORT || 22 }}\`\n• Path: \`/var/www/Navazino/staging/dist/\`\n\n⏳ Starting deployment with verbose logging...\n📦 Commit: ${{ github.event.head_commit.message }}\n\n🔍 Watch GitHub Actions for detailed logs!\",
               \"parse_mode\": \"Markdown\"
             }"
 
@@ -302,49 +302,149 @@ jobs:
       # ============================================================
       - name: Deploy to Staging Server
         run: |
+          set -x  # Enable verbose debug output for EVERYTHING
+          
+          echo "============================================"
+          echo "🔍 DEPLOYMENT DEBUG - FULL DIAGNOSTIC MODE"
+          echo "============================================"
+          
           # Setup SSH key (preserve newlines with printf)
+          echo "📝 Step 1: Setting up SSH key..."
           mkdir -p ~/.ssh
           printf '%s\n' "${{ secrets.STAGING_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           
-          # Debug: Show key format (first/last line only, no sensitive data)
-          echo "SSH Key - First line: $(head -n 1 ~/.ssh/id_rsa)"
-          echo "SSH Key - Last line: $(tail -n 1 ~/.ssh/id_rsa)"
-          echo "SSH Key - Line count: $(wc -l < ~/.ssh/id_rsa)"
+          echo ""
+          echo "🔑 SSH Key Information:"
+          echo "  First line: $(head -n 1 ~/.ssh/id_rsa)"
+          echo "  Last line: $(tail -n 1 ~/.ssh/id_rsa)"
+          echo "  Line count: $(wc -l < ~/.ssh/id_rsa)"
+          echo "  File size: $(wc -c < ~/.ssh/id_rsa) bytes"
+          echo "  Permissions: $(ls -l ~/.ssh/id_rsa | awk '{print $1}')"
           
           # Validate SSH key format
-          if ! ssh-keygen -l -f ~/.ssh/id_rsa > /dev/null 2>&1; then
+          echo ""
+          echo "✅ Step 2: Validating SSH key format..."
+          if ! ssh-keygen -l -f ~/.ssh/id_rsa 2>&1; then
             echo "❌ ERROR: Invalid SSH key format!"
-            echo "Please ensure STAGING_SERVER_SSH_KEY contains a valid private key"
-            echo "The key should start with '-----BEGIN OPENSSH PRIVATE KEY-----'"
-            echo "and end with '-----END OPENSSH PRIVATE KEY-----'"
             exit 1
           fi
+          echo "✅ SSH key format is VALID"
           
-          echo "✅ SSH key format is valid"
+          # Show connection details
+          echo ""
+          echo "🌐 Connection Details:"
+          echo "  Host: ${{ secrets.STAGING_SERVER_HOST }}"
+          echo "  User: ${{ secrets.STAGING_SERVER_USER }}"
+          echo "  Port: ${{ secrets.STAGING_SERVER_PORT || 22 }}"
+          echo "  Target: /var/www/Navazino/staging/dist/"
           
           # Add server to known hosts
-          ssh-keyscan -H ${{ secrets.STAGING_SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          echo ""
+          echo "📋 Step 3: Adding server to known hosts..."
+          ssh-keyscan -H ${{ secrets.STAGING_SERVER_HOST }} >> ~/.ssh/known_hosts 2>&1
+          echo "Known hosts entries: $(grep -c . ~/.ssh/known_hosts || echo 0)"
           
-          # Test SSH connection first
-          echo "Testing SSH connection..."
-          if ! ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
+          # Test SSH connection with FULL DEBUG
+          echo ""
+          echo "🔌 Step 4: Testing SSH connection (VERBOSE MODE)..."
+          echo "Running: ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 -p ${{ secrets.STAGING_SERVER_PORT || 22 }} ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }} 'echo SSH_TEST_SUCCESS'"
+          
+          SSH_OUTPUT=$(ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
                -p ${{ secrets.STAGING_SERVER_PORT || 22 }} \
                ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }} \
-               "echo 'SSH connection successful!'" 2>&1; then
-            echo "❌ ERROR: SSH connection failed!"
-            echo "Check your SSH credentials in GitHub Secrets"
+               "echo 'SSH_TEST_SUCCESS'" 2>&1) || SSH_EXIT=$?
+          
+          echo "SSH Output:"
+          echo "$SSH_OUTPUT"
+          echo ""
+          echo "SSH Exit Code: ${SSH_EXIT:-0}"
+          
+          if [ "${SSH_EXIT:-0}" -ne 0 ]; then
+            echo ""
+            echo "❌❌❌ SSH CONNECTION FAILED ❌❌❌"
+            echo ""
+            echo "🔍 Debugging Information:"
+            echo "  - Key fingerprint: $(ssh-keygen -lf ~/.ssh/id_rsa)"
+            echo "  - Key type: $(head -n 1 ~/.ssh/id_rsa)"
+            echo "  - Attempting connection to: ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }}:${{ secrets.STAGING_SERVER_PORT || 22 }}"
+            echo ""
+            echo "💡 Possible Issues:"
+            echo "  1. Public key not in VPS authorized_keys"
+            echo "  2. Wrong username (should be: root)"
+            echo "  3. Wrong host (should be: 195.96.135.21)"
+            echo "  4. Firewall blocking port ${{ secrets.STAGING_SERVER_PORT || 22 }}"
+            echo "  5. SSH service not running on VPS"
+            echo ""
+            echo "🔧 To fix on VPS, run:"
+            echo "  ssh root@195.96.135.21"
+            echo "  cat ~/.ssh/authorized_keys | grep github-actions"
+            echo ""
+            
+            # Send detailed error to Telegram
+            curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+              -H 'Content-Type: application/json' \
+              -d "{
+                \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
+                \"message_thread_id\": ${{ secrets.TELEGRAM_TOPIC_ID }},
+                \"text\": \"❌ **SSH CONNECTION FAILED**\n\n🔍 Debug Info:\nHost: \`${{ secrets.STAGING_SERVER_HOST }}\`\nUser: \`${{ secrets.STAGING_SERVER_USER }}\`\nPort: \`${{ secrets.STAGING_SERVER_PORT || 22 }}\`\nKey fingerprint: \`$(ssh-keygen -lf ~/.ssh/id_rsa | awk '{print $2}')\`\n\nExit code: ${SSH_EXIT:-0}\n\nCheck if public key is in VPS authorized_keys!\",
+                \"parse_mode\": \"Markdown\"
+              }" 2>&1 || echo "Failed to send Telegram notification"
+            
             exit 1
           fi
           
-          # Deploy files via rsync
-          echo "Deploying files with rsync..."
-          rsync -avz --delete \
+          echo "✅✅✅ SSH CONNECTION SUCCESSFUL! ✅✅✅"
+          
+          # Check if dist directory exists and has files
+          echo ""
+          echo "📦 Step 5: Checking build artifacts..."
+          if [ ! -d "dist" ]; then
+            echo "❌ ERROR: dist directory not found!"
+            ls -la
+            exit 1
+          fi
+          echo "  Files in dist: $(find dist -type f | wc -l)"
+          echo "  Total size: $(du -sh dist | awk '{print $1}')"
+          
+          # Deploy files via rsync with VERBOSE output
+          echo ""
+          echo "🚀 Step 6: Deploying files with rsync (VERBOSE)..."
+          rsync -avz --progress --delete \
             -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.STAGING_SERVER_PORT || 22 }}" \
             dist/ \
-            ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }}:/var/www/Navazino/staging/dist/
+            ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }}:/var/www/Navazino/staging/dist/ 2>&1 || RSYNC_EXIT=$?
           
-          echo "✅ Files uploaded successfully!"
+          if [ "${RSYNC_EXIT:-0}" -ne 0 ]; then
+            echo "❌ RSYNC FAILED with exit code: ${RSYNC_EXIT:-0}"
+            
+            # Send rsync error to Telegram
+            curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+              -H 'Content-Type: application/json' \
+              -d "{
+                \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
+                \"message_thread_id\": ${{ secrets.TELEGRAM_TOPIC_ID }},
+                \"text\": \"❌ **RSYNC FAILED**\n\nExit code: ${RSYNC_EXIT:-0}\n\nCheck VPS permissions on /var/www/Navazino/staging/dist/\",
+                \"parse_mode\": \"Markdown\"
+              }" 2>&1 || echo "Failed to send Telegram notification"
+            
+            exit 1
+          fi
+          
+          echo ""
+          echo "✅✅✅ FILES UPLOADED SUCCESSFULLY! ✅✅✅"
+          
+          # Verify files on server
+          echo ""
+          echo "🔍 Step 7: Verifying deployment on server..."
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.STAGING_SERVER_PORT || 22 }} \
+            ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }} \
+            "ls -lah /var/www/Navazino/staging/dist/ && echo '' && echo 'File count: \$(find /var/www/Navazino/staging/dist -type f | wc -l)' && echo 'Total size: \$(du -sh /var/www/Navazino/staging/dist | awk \"{print \\\$1}\")'"
+          
+          echo ""
+          echo "============================================"
+          echo "✅ DEPLOYMENT COMPLETED SUCCESSFULLY!"
+          echo "============================================"
 
       # ============================================================
       # HEALTH CHECK: Verify deployment worked
