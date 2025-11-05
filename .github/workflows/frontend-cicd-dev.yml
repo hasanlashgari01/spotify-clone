@@ -56,7 +56,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: cd spotify-clone && pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Send Telegram - Starting checks
         if: env.TELEGRAM_BOT_TOKEN != ''
@@ -87,7 +87,7 @@ jobs:
       # This is your MOST IMPORTANT check!
       # ============================================================
       - name: TypeScript Type Check
-        run: cd spotify-clone && npx tsc --noEmit
+        run: npx tsc --noEmit
         continue-on-error: false
 
       # ============================================================
@@ -95,7 +95,7 @@ jobs:
       # Checks: npm packages for known security issues
       # ============================================================
       - name: Dependencies Security Audit
-        run: cd spotify-clone && pnpm audit --audit-level=high
+        run: pnpm audit --audit-level=high
         continue-on-error: true  # Don't fail build, just warn
 
       - name: Send Telegram - Checks passed
@@ -158,7 +158,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: cd spotify-clone && pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Send Telegram - Build started
         if: env.TELEGRAM_BOT_TOKEN != ''
@@ -177,7 +177,7 @@ jobs:
       # This runs: tsc -b && vite build
       # ============================================================
       - name: Build with Vite
-        run: cd spotify-clone && pnpm build
+        run: pnpm build
         continue-on-error: false
 
       # ============================================================
@@ -186,7 +186,6 @@ jobs:
       # ============================================================
       - name: Check Build Size
         run: |
-          cd spotify-clone
           if [ -d "dist" ]; then
             BUILD_SIZE=$(du -sh dist | cut -f1)
             BUILD_SIZE_KB=$(du -sk dist | cut -f1)
@@ -218,7 +217,6 @@ jobs:
       - name: Send Telegram - Build successful
         if: success() && env.TELEGRAM_BOT_TOKEN != ''
         run: |
-          cd spotify-clone
           BUILD_SIZE=$(du -sh dist | cut -f1 2>/dev/null || echo "Unknown")
           curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -H 'Content-Type: application/json' \
