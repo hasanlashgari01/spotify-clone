@@ -307,15 +307,35 @@ jobs:
           echo "${{ secrets.STAGING_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           
+          # Validate SSH key format
+          if ! ssh-keygen -l -f ~/.ssh/id_rsa > /dev/null 2>&1; then
+            echo "❌ ERROR: Invalid SSH key format!"
+            echo "Please ensure STAGING_SERVER_SSH_KEY contains a valid private key"
+            exit 1
+          fi
+          
           # Add server to known hosts
-          ssh-keyscan -H ${{ secrets.STAGING_SERVER_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.STAGING_SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          
+          # Test SSH connection first
+          echo "Testing SSH connection..."
+          if ! ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
+               -p ${{ secrets.STAGING_SERVER_PORT || 22 }} \
+               ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }} \
+               "echo 'SSH connection successful!'" 2>&1; then
+            echo "❌ ERROR: SSH connection failed!"
+            echo "Check your SSH credentials in GitHub Secrets"
+            exit 1
+          fi
           
           # Deploy files via rsync
+          echo "Deploying files with rsync..."
           rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.STAGING_SERVER_PORT || 22 }}" \
             dist/ \
             ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }}:/var/www/Navazino/staging/dist/
           
-          echo "Files uploaded successfully!"
+          echo "✅ Files uploaded successfully!"
 
       # ============================================================
       # HEALTH CHECK: Verify deployment worked
@@ -434,14 +454,35 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.PROD_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.PROD_SERVER_HOST }} >> ~/.ssh/known_hosts
+          
+          # Validate SSH key format
+          if ! ssh-keygen -l -f ~/.ssh/id_rsa > /dev/null 2>&1; then
+            echo "❌ ERROR: Invalid SSH key format!"
+            echo "Please ensure PROD_SERVER_SSH_KEY contains a valid private key"
+            exit 1
+          fi
+          
+          ssh-keyscan -H ${{ secrets.PROD_SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          
+          # Test SSH connection first
+          echo "Testing SSH connection..."
+          if ! ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
+               -p ${{ secrets.PROD_SERVER_PORT || 22 }} \
+               ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }} \
+               "echo 'SSH connection successful!'" 2>&1; then
+            echo "❌ ERROR: SSH connection failed!"
+            echo "Check your SSH credentials in GitHub Secrets"
+            exit 1
+          fi
           
           # Deploy via rsync
+          echo "Deploying files with rsync..."
           rsync -avz --delete \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.PROD_SERVER_PORT || 22 }}" \
             dist/ \
             ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/Navazino/production/dist/
           
-          echo "Production files uploaded!"
+          echo "✅ Production files uploaded!"
 
       # ============================================================
       # HEALTH CHECK: Verify production is working
