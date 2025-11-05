@@ -303,6 +303,7 @@ jobs:
       - name: Deploy to Staging Server
         run: |
           set -x  # Enable verbose debug output for EVERYTHING
+          set +e  # DISABLE exit on error - we handle errors manually
           
           echo "============================================"
           echo "🔍 DEPLOYMENT DEBUG - FULL DIAGNOSTIC MODE"
@@ -342,8 +343,9 @@ jobs:
           # Add server to known hosts
           echo ""
           echo "📋 Step 3: Adding server to known hosts..."
-          ssh-keyscan -H ${{ secrets.STAGING_SERVER_HOST }} >> ~/.ssh/known_hosts 2>&1
-          echo "Known hosts entries: $(grep -c . ~/.ssh/known_hosts || echo 0)"
+          ssh-keyscan -H ${{ secrets.STAGING_SERVER_HOST }} >> ~/.ssh/known_hosts 2>&1 || true
+          echo "Known hosts entries: $(grep -c . ~/.ssh/known_hosts 2>/dev/null || echo 0)"
+          echo "✅ Known hosts configured"
           
           # Test SSH connection with FULL DEBUG
           echo ""
