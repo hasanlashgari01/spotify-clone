@@ -253,7 +253,7 @@ jobs:
       url: https://staging.navazino.com  # ← Update with your staging URL
     steps:
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: frontend-build
           path: dist
@@ -377,7 +377,7 @@ jobs:
       url: https://navazino.com  # ← Update with your production URL
     steps:
       - name: Download Build Artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: frontend-build
           path: dist
