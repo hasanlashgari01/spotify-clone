@@ -165,7 +165,7 @@ export const AudiencePage = ({ me }: Props) => {
     );
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 w-full p-12">
       {/* Header */}
       <div className="bg-slate-900/70 border border-sky-400/20 backdrop-blur-2xl p-6 rounded-3xl shadow-[0_0_30px_rgba(56,189,248,0.15)] flex flex-col md:flex-row justify-between items-center">
         <div>
