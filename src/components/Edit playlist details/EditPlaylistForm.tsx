@@ -51,7 +51,7 @@ const EditPlaylistForm: React.FC<Props> = ({
 
       await httpService.patch(`/playlists/${playlist.id}`, fd);
       onSuccess();
-    } catch (err: any) {
+    } catch (err : any) {
       console.error('Update playlist error:', err);
       const msg =
         err?.response?.data?.message || err?.message || 'update error';
