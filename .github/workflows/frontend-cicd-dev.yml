@@ -588,51 +588,36 @@ jobs:
 
       # ============================================================
       # DEPLOYMENT: Upload to production
+      # Uses SCP action (same as staging, handles Iranian VPS properly)
       # ============================================================
       - name: Deploy to Production Server
-        run: |
-          # Setup SSH (preserve newlines with printf)
-          mkdir -p ~/.ssh
-          printf '%s\n' "${{ secrets.PROD_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}
+          port: ${{ secrets.PROD_SERVER_PORT || 22 }}
+          source: "dist/*"
+          target: "/var/www/Navazino/production/dist/"
+          strip_components: 1
+          rm: false
           
-          # Debug: Show key format (first/last line only, no sensitive data)
-          echo "SSH Key - First line: $(head -n 1 ~/.ssh/id_rsa)"
-          echo "SSH Key - Last line: $(tail -n 1 ~/.ssh/id_rsa)"
-          echo "SSH Key - Line count: $(wc -l < ~/.ssh/id_rsa)"
-          
-          # Validate SSH key format
-          if ! ssh-keygen -l -f ~/.ssh/id_rsa > /dev/null 2>&1; then
-            echo "❌ ERROR: Invalid SSH key format!"
-            echo "Please ensure PROD_SERVER_SSH_KEY contains a valid private key"
-            echo "The key should start with '-----BEGIN OPENSSH PRIVATE KEY-----'"
-            echo "and end with '-----END OPENSSH PRIVATE KEY-----'"
-            exit 1
-          fi
-          
-          echo "✅ SSH key format is valid"
-          
-          ssh-keyscan -H ${{ secrets.PROD_SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          
-          # Test SSH connection first
-          echo "Testing SSH connection..."
-          if ! ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
-               -p ${{ secrets.PROD_SERVER_PORT || 22 }} \
-               ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }} \
-               "echo 'SSH connection successful!'" 2>&1; then
-            echo "❌ ERROR: SSH connection failed!"
-            echo "Check your SSH credentials in GitHub Secrets"
-            exit 1
-          fi
-          
-          # Deploy via rsync
-          echo "Deploying files with rsync..."
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.PROD_SERVER_PORT || 22 }}" \
-            dist/ \
-            ${{ secrets.PROD_SERVER_USER }}@${{ secrets.PROD_SERVER_HOST }}:/var/www/Navazino/production/dist/
-          
-          echo "✅ Production files uploaded!"
+      - name: Verify Production Deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}
+          port: ${{ secrets.PROD_SERVER_PORT || 22 }}
+          script: |
+            echo "🔍 Verifying production deployment..."
+            ls -lah /var/www/Navazino/production/dist/ | head -20
+            echo ""
+            echo "📊 Statistics:"
+            echo "  Files: $(find /var/www/Navazino/production/dist -type f | wc -l)"
+            echo "  Size: $(du -sh /var/www/Navazino/production/dist | awk '{print $1}')"
+            echo ""
+            echo "✅ Production deployment verification complete!"
 
       # ============================================================
       # HEALTH CHECK: Verify production is working
