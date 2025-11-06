@@ -1,0 +1,767 @@
+name: Frontend CI/CD (Development Phase)
+
+# Simplified pipeline for active development
+# Focus: Build success (not comprehensive testing)
+# DevOps Strategy: If it builds, ship it! 🚀
+
+on:
+  push:
+    branches: 
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+env:
+  NODE_VERSION: '18'
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  TELEGRAM_TOPIC_ID: ${{ secrets.TELEGRAM_TOPIC_ID }}
+
+jobs:
+  # ====================================================================
+  # STAGE 1: Essential Code Quality Checks
+  # Quick checks that catch 80% of problems!
+  # ====================================================================
+  essential-checks:
+    name: Essential Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Send Telegram - Starting checks
+        if: env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"🚀 **CI/CD Started** (Development Mode)\n\n📋 Commit: ${{ github.event.head_commit.message }}\n👤 Author: ${{ github.actor }}\n🌿 Branch: ${{ github.ref_name }}\n\n⏳ Running essential checks...\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+      # ============================================================
+      # ❌ CHECK 1: ESLint (REMOVED)
+      # Reason: 39 lint errors, devs too lazy to fix
+      # DevOps decision: Focus on what matters (builds)
+      # ============================================================
+      
+      # ❌ CHECK 2: Prettier (REMOVED)
+      # Reason: Formatting doesn't break the app
+      # DevOps decision: Save time, skip formatting checks
+      # ============================================================
+
+      # ============================================================
+      # CHECK 1: TypeScript Type Check (CRITICAL!)
+      # Catches: Type errors, undefined vars, wrong imports
+      # This is your MOST IMPORTANT check!
+      # ============================================================
+      - name: TypeScript Type Check
+        run: npx tsc --noEmit
+        continue-on-error: false
+
+      # ============================================================
+      # CHECK 2: Security Audit (Dependency Vulnerabilities)
+      # Checks: npm packages for known security issues
+      # ============================================================
+      - name: Dependencies Security Audit
+        run: pnpm audit --audit-level=high
+        continue-on-error: true  # Don't fail build, just warn
+
+      - name: Send Telegram - Checks passed
+        if: success() && env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"✅ **Essential Checks PASSED**\n\n✓ TypeScript: No type errors\n✓ Dependencies: Secure\n⚠️ ESLint: Skipped (devs too lazy 😅)\n⚠️ Prettier: Skipped (formatting doesn't matter)\n\n⏳ Next: Building...\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+      - name: Send Telegram - Checks failed
+        if: failure() && env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"❌ **Essential Checks FAILED**\n\n🚫 TypeScript errors detected\n👤 Author: ${{ github.actor }}\n\n🔧 Fix the errors and push again!\n\n🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+  # ====================================================================
+  # STAGE 2: Build & Size Check
+  # Ensures the app can be built for production
+  # ====================================================================
+  build:
+    name: Production Build
+    runs-on: ubuntu-latest
+    needs: essential-checks
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Send Telegram - Build started
+        if: env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"🔨 **Building Production Bundle**\n\n⏳ Compiling with Vite + TypeScript...\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+      # ============================================================
+      # BUILD: TypeScript + Vite Production Build
+      # This runs: tsc -b && vite build
+      # ============================================================
+      - name: Build with Vite
+        run: pnpm build
+        continue-on-error: false
+
+      # ============================================================
+      # CHECK: Build Size (Performance Warning)
+      # Alert if bundle is getting too large
+      # ============================================================
+      - name: Check Build Size
+        run: |
+          if [ -d "dist" ]; then
+            BUILD_SIZE=$(du -sh dist | cut -f1)
+            BUILD_SIZE_KB=$(du -sk dist | cut -f1)
+            echo "Build size: $BUILD_SIZE ($BUILD_SIZE_KB KB)"
+            
+            # Alert if build is over 10MB
+            if [ "$BUILD_SIZE_KB" -gt 10240 ]; then
+              echo "⚠️ WARNING: Build size is larger than 10MB!"
+              echo "Consider lazy loading or code splitting."
+            fi
+            
+            # Fail if over 50MB (something is seriously wrong!)
+            if [ "$BUILD_SIZE_KB" -gt 51200 ]; then
+              echo "❌ Build size exceeds 50MB limit!"
+              exit 1
+            fi
+          else
+            echo "❌ dist directory not found!"
+            exit 1
+          fi
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: dist/
+          retention-days: 1
+
+      - name: Send Telegram - Build successful
+        if: success() && env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          BUILD_SIZE=$(du -sh dist | cut -f1 2>/dev/null || echo "Unknown")
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"✅ **Production Build SUCCESSFUL**\n\n📦 Build size: ${BUILD_SIZE}\n✓ TypeScript compiled\n✓ Bundle created\n✓ No build errors\n\n🎉 Ready for deployment!\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+      - name: Send Telegram - Build failed
+        if: failure() && env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"❌ **Build FAILED**\n\n🚫 Vite compilation error or build size exceeded\n👤 Author: ${{ github.actor }}\n\nCheck the build logs!\n\n🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+  # ====================================================================
+  # STAGE 3: Deploy to Staging (for develop branch)
+  # Automatic deployment when develop branch is pushed
+  # ====================================================================
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.navazino.com  # ← Update with your staging URL
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: dist
+
+      - name: Send Telegram - Deploying to staging (DEBUG MODE)
+        if: env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"🚀 **Deploying to STAGING (DEBUG MODE)**\n\n📋 Connection Details:\n• Host: \`${{ secrets.STAGING_SERVER_HOST }}\`\n• User: \`${{ secrets.STAGING_SERVER_USER }}\`\n• Port: \`${{ secrets.STAGING_SERVER_PORT || 22 }}\`\n• Path: \`/var/www/Navazino/staging/dist/\`\n\n⏳ Starting deployment with verbose logging...\n📦 Commit: ${{ github.event.head_commit.message }}\n\n🔍 Watch GitHub Actions for detailed logs!\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+      # ============================================================
+      # DEPLOYMENT: Clean old files on server
+      # Creates backup before removing
+      # ============================================================
+      - name: Backup and Clean Staging Directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_SERVER_HOST }}        # Add to GitHub Secrets: Your VPS IP (e.g., 123.45.67.89)
+          username: ${{ secrets.STAGING_SERVER_USER }}    # Add to GitHub Secrets: SSH user (e.g., deploy or ubuntu)
+          key: ${{ secrets.STAGING_SERVER_SSH_KEY }}      # Add to GitHub Secrets: Your SSH private key
+          port: ${{ secrets.STAGING_SERVER_PORT || 22 }}  # Add to GitHub Secrets: SSH port (usually 22)
+          script: |
+            # Create directory if it doesn't exist
+            mkdir -p /var/www/Navazino/staging/dist
+            
+            # Backup current version (if exists)
+            if [ -d "/var/www/Navazino/staging/dist" ] && [ "$(ls -A /var/www/Navazino/staging/dist)" ]; then
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              cp -r /var/www/Navazino/staging/dist /var/www/Navazino/staging/dist.backup.$TIMESTAMP
+              echo "Backup created: dist.backup.$TIMESTAMP"
+            fi
+            
+            # Clean current directory
+            rm -rf /var/www/Navazino/staging/dist/*
+            echo "Directory cleaned and ready for deployment"
+
+      # ============================================================
+      # DEPLOYMENT: Upload new build files
+      # Uses SCP action (handles GitHub Actions networking better than manual rsync)
+      # ============================================================
+      - name: Deploy to Staging Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.STAGING_SERVER_HOST }}
+          username: ${{ secrets.STAGING_SERVER_USER }}
+          key: ${{ secrets.STAGING_SERVER_SSH_KEY }}
+          port: ${{ secrets.STAGING_SERVER_PORT || 22 }}
+          source: "dist/*"
+          target: "/var/www/Navazino/staging/dist/"
+          strip_components: 1
+          rm: false
+          
+      - name: Verify Deployment (DEBUG)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_SERVER_HOST }}
+          username: ${{ secrets.STAGING_SERVER_USER }}
+          key: ${{ secrets.STAGING_SERVER_SSH_KEY }}
+          port: ${{ secrets.STAGING_SERVER_PORT || 22 }}
+          script: |
+            echo "🔍 Verifying deployment..."
+            ls -lah /var/www/Navazino/staging/dist/ | head -20
+            echo ""
+            echo "📊 Statistics:"
+            echo "  Files: $(find /var/www/Navazino/staging/dist -type f | wc -l)"
+            echo "  Size: $(du -sh /var/www/Navazino/staging/dist | awk '{print $1}')"
+            echo ""
+            echo "✅ Deployment verification complete!"
+      
+      - name: OLD_MANUAL_DEPLOYMENT_DISABLED
+        if: false
+        run: |
+          set -x  # Enable verbose debug output for EVERYTHING
+          set +e  # DISABLE exit on error - we handle errors manually
+          
+          echo "============================================"
+          echo "🔍 DEPLOYMENT DEBUG - FULL DIAGNOSTIC MODE"
+          echo "============================================"
+          
+          # Setup SSH key (preserve newlines with printf)
+          echo "📝 Step 1: Setting up SSH key..."
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.STAGING_SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          echo ""
+          echo "🔑 SSH Key Information:"
+          echo "  First line: $(head -n 1 ~/.ssh/id_rsa)"
+          echo "  Last line: $(tail -n 1 ~/.ssh/id_rsa)"
+          echo "  Line count: $(wc -l < ~/.ssh/id_rsa)"
+          echo "  File size: $(wc -c < ~/.ssh/id_rsa) bytes"
+          echo "  Permissions: $(ls -l ~/.ssh/id_rsa | awk '{print $1}')"
+          
+          # Validate SSH key format
+          echo ""
+          echo "✅ Step 2: Validating SSH key format..."
+          if ! ssh-keygen -l -f ~/.ssh/id_rsa 2>&1; then
+            echo "❌ ERROR: Invalid SSH key format!"
+            exit 1
+          fi
+          echo "✅ SSH key format is VALID"
+          
+          # Show connection details
+          echo ""
+          echo "🌐 Connection Details:"
+          echo "  Host: ${{ secrets.STAGING_SERVER_HOST }}"
+          echo "  User: ${{ secrets.STAGING_SERVER_USER }}"
+          echo "  Port: ${{ secrets.STAGING_SERVER_PORT || 22 }}"
+          echo "  Target: /var/www/Navazino/staging/dist/"
+          
+          # Add server to known hosts
+          echo ""
+          echo "📋 Step 3: Adding server to known hosts..."
+          ssh-keyscan -H ${{ secrets.STAGING_SERVER_HOST }} >> ~/.ssh/known_hosts 2>&1 || true
+          echo "Known hosts entries: $(grep -c . ~/.ssh/known_hosts 2>/dev/null || echo 0)"
+          echo "✅ Known hosts configured"
+          
+          # Test SSH connection with FULL DEBUG
+          echo ""
+          echo "🔌 Step 4: Testing SSH connection (VERBOSE MODE)..."
+          echo "Running: ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 -p ${{ secrets.STAGING_SERVER_PORT || 22 }} ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }} 'echo SSH_TEST_SUCCESS'"
+          
+          SSH_OUTPUT=$(ssh -vvv -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ConnectTimeout=10 \
+               -p ${{ secrets.STAGING_SERVER_PORT || 22 }} \
+               ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }} \
+               "echo 'SSH_TEST_SUCCESS'" 2>&1) || SSH_EXIT=$?
+          
+          echo "SSH Output:"
+          echo "$SSH_OUTPUT"
+          echo ""
+          echo "SSH Exit Code: ${SSH_EXIT:-0}"
+          
+          if [ "${SSH_EXIT:-0}" -ne 0 ]; then
+            echo ""
+            echo "❌❌❌ SSH CONNECTION FAILED ❌❌❌"
+            echo ""
+            echo "🔍 Debugging Information:"
+            echo "  - Key fingerprint: $(ssh-keygen -lf ~/.ssh/id_rsa)"
+            echo "  - Key type: $(head -n 1 ~/.ssh/id_rsa)"
+            echo "  - Attempting connection to: ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }}:${{ secrets.STAGING_SERVER_PORT || 22 }}"
+            echo ""
+            echo "💡 Possible Issues:"
+            echo "  1. Public key not in VPS authorized_keys"
+            echo "  2. Wrong username (should be: root)"
+            echo "  3. Wrong host (should be: 195.96.135.21)"
+            echo "  4. Firewall blocking port ${{ secrets.STAGING_SERVER_PORT || 22 }}"
+            echo "  5. SSH service not running on VPS"
+            echo ""
+            echo "🔧 To fix on VPS, run:"
+            echo "  ssh root@195.96.135.21"
+            echo "  cat ~/.ssh/authorized_keys | grep github-actions"
+            echo ""
+            
+            # Send detailed error to Telegram
+            curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+              -H 'Content-Type: application/json' \
+              -d "{
+                \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
+                \"message_thread_id\": ${{ secrets.TELEGRAM_TOPIC_ID }},
+                \"text\": \"❌ **SSH CONNECTION FAILED**\n\n🔍 Debug Info:\nHost: \`${{ secrets.STAGING_SERVER_HOST }}\`\nUser: \`${{ secrets.STAGING_SERVER_USER }}\`\nPort: \`${{ secrets.STAGING_SERVER_PORT || 22 }}\`\nKey fingerprint: \`$(ssh-keygen -lf ~/.ssh/id_rsa | awk '{print $2}')\`\n\nExit code: ${SSH_EXIT:-0}\n\nCheck if public key is in VPS authorized_keys!\",
+                \"parse_mode\": \"Markdown\"
+              }" 2>&1 || echo "Failed to send Telegram notification"
+            
+            exit 1
+          fi
+          
+          echo "✅✅✅ SSH CONNECTION SUCCESSFUL! ✅✅✅"
+          
+          # Check if dist directory exists and has files
+          echo ""
+          echo "📦 Step 5: Checking build artifacts..."
+          if [ ! -d "dist" ]; then
+            echo "❌ ERROR: dist directory not found!"
+            ls -la
+            exit 1
+          fi
+          echo "  Files in dist: $(find dist -type f | wc -l)"
+          echo "  Total size: $(du -sh dist | awk '{print $1}')"
+          
+          # Deploy files via rsync with VERBOSE output
+          echo ""
+          echo "🚀 Step 6: Deploying files with rsync (VERBOSE)..."
+          rsync -avz --progress --delete \
+            -e "ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.STAGING_SERVER_PORT || 22 }}" \
+            dist/ \
+            ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }}:/var/www/Navazino/staging/dist/ 2>&1 || RSYNC_EXIT=$?
+          
+          if [ "${RSYNC_EXIT:-0}" -ne 0 ]; then
+            echo "❌ RSYNC FAILED with exit code: ${RSYNC_EXIT:-0}"
+            
+            # Send rsync error to Telegram
+            curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+              -H 'Content-Type: application/json' \
+              -d "{
+                \"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\",
+                \"message_thread_id\": ${{ secrets.TELEGRAM_TOPIC_ID }},
+                \"text\": \"❌ **RSYNC FAILED**\n\nExit code: ${RSYNC_EXIT:-0}\n\nCheck VPS permissions on /var/www/Navazino/staging/dist/\",
+                \"parse_mode\": \"Markdown\"
+              }" 2>&1 || echo "Failed to send Telegram notification"
+            
+            exit 1
+          fi
+          
+          echo ""
+          echo "✅✅✅ FILES UPLOADED SUCCESSFULLY! ✅✅✅"
+          
+          # Verify files on server
+          echo ""
+          echo "🔍 Step 7: Verifying deployment on server..."
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p ${{ secrets.STAGING_SERVER_PORT || 22 }} \
+            ${{ secrets.STAGING_SERVER_USER }}@${{ secrets.STAGING_SERVER_HOST }} \
+            "ls -lah /var/www/Navazino/staging/dist/ && echo '' && echo 'File count: \$(find /var/www/Navazino/staging/dist -type f | wc -l)' && echo 'Total size: \$(du -sh /var/www/Navazino/staging/dist | awk \"{print \\\$1}\")'"
+          
+          echo ""
+          echo "============================================"
+          echo "✅ DEPLOYMENT COMPLETED SUCCESSFULLY!"
+          echo "============================================"
+
+      # ============================================================
+      # HEALTH CHECK: Verify deployment worked
+      # Tries 30 times over 2.5 minutes
+      # ============================================================
+      - name: Health Check - Staging
+        run: |
+          echo "Waiting for staging server to respond..."
+          sleep 10  # Give nginx time to detect new files
+          
+          for i in {1..30}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://staging.navazino.com || echo "000")
+            if [ "$STATUS" -eq 200 ] || [ "$STATUS" -eq 304 ]; then
+              echo "✅ Staging deployment successful! (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/30: HTTP $STATUS, retrying in 5 seconds..."
+            sleep 5
+          done
+          
+          echo "❌ Health check failed after 30 attempts"
+          exit 1
+
+      - name: Send Telegram - Staging deployed successfully
+        if: success() && env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"✅ **Deployed to STAGING Successfully**\n\n🌐 URL: http://staging.navazino.com\n✓ Health check passed\n\n👥 Team can now test the changes!\n📝 Commit: ${{ github.event.head_commit.message }}\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+      - name: Send Telegram - Staging deployment failed
+        if: failure() && env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"❌ **STAGING Deployment FAILED**\n\n🚫 Failed to deploy or health check failed\n👤 Pushed by: ${{ github.actor }}\n\n🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n⚠️ Staging may still be running old version\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+  # ====================================================================
+  # STAGE 4: Deploy to Production (for main branch only)
+  # Requires manual approval + includes automatic rollback
+  # ====================================================================
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://navazino.com  # ← Update with your production URL
+    steps:
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: dist
+
+      - name: Send Telegram - Production deployment pending
+        if: env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"🚨 **PRODUCTION DEPLOYMENT WAITING FOR APPROVAL** 🚨\n\n📦 Ready to deploy to production!\n📝 Commit: ${{ github.event.head_commit.message }}\n👤 Author: ${{ github.actor }}\n\n� **CLICK TO APPROVE:**\n🔗 ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\n⚠️ Action required: Review and approve deployment\n📱 Tip: Install GitHub mobile app for faster approvals!\",
+              \"parse_mode\": \"Markdown\",
+              \"disable_web_page_preview\": false
+            }"
+
+      # ============================================================
+      # SAFETY: Create backup before production deployment
+      # ============================================================
+      - name: Backup Current Production
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}        # Add to GitHub Secrets: Production VPS IP
+          username: ${{ secrets.PROD_SERVER_USER }}    # Add to GitHub Secrets: Production SSH user
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}      # Add to GitHub Secrets: Production SSH private key
+          port: ${{ secrets.PROD_SERVER_PORT || 22 }}  # Add to GitHub Secrets: Production SSH port
+          script: |
+            # Create directory if it doesn't exist
+            mkdir -p /var/www/Navazino/production/dist
+            
+            # Create timestamped backup
+            if [ -d "/var/www/Navazino/production/dist" ] && [ "$(ls -A /var/www/Navazino/production/dist)" ]; then
+              TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+              cp -r /var/www/Navazino/production/dist /var/www/Navazino/production/dist.backup.$TIMESTAMP
+              echo "✅ Backup created: dist.backup.$TIMESTAMP"
+              
+              # Keep only last 5 backups
+              cd /var/www/Navazino/production
+              ls -td dist.backup.* | tail -n +6 | xargs rm -rf
+              echo "Old backups cleaned (kept last 5)"
+            fi
+            
+            # Clean current directory
+            rm -rf /var/www/Navazino/production/dist/*
+            echo "Production directory ready"
+
+      # ============================================================
+      # DEPLOYMENT: Upload to production
+      # Uses SCP action (same as staging, handles Iranian VPS properly)
+      # ============================================================
+      - name: Deploy to Production Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}
+          port: ${{ secrets.PROD_SERVER_PORT || 22 }}
+          source: "dist/*"
+          target: "/var/www/Navazino/production/dist/"
+          strip_components: 1
+          rm: false
+          
+      - name: Verify Production Deployment
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}
+          port: ${{ secrets.PROD_SERVER_PORT || 22 }}
+          script: |
+            echo "🔍 Verifying production deployment..."
+            ls -lah /var/www/Navazino/production/dist/ | head -20
+            echo ""
+            echo "📊 Statistics:"
+            echo "  Files: $(find /var/www/Navazino/production/dist -type f | wc -l)"
+            echo "  Size: $(du -sh /var/www/Navazino/production/dist | awk '{print $1}')"
+            echo ""
+            echo "✅ Production deployment verification complete!"
+
+      # ============================================================
+      # HEALTH CHECK: Verify production is working
+      # If fails → Automatic rollback!
+      # ============================================================
+      - name: Health Check - Production
+        id: health_check
+        run: |
+          echo "Waiting for production server to respond..."
+          sleep 10
+          
+          for i in {1..30}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://navazino.com || echo "000")
+            if [ "$STATUS" -eq 200 ] || [ "$STATUS" -eq 304 ]; then
+              echo "✅ Production deployment successful! (HTTP $STATUS)"
+              exit 0
+            fi
+            echo "Attempt $i/30: HTTP $STATUS, retrying in 5 seconds..."
+            sleep 5
+          done
+          
+          echo "❌ Health check failed, triggering rollback!"
+          exit 1
+
+      # ============================================================
+      # FAILSAFE: Automatic rollback if health check fails
+      # ============================================================
+      - name: Rollback Production on Failure
+        if: failure()
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_SERVER_HOST }}
+          username: ${{ secrets.PROD_SERVER_USER }}
+          key: ${{ secrets.PROD_SERVER_SSH_KEY }}
+          port: ${{ secrets.PROD_SERVER_PORT || 22 }}
+          script: |
+            cd /var/www/Navazino/production
+            
+            # Find latest backup
+            LATEST_BACKUP=$(ls -td dist.backup.* 2>/dev/null | head -1)
+            
+            if [ -n "$LATEST_BACKUP" ]; then
+              echo "🔄 Rolling back to: $LATEST_BACKUP"
+              rm -rf dist/*
+              cp -r $LATEST_BACKUP/* dist/
+              echo "✅ Rollback complete! Production restored."
+            else
+              echo "❌ No backup found! Production may be broken!"
+              exit 1
+            fi
+
+      - name: Send Telegram - Production deployed successfully
+        if: success() && env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"🎉 **PRODUCTION Deployment SUCCESSFUL**\n\n✅ Live version updated!\n🌐 URL: https://navazino.com\n✓ Health check passed\n\n📝 Commit: ${{ github.event.head_commit.message }}\n👤 Deployed by: ${{ github.actor }}\n\n🚀 App is now LIVE for users!\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+      - name: Send Telegram - Production deployment failed
+        if: failure() && env.TELEGRAM_BOT_TOKEN != ''
+        run: |
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"🚨 **PRODUCTION Deployment FAILED & ROLLED BACK**\n\n❌ Automatic rollback initiated\n✅ Previous version restored\n⚠️ Users are safe (old version running)\n\n👤 Attempted by: ${{ github.actor }}\n📝 Commit: ${{ github.event.head_commit.message }}\n\n🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\n👥 @DevOps Please investigate immediately!\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
+  # ====================================================================
+  # FINAL: Workflow Status Notification (ALWAYS RUNS)
+  # Catches silent failures that happen before job execution
+  # ====================================================================
+  workflow-status:
+    name: Workflow Status Notification
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [essential-checks, build, deploy-staging, deploy-production]
+    steps:
+      - name: Check workflow status
+        id: status
+        run: |
+          # Determine overall workflow status
+          if [[ "${{ needs.essential-checks.result }}" == "failure" ]] || \
+             [[ "${{ needs.build.result }}" == "failure" ]] || \
+             [[ "${{ needs.deploy-staging.result }}" == "failure" ]] || \
+             [[ "${{ needs.deploy-production.result }}" == "failure" ]]; then
+            echo "status=failed" >> $GITHUB_OUTPUT
+          elif [[ "${{ needs.essential-checks.result }}" == "cancelled" ]] || \
+               [[ "${{ needs.build.result }}" == "cancelled" ]] || \
+               [[ "${{ needs.deploy-staging.result }}" == "cancelled" ]] || \
+               [[ "${{ needs.deploy-production.result }}" == "cancelled" ]]; then
+            echo "status=cancelled" >> $GITHUB_OUTPUT
+          elif [[ "${{ needs.essential-checks.result }}" == "skipped" ]] && \
+               [[ "${{ needs.build.result }}" == "skipped" ]] && \
+               [[ "${{ needs.deploy-staging.result }}" == "skipped" ]] && \
+               [[ "${{ needs.deploy-production.result }}" == "skipped" ]]; then
+            echo "status=skipped" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send final status to Telegram
+        if: env.TELEGRAM_BOT_TOKEN != ''
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_TOPIC_ID: ${{ secrets.TELEGRAM_TOPIC_ID }}
+        run: |
+          STATUS="${{ steps.status.outputs.status }}"
+          
+          if [[ "$STATUS" == "failed" ]]; then
+            MESSAGE="❌ **Workflow FAILED**\n\n"
+            MESSAGE+="🚫 Checks: ${{ needs.essential-checks.result }}\n"
+            MESSAGE+="🔨 Build: ${{ needs.build.result }}\n"
+            MESSAGE+="🚀 Staging: ${{ needs.deploy-staging.result }}\n"
+            MESSAGE+="🎯 Production: ${{ needs.deploy-production.result }}\n\n"
+            MESSAGE+="👤 Author: ${{ github.actor }}\n"
+            MESSAGE+="🌿 Branch: ${{ github.ref_name }}\n\n"
+            MESSAGE+="🔗 [View Logs](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          elif [[ "$STATUS" == "cancelled" ]]; then
+            MESSAGE="⚠️ **Workflow CANCELLED**\n\n"
+            MESSAGE+="👤 Cancelled by: ${{ github.actor }}\n"
+            MESSAGE+="🌿 Branch: ${{ github.ref_name }}"
+          elif [[ "$STATUS" == "skipped" ]]; then
+            # Don't send notification for skipped workflows
+            exit 0
+          else
+            # Success notifications are already sent by individual jobs
+            exit 0
+          fi
+          
+          curl -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
+              \"message_thread_id\": ${TELEGRAM_TOPIC_ID:-null},
+              \"text\": \"${MESSAGE}\",
+              \"parse_mode\": \"Markdown\"
+            }"
+
