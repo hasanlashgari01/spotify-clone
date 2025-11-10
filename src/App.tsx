@@ -20,6 +20,11 @@ import NotFound from './pages/NotFound';
 
 import ArtistsProfile from './pages/ArtistsProfile.tsx';
 import { ScrollToTop } from './components/scrolltoTop.tsx';
+import AdminLayout from './pages/admin/AdminLayout.tsx';
+import Dashboard from './pages/admin/Dashboard.tsx';
+import Analytics from './pages/admin/Analytics.tsx';
+import Playlists from './pages/admin/Playlists.tsx';
+import { Settings, Users } from 'lucide-react';
 
 const ConditionalMusicPlayer = () => {
   const location = useLocation();
@@ -64,9 +69,23 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="playlists" element={<Playlists />} />
+              <Route path="users" element={<Users />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+
             <Route path="*" element={<NotFound />} />
           </Routes>
-
           <Toaster
             position="top-right"
             toastOptions={{

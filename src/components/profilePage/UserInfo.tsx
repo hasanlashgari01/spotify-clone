@@ -373,7 +373,6 @@ const UserInfo = () => {
                     </svg>
                   </button>
                 </div>
-
               </div>
             </div>
 
@@ -384,9 +383,7 @@ const UserInfo = () => {
             </div>
           </div>
         </div>
-        <h1 className="md:text-md w-[163px] rounded-3xl   px-6 py-3 text-xs font-semibold tracking-wide text-white  backdrop-blur-md transition-all duration-300 ease-out sm:w-fit sm:text-sm lg:text-lg relative top-90 left-20 ">
-          {userData?.bio || 'No bio available'}
-        </h1>
+
         <div className="relative top-[30%] mr-22 flex h-fit flex-col items-center justify-center gap-5 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-20 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-15 md:p-10 lg:top-[10%] lg:mr-30 lg:p-13">
           <motion.div
             className="relative flex gap-4 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent p-4 shadow-xl backdrop-blur-xl sm:gap-6 sm:p-6 md:gap-10 md:p-8 lg:gap-12 lg:p-15"
@@ -404,7 +401,6 @@ const UserInfo = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-
               <motion.h2
                 className="bg-gradient-to-br from-blue-400 to-cyan-300 bg-clip-text text-2xl leading-none font-black text-transparent sm:text-3xl md:text-5xl lg:text-6xl"
                 animate={{
@@ -471,10 +467,8 @@ const UserInfo = () => {
               </h3>
             </motion.div>
           </motion.div>
-
         </div>
       </div>
-
 
       <div className="fixed">
         <FollowersCard
