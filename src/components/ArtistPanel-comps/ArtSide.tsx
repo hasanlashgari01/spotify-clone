@@ -39,7 +39,7 @@ export const ArtistSide = ({setArtist , setPage} : Props) => {
       }
     }
     fetchData();
-  })
+  } , [setArtist])
   return (
     <div className="h-screen w-full bg-gradient-to-b from-slate-950 via-sky-950/80 to-indigo-950 border-r border-sky-800/20 shadow-2xl flex flex-col justify-between p-6 backdrop-blur-xl text-slate-200">
 
