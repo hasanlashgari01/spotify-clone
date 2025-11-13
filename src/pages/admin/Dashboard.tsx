@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { httpService } from '../../config/axios';
 import { Users, Music, ListMusic, TrendingUp, UserPlus, Activity, AlertCircle, BarChart3 } from 'lucide-react';
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   LineChart,
   Line,
@@ -143,16 +143,16 @@ const Dashboard = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+          <h1 className="mb-2 text-3xl font-bold">Admin Dashboard</h1>
           <p className="text-white/60">System overview and key metrics</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-white/60">
-          <Activity className="w-4 h-4 animate-pulse" />
+          <Activity className="h-4 w-4 animate-pulse" />
           <span>Live</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total users"
           value={stats.totalUsers}
@@ -186,17 +186,27 @@ const Dashboard = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-blue-400" />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+            <TrendingUp className="h-5 w-5 text-blue-400" />
             Users growth (last 7 days)
           </h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={chartData.users.length > 0 ? chartData.users : []}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-              <XAxis dataKey="date" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-              <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="rgba(255,255,255,0.1)"
+              />
+              <XAxis
+                dataKey="date"
+                stroke="#94a3b8"
+                tick={{ fill: '#94a3b8', fontSize: 12 }}
+              />
+              <YAxis
+                stroke="#94a3b8"
+                tick={{ fill: '#94a3b8', fontSize: 12 }}
+              />
               <Tooltip
                 contentStyle={{
                   background: 'rgba(15,23,42,0.95)',
@@ -219,9 +229,9 @@ const Dashboard = () => {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-purple-400" />
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+          <h3 className="mb-4 flex items-center gap-2 text-lg font-semibold">
+            <BarChart3 className="h-5 w-5 text-purple-400" />
             Users distribution
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -235,8 +245,11 @@ const Dashboard = () => {
                 fill="#8884d8"
                 dataKey="value"
               >
-                {pieData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                {pieData.map((_entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
                 ))}
               </Pie>
             </PieChart>
@@ -248,12 +261,12 @@ const Dashboard = () => {
         {recentActivity.map((activity, index) => (
           <div
             key={index}
-            className="flex items-center gap-4 bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-all"
+            className="flex items-center gap-4 rounded-xl bg-white/5 p-4 transition-all hover:bg-white/10"
           >
-            <AlertCircle className="w-5 h-5 text-red-400" />
+            <AlertCircle className="h-5 w-5 text-red-400" />
             <div>
-              <p className="text-white font-semibold">{activity.type}</p>
-              <p className="text-white/60 text-sm">{activity.description}</p>
+              <p className="font-semibold text-white">{activity.type}</p>
+              <p className="text-sm text-white/60">{activity.description}</p>
               <p className="text-xs text-white/40">{activity.time}</p>
             </div>
           </div>

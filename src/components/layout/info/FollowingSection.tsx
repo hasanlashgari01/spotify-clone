@@ -9,6 +9,7 @@ interface FollowerProps {
   avatar: string;
   fullName: string;
   username: string;
+  role: string;
   userId: number;
   onUnfollow?: (id: number) => void; 
   isFollowing?: boolean; // <-- add this prop to determine follow state
@@ -21,6 +22,7 @@ const FollowingSection: React.FC<FollowerProps> = ({
   fullName,
   userId,
   username,
+  role,
   onClose,
   onUnfollow,
   isFollowing: isFollowingProp,
@@ -70,7 +72,7 @@ const FollowingSection: React.FC<FollowerProps> = ({
 
         <td>
           <div className="flex flex-col items-start justify-center w-20 sm:w-60">
-            <Link to={`/profile/${username}`}>
+            <Link to={meId == userId ? (`/profile`) : (`/${role == "artist" ? "artist" : "profile"}/${username}`)}>
               <h3 className="text-sm sm:text-lg font-semibold text-white" onClick={()=> {
                 onClose?.();
               }}>{fullName}</h3>

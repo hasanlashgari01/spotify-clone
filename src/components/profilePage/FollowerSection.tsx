@@ -88,8 +88,9 @@ const FollowerSection: React.FC<FollowerProps> = ({
         <td>
           <div className="flex flex-col items-start justify-center">
             <Link
-              to={`/profile/${username}`}
+              to={`/${role == "artist" ? "artist" : "profile"}/${username}`}
               onClick={() => {
+
                 onClose?.();
               }}
             >

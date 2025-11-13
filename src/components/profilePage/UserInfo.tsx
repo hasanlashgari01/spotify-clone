@@ -60,7 +60,48 @@ const UserInfo = () => {
       console.log('Error occurred:', error);
     }
   }, []);
+  const handlePictureChange = useCallback(
+    async (nameToSend: string) => {
+      if (!userData) return;
+      setLoading(true);
+      setSuccessMsg('');
+      try {
+        const updates = new FormData();
+        updates.append('fullName', nameToSend);
+        const bioToSend = getUpdateValue(bio, userData?.bio, '');
+        updates.append('bio', bioToSend);
+        updates.append('gender', gender);
+        if (userImage) {
+          updates.append('avatar', userImage);
+        }
+        await authService.updateUser(updates);
+        setSuccessMsg('Profile updated successfully!');
+      } catch (error) {
+        console.log('Error Occurred:', error);
+      } finally {
+        setModalOpen(false);
+        setLoading(false);
+        setUserImage(null);
+        fetchUserData();
+        setTimeout(() => setSuccessMsg(''), 2500);
+      }
+    },
+    [userData, bio, gender, userImage, fetchUserData]
+  );
 
+  const handleUpdateClick = useCallback(() => {
+    if (sizeErr) {
+      setFieldErr(true);
+      return;
+    }
+    const nameToSend = getUpdateValue(fullName, userData?.fullName, 'Am1r');
+    if (!nameToSend.trim()) {
+      setFieldErr(true);
+      return;
+    }
+    setFieldErr(false);
+    handlePictureChange(nameToSend);
+  }, [sizeErr, fullName, userData?.fullName, handlePictureChange]);
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
@@ -109,47 +150,8 @@ const UserInfo = () => {
     return fallback;
   };
 
-  const handleUpdateClick = useCallback(() => {
-    if (sizeErr) {
-      setFieldErr(true);
-      return;
-    }
-    const nameToSend = getUpdateValue(fullName, userData?.fullName, 'Am1r');
-    if (!nameToSend.trim()) {
-      setFieldErr(true);
-      return;
-    }
-    setFieldErr(false);
-    handlePictureChange(nameToSend);
-  }, [fullName, bio, sizeErr, userImage, gender, userData]);
 
-  const handlePictureChange = useCallback(
-    async (nameToSend: string) => {
-      if (!userData) return;
-      setLoading(true);
-      setSuccessMsg('');
-      try {
-        const updates = new FormData();
-        updates.append('fullName', nameToSend);
-        const bioToSend = getUpdateValue(bio, userData?.bio, '');
-        updates.append('bio', bioToSend);
-        updates.append('gender', gender);
-        if (userImage) {
-          updates.append('avatar', userImage);
-        }
-        await authService.updateUser(updates);
-        setSuccessMsg('Profile updated successfully!');
-      } catch (error) {
-        console.log('Error Occurred:', error);
-      } finally {
-        setModalOpen(false);
-        setLoading(false);
-        setUserImage(null);
-        setTimeout(() => setSuccessMsg(''), 2500);
-      }
-    },
-    [userData, bio, userImage, gender]
-  );
+
 
   useEffect(() => {
     if (!modalOpen) return;
@@ -377,14 +379,14 @@ const UserInfo = () => {
             </div>
 
             <div className="flex w-full flex-row items-center justify-center gap-2 pb-3 text-2xl text-white sm:justify-center sm:pb-6 sm:text-3xl md:text-4xl">
-              <span className="font-extrabold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)]">
+              <span className="font-extrabold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.35)] text-sm sm:text-md md:text-lg lg:text-2xl">
                 {userData?.fullName ? userData.fullName : 'Name'}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="relative top-[30%] mr-22 flex h-fit flex-col items-center justify-center gap-5 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-20 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-15 md:p-10 lg:top-[10%] lg:mr-30 lg:p-13">
+        <div className="relative top-[30%] mr-1 flex h-fit flex-col items-center justify-center gap-5 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-20 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-15 md:p-10 lg:top-[10%] lg:mr-30 lg:p-13">
           <motion.div
             className="relative flex gap-4 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent p-4 shadow-xl backdrop-blur-xl sm:gap-6 sm:p-6 md:gap-10 md:p-8 lg:gap-12 lg:p-15"
             initial={{ opacity: 0, x: 30 }}

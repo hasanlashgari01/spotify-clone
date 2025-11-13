@@ -68,7 +68,8 @@ const PlaylistMenu = ({
             icon: PiMusicNotesPlusFill,
             label: 'Add music',
             action: () => {
-              (setSearchModalOpen(true), onClose());
+              setSearchModalOpen(true)
+              onClose();
             },
             color: 'text-white hover:text-blue-400',
           },
@@ -76,7 +77,8 @@ const PlaylistMenu = ({
             icon: FiEdit,
             label: 'Edit Details',
             action: () => {
-              (setEditModalOpen(true), onClose());
+              setEditModalOpen(true)
+              onClose();
             },
             color: 'text-white hover:text-blue-400',
           },
