@@ -131,13 +131,14 @@ export const playlistService = {
       return { songs: [] as PlaylistSong[], pagination: { page: 1, limit: 0, pageCount: 0, totalCount: 0 } };
     }
     try {
-      const { data } = await httpService.get<{ songs: PlaylistSong[]; pagination?: Pagination }>(
+      const { data } = await httpService.get<{ songs: PlaylistSong[]; }>(
         '/playlists/search',
         { params: { playlistId, q } }
       );
+      console.log(data)
       return {
-        songs: Array.isArray(data?.songs) ? data.songs : [],
-        pagination: data?.pagination ?? { page: 1, limit: 0, pageCount: 0, totalCount: 0 },
+        songs: Array.isArray(data) ? data : [],
+
       };
     } catch (error) {
       console.error(error);

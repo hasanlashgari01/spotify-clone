@@ -55,7 +55,7 @@ const PlaylistPage = () => {
 
       try {
         const res = await playlistService.Search(playlistId.toString(), query);
-        setSongs(Array.isArray(res?.songs) ? res!.songs : []);
+        setSongs(res.songs);
       } catch (err) {
         console.error('Search error:', err);
       }
