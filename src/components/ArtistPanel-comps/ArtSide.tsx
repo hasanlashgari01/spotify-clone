@@ -3,18 +3,30 @@ import { useEffect, useState } from 'react';
 import {authService , User} from '../../services/authService.ts';
 import DefaultPicture from '../../../public/default-avatar.webp'
 type Props = {
-
+  setPage: React.Dispatch<React.SetStateAction<string>>;
   setArtist : React.Dispatch<React.SetStateAction<User | null>>;
 }
-export const ArtistSide = ({setArtist} : Props) => {
+import {useAuth} from '../../hooks/useAuth.ts';
+import { useNavigate } from 'react-router-dom';
+
+export const ArtistSide = ({setArtist , setPage} : Props) => {
   const [active, setActive] = useState('Home');
   const [me , setMe] = useState<User | null>(null)
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
   const menu = [
     { name: 'Home', icon: <Home className="w-5 h-5" /> },
     { name: 'Music page', icon: <Music className="w-5 h-5" /> },
     { name: 'Audience Stats', icon: <Users className="w-5 h-5" /> },
     { name: 'Concerts', icon: <Calendar className="w-5 h-5" /> },
   ];
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,7 +62,10 @@ export const ArtistSide = ({setArtist} : Props) => {
           {menu.map((item) => (
             <button
               key={item.name}
-              onClick={() => setActive(item.name)}
+              onClick={() => {
+                setActive(item.name)
+                setPage(item.name)
+              }}
               className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 cursor-pointer
                 ${
                 active === item.name
@@ -84,7 +99,7 @@ export const ArtistSide = ({setArtist} : Props) => {
             <p className="text-xs text-sky-400">Online</p>
           </div>
         </div>
-        <button className="mt-4 w-full py-2 bg-gradient-to-r from-sky-500/30 to-indigo-500/30 text-sky-300 rounded-xl text-sm hover:from-sky-500/40 hover:to-indigo-500/40 transition-all cursor-pointer">
+        <button onClick={handleLogout} className="mt-4 w-full py-2 bg-gradient-to-r from-sky-500/30 to-indigo-500/30 text-sky-300 rounded-xl text-sm hover:from-sky-500/40 hover:to-indigo-500/40 transition-all cursor-pointer">
           Logout
         </button>
       </div>
