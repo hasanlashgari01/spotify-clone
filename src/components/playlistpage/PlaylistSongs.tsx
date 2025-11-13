@@ -96,7 +96,7 @@ const PlaylistSongs: React.FC<Props> = ({
     }
   }, [slug, sortBy, order, applyFilter]);
 
-  // اکسپوز رفرش به پدر
+
   useEffect(() => {
     if (!playlistSongsRef) return;
     playlistSongsRef.current = fetchFirstPage;
@@ -105,12 +105,12 @@ const PlaylistSongs: React.FC<Props> = ({
     };
   }, [playlistSongsRef, fetchFirstPage]);
 
-  // واکنش به تغییر سرچ/سورت/اوردر/اسلاگ
+
   useEffect(() => {
     fetchFirstPage();
   }, [fetchFirstPage]);
 
-  // فیلتر روی تغییر سرچ یا داده‌ها
+
   useEffect(() => {
     setFilteredSongs(applyFilter(songs));
   }, [search, searchedSongs, songs, applyFilter]);
@@ -128,7 +128,7 @@ const PlaylistSongs: React.FC<Props> = ({
       });
       const incoming: PlaylistSong[] = Array.isArray(listResp?.songs) ? listResp!.songs : [];
 
-      // جلوگیری از تکرار
+
       const unique = incoming.filter(
         (n) => !songs.some((o) => o.song.id === n.song.id)
       );
@@ -167,7 +167,7 @@ const PlaylistSongs: React.FC<Props> = ({
     }
   };
 
-  // اینفینیت اسکرول ساده
+
   useEffect(() => {
     const handleScroll = () => {
       const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 400;
@@ -175,8 +175,7 @@ const PlaylistSongs: React.FC<Props> = ({
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-    // وابستگی‌ها: page, songs, sort, order, slug می‌تواند باعث setState زیاد شود؛
-    // این نسخه سبک‌تر است و به رفرنس‌ها تکیه دارد.
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, slug, sortBy, order]);
 
@@ -197,7 +196,7 @@ const PlaylistSongs: React.FC<Props> = ({
         <div className="w-full text-center text-gray-400 py-3">Loading more songs...</div>
       )}
       {!hasMore.current && (
-        <div className="w-full text-center text-gray-500 py-3 text-sm">No more songs 👀</div>
+        <div className="w-full text-center text-gray-500 py-3 text-sm"></div>
       )}
     </div>
   );
