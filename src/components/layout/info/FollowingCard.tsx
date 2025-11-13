@@ -44,7 +44,7 @@ const FollowingCard = ({ open, onClose, id }: FollowingCardProps) => {
           combined.forEach((item) => {
             const key =
               item.following?.id ?? item.followingId ?? item.following?.id;
-            if (typeof key === 'number') map.set(key, item);
+            map.set(key, item);
           });
           return Array.from(map.values());
         });
@@ -182,6 +182,7 @@ const FollowingCard = ({ open, onClose, id }: FollowingCardProps) => {
                       <FollowingSection
                         avatar={f.following.avatar}
                         fullName={f.following.fullName}
+                        role={f.following.role}
                         username={f.following.username}
                         userId={f.following.id}
                         isFollowing={isUserFollowing(

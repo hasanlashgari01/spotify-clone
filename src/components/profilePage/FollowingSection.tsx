@@ -8,12 +8,13 @@ interface FollowerProps {
   avatar: string;
   fullName: string;
   username : string;
+  role : string;
   onClose : (()=>void) | undefined;
   userId: number;
   onUnfollow?: (id: number) => void; 
 }
 
-const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, onUnfollow , username , onClose }) => {
+const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, onUnfollow ,role , username , onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
 // asdasd
   const fnunf = async (id: number) => {
@@ -44,7 +45,7 @@ const FollowingSection: React.FC<FollowerProps> = ({ avatar, fullName, userId, o
 
         <td>
           <div className="flex flex-col items-start justify-center w-20 sm:w-60">
-            <Link to={`/profile/${username}`}>
+            <Link to={`/${role == "artist" ? "artist" : "profile"}/${username}`}>
               <h3 className="text-sm sm:text-lg font-semibold text-white" onClick={()=>{
                 onClose?.()
               }}>{fullName}</h3>

@@ -1,10 +1,12 @@
 import ErrorMessage from '../error/ErrorMessage';
 import FloatingMusicIcons from '../playlistpage/FloatingMusicIcons';
 import { FC } from 'react';
+
 import { GenreDetailsWrapperProps } from '../../types/song.type';
 
 const GenreDetailsWrapper: FC<GenreDetailsWrapperProps> = ({
   genreDetails,
+
 }) => {
   if (!genreDetails) {
     return <ErrorMessage error={'Genre Not Found'} />;

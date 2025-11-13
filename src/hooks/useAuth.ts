@@ -5,7 +5,6 @@ export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const token = authService.getToken();
 

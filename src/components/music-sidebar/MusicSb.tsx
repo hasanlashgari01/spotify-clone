@@ -20,7 +20,7 @@ export const MusicSB = () => {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
 
   return (
-    <div className="flex h-screen overflow-hidden transition-all select-none">
+    <div className="flex h-90 overflow-hidden transition-all select-none">
       <aside
         className="relative flex h-full flex-col items-start border-r border-[#1E3A8A]/50 bg-gradient-to-b from-[#0A1528] via-[#0D1E34] to-[#131a22] shadow-[inset_0_0_60px_#0A1A3A80,0_0_25px_#1E3A8A30] backdrop-blur-sm"
         style={{ width: 95 }}
