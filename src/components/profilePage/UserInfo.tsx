@@ -384,7 +384,7 @@ const UserInfo = () => {
           </div>
         </div>
 
-        <div className="relative top-[30%] mr-22 flex h-fit flex-col items-center justify-center gap-5 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-20 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-15 md:p-10 lg:top-[10%] lg:mr-30 lg:p-13">
+        <div className="relative top-[30%] mr-22 flex h-fit flex-col items-center justify-center gap-5 rounded-2xl p-3 transition-all sm:top-[30%] sm:mr-20 sm:rounded-3xl sm:p-5 md:top-[20%] md:mr-15 md:p-10 lg:top-[17%] lg:mr-30 lg:p-13">
           <motion.div
             className="relative flex gap-4 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 via-white/[0.02] to-transparent p-4 shadow-xl backdrop-blur-xl sm:gap-6 sm:p-6 md:gap-10 md:p-8 lg:gap-12 lg:p-15"
             initial={{ opacity: 0, x: 30 }}

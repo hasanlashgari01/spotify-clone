@@ -104,7 +104,7 @@ const Artist = ({ query }: ArtistProps) => {
       >
         {artists.map((artist, i) => (
           <SwiperSlide key={i} className="!w-auto">
-            <Link to={`/profile/${artist.username}`}>
+            <Link to={`/artist/${artist.username}`}>
               <div className="group relative h-60 w-48 transform cursor-pointer rounded-xl bg-black/40 p-4 shadow-lg transition-all duration-300 hover:bg-gray-700">
                 <img
                   src={artist.avatar || '/default-avatar.webp'}

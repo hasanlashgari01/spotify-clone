@@ -31,7 +31,12 @@ const ConditionalMusicPlayer = () => {
   const shouldHidePlayer =
     location.pathname === '/login' ||
     location.pathname === '/register' ||
-    location.pathname === '/panel';
+    location.pathname === '/panel' ||
+    location.pathname === '/admin' ||
+    location.pathname === '/admin/settings' ||
+    location.pathname === '/admin/users' ||
+    location.pathname === '/admin/playlists' ||
+    location.pathname === '/admin/analytics';
 
   return !shouldHidePlayer ? <MusicPlayers /> : null;
 };
