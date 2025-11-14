@@ -8,7 +8,7 @@ const SidebarWrapper = () => {
     <>
       {!open && (
         <div
-          className="fixed top-28 -left-2 z-40 flex h-40 w-4 cursor-pointer items-center justify-center rounded-full bg-white/15 shadow-lg backdrop-blur-md transition-all hover:scale-105 hover:bg-white/25"
+          className="fixed top-28 -left-2 z-40 flex h-40 md:w-4 w-3.5 cursor-pointer items-center justify-center rounded-full bg-white/15 shadow-lg backdrop-blur-md transition-all hover:scale-105 hover:bg-white/25"
           onClick={() => setOpen(true)}
         ></div>
       )}
