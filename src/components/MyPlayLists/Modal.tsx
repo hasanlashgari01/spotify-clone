@@ -24,7 +24,7 @@ const Modal: React.FC<Props> = ({ open, onClose, children }) => {
         onClick={onClose}
       />
       <div
-        className="relative z-10 w-full max-w-lg animate-[fadeIn_0.2s_ease] rounded-2xl p-6 shadow-xl"
+        className="relative z-10 w-full max-w-lg animate-[fadeIn_0.2s_ease] bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 shadow-xl"
         style={{
           background:
             'linear-gradient(180deg, #101721 0%, rgba(16,23,33,0.95) 100%)',

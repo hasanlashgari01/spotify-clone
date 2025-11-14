@@ -7,6 +7,7 @@ import ToolSearch from '../components/searchPage/ToolSearch';
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import Filltersongslist from '../components/searchPage/Filltersongslist';
+import SidebarWrapper from '../components/sidebar/SidebarWrapper';
 
 const categories = ['All','Songs','Profiles','Artists','Albums','Playlists','Podcasts'] as const;
 type Category = typeof categories[number];
@@ -33,6 +34,7 @@ const SearchPage = () => {
 
   return (
     <>
+    <SidebarWrapper />
       <Navbar />
       {/* Page entrance animation */}
       <div className="animate-[fadeIn_400ms_ease-out]">

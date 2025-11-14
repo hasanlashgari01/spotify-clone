@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useGenres } from '../../hooks/useFechSongs';
 import { GenreItemsColors } from '../../services/ColorPalette';
 import LuxeLoader from '../loading/LuxeLoader';
+import SidebarWrapper from '../sidebar/SidebarWrapper';
 
 const Genres = () => {
   const { data: genres, isLoading, error } = useGenres();
@@ -16,6 +17,7 @@ const Genres = () => {
   if (error) return <ErrorMessage error={error} />;
   return (
     <div className="bgColor h-[100dvh]">
+      <SidebarWrapper />
       <div className="grid grid-cols-1 gap-8 p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {genres?.map((genre) => {
           const colorsKey = genre.title.toLowerCase().trim();

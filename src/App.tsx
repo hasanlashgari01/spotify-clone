@@ -20,10 +20,10 @@ import NotFound from './pages/NotFound';
 
 import ArtistsProfile from './pages/ArtistsProfile.tsx';
 import { ScrollToTop } from './components/scrolltoTop.tsx';
-import AdminLayout from './pages/admin/AdminLayout.tsx';
-import Dashboard from './pages/admin/Dashboard.tsx';
-import Analytics from './pages/admin/Analytics.tsx';
-import Playlists from './pages/admin/Playlists.tsx';
+import AdminLayout from './components/admin/AdminLayout.tsx';
+import Dashboard from './components/admin/Dashboard.tsx';
+import Analytics from './components/admin/Analytics.tsx';
+import Playlists from './components/admin/Playlists.tsx';
 import { Settings, Users } from 'lucide-react';
 
 const ConditionalMusicPlayer = () => {

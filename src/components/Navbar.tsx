@@ -45,7 +45,7 @@ const Navbar = () => {
       if (trimmed.length > 0) {
         navigate(`/search?q=${encodeURIComponent(trimmed)}`);
       }
-    }, 350);
+    }, 1000);
     return () => clearTimeout(handler);
   }, [searchValue, navigate]);
 
@@ -133,7 +133,7 @@ const Navbar = () => {
               <Link to={'/podcasts'}>Podcasts</Link>
             </span>
             <span className="cursor-pointer text-white hover:text-blue-400">
-              <Link to={'/genre'}>genre</Link>
+              <Link to={'/genre'}>Genre</Link>
             </span>
           </div>
 

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getMe } from '../services/meService';
 import { playlistService } from '../services/playlistService';
 import { PlaylistSong } from '../services/playlistDetailsService';
+import SidebarWrapper from '../components/sidebar/SidebarWrapper';
 
 const PlaylistPage = () => {
   const [owner, setOwner] = useState<number | null>(null);
@@ -84,6 +85,7 @@ const PlaylistPage = () => {
           songs={songs}
         />
       )}
+       <SidebarWrapper />
     </div>
   );
 };
